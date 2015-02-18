@@ -1,0 +1,187 @@
+/* CSS for weewx web site */
+/* $Id: weewx.css 2297 2014-07-07 11:34:14Z mwall $ */
+
+body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#container {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#masthead {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#navigation {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#content {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#footer {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 0.8em;
+  color: #000000;
+  background-color: #ffffff;
+}
+#container {
+  margin: 10px auto;
+  padding-left: 30px;
+  padding-right: 20px;
+}
+#masthead {
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid #5f8ea9;
+  background-color: #dfeaea;
+}
+#navigation {
+  position: absolute;
+  top: 10px;
+  right: 30px;
+}
+.navitem {
+  text-align: center;
+  float: right;
+  width: 80px;
+  font-size: 90%;
+}
+.logo {
+  width: 48px;
+}
+#content {
+  width: 70%;
+}
+#screenshots {
+  float: right;
+  text-align: right;
+  width: 25%;
+  padding-top: 10px;
+}
+#footer {
+  margin-top: 30px;
+}
+.screenshot {
+  height: 120px;
+  margin: 2px;
+  border: 1px solid #d2d2d2;
+  margin-top: 10px;
+}
+
+/* Masthead Styles */
+#masthead h1 {
+  color: #3d6c87;
+  margin-bottom: 0px;
+  margin-left: 10px;
+}
+#masthead p {
+  color: #3d6c87;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-left: 10px;
+}
+#masthead a {
+  color: #3d6c87;
+}
+
+/* Navigation Styles */
+#navigation ul {
+  list-style-type: none;
+  width: 100%;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+#navigation li {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+#navigation a {
+  color: #3d6c87;
+  text-decoration: none;
+  display: block;
+  padding: 5px;
+}
+#navigation a:hover {
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid #5f8ea9;
+  background-color: #5f8ea9;
+}
+
+/* Content Styles */
+#content h1,h2,h3,h4,h5,h6 {
+  color: #3d6c87;
+}
+#content img {
+  padding: 5px;
+}
+
+/* Footer Styles */
+#footer p {
+  color: #808080;
+  font-style: italic;
+  font-size: 80%;
+}
+#footer a {
+  color: #5f8ea9;
+}
+#footer a:hover {
+  color: #33627d;
+}
+a {
+  color: #5f8ea9;
+}
+a:hover {
+  color: #33627d;
+}
+.style_bold {
+  font-weight: bold;
+}
+.style_italic {
+  font-style: italic;
+}
+.code {
+  font-family: "Courier New", Courier, monospace;
+}
+.tty {
+  font-family: "Courier New", Courier, monospace;
+  margin-left: 40px;
+  font-size: 1em;
+}
+pre {
+  font-size: 1.3em;
+}
+dt {
+  margin-top: 10px;
+}
+dd {
+  margin-top: 5px;
+}
+.showcase_item {
+  float: left;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 50px;
+  padding-top: 10px;
+}
+.url {
+  font-family: monospace;
+  font-size: 1.3em;
+  padding-left: 40px;
+}

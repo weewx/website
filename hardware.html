@@ -1,0 +1,539 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+
+<head>
+  <title>WeeWX: Supported Hardware</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link href="favicon.ico" rel="icon" type="image/x-icon" />
+  <link href="weewx.css" rel="stylesheet" type="text/css" />
+  <script src="weewx.js" type="text/javascript"></script>
+  <script src="highslide/highslide.js" type="text/javascript"></script>
+  <link rel="stylesheet" type="text/css" href="highslide/highslide.css" />
+<!--[if lt IE 7]>
+  <link rel="stylesheet" type="text/css" href="highslide/highslide-ie6.css" />
+<![endif]-->
+  <script type="text/javascript">
+//<![CDATA[
+hs.registerOverlay({
+  html: '<div class="closebutton" onclick="return hs.close(this)" title="Close"></div>',
+  position: 'top right',
+  fade: 2 // fading the semi-transparent overlay looks bad in IE
+});
+hs.graphicsDir = 'highslide/graphics/';
+hs.wrapperClassName = 'borderless';
+hs.outlineType = 'rounded-white';
+//]]>
+  </script>
+  <style>
+.hardware td {
+  padding-right: 20px;
+  padding-bottom: 20px;
+}
+.hardware tr {
+  vertical-align: bottom;
+}
+.hardware_image {
+  width: 70px;
+  border: 1px solid #ddddff;
+}
+.comment {
+  font-style: italic;
+  font-size: 80%;
+}
+.borderless .highslide-caption {
+  border: 1px solid #bfcaca;
+  background-color: #dfeaea;
+}
+.highslide img {
+  border: 0px;
+}
+  </style>
+</head>
+
+<body onload="populate_header(); populate_screenshots(4,1);">
+
+<!-- Begin Container -->
+<div id="container">
+
+  <!-- Begin Masthead -->
+  <div id="masthead">
+    <h1><a href='.'>WeeWX</a></h1>
+    <p>Open source software for your weather station</p>
+    <div id="navigation">
+    </div>
+  </div>
+  <!-- End Masthead -->
+
+  <!-- Begin Navigation -->
+  <!-- End Navigation -->
+
+  <div>
+    <div id='screenshots'>
+    </div>
+  </div>
+
+  <!-- Begin Content -->
+  <div id="content">
+    <h2>Supported Hardware</h2>
+    <p>
+      WeeWX is known to work with the hardware shown on this page.
+      The <a href="docs/usersguide.htm#hardware">User's Guide</a> has details
+      about driver capabilities and hardware quirks.
+      The <a href="hwcmp.html">hardware comparison</a> shows the specifications
+      for hardware on this page as well as hardware not yet supported by
+      WeeWX.
+    </p>
+    <table class='hardware'>
+      <tr>
+        <td>
+          <a href="http://www.davisnet.com/">Davis</a>
+          <br/>Vantage Stations
+          <br/><span class='comment'>Serial, USB, or WeatherLinkIP interfaces</span>
+        </td>
+        <td>
+          <a href="hardware/vantagepro2.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/vantagepro2.png" class='hardware_image' /></a>
+          <div class="highslide-caption">Vantage Pro 2</div>
+          <br/>VantagePro2
+        </td>
+        <td>
+	  <a href="hardware/vantagevue.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/vantagevue.png" class='hardware_image'/></a>
+          <div class="highslide-caption">VantageVue</div>
+          <br/>VantageVue
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://oregonscientific.com/">Oregon Scientific</a>
+          <br/>WMR-100 Stations
+        </td>
+        <td>
+          <a href="hardware/wmr88a.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wmr88a.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WMR88/WMR88A</div>
+          <br/>WMR88
+        </td>
+        <td>
+          <a href="hardware/wmr100.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wmr100.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WMR100</div>
+          <br/>WMR100
+        </td>
+        <td>
+          <a href="hardware/wmr100n.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wmr100n.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WMR100N</div>
+          <br/>WMR100N
+        </td>
+        <td>
+          <a href="hardware/wmr180.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wmr180.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WMR180/WMR180A</div>
+          <br/>WMR180
+        </td>
+        <td>
+          <a href="hardware/wmrs200.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wmrs200.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WMRS200</div>
+          <br/>WMRS200
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://oregonscientific.com/">Oregon Scientific</a>
+          <br/>WMR-200 Stations
+        </td>
+        <td>
+          <a href="hardware/wmr200.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wmr200.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WMR200</div>
+          <br/>WMR200
+        </td>
+        <td>
+          <a href="hardware/wmr200a.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wmr200a.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WMR200A</div>
+          <br/>WMR200A
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://oregonscientific.com/">Oregon Scientific</a>
+          <br/>WMR-9x8 Stations
+          <br/><span class='comment'>Including Huger and Radio Shack</span>
+        </td>
+        <td>
+          <a href="hardware/wmr918.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wmr918.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WMR918</div>
+          <br/>WMR918
+        </td>
+        <td>
+          <a href="hardware/wmr928n.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wmr928n.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WMR928N</div>
+          <br/>WMR928N
+        </td>
+        <td>
+          <a href="hardware/wmr968.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wmr968.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WMR968</div>
+          <br/>WMR968
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://www.foshk.com/">Fine Offset</a>
+          <br/>10xx, 20xx, 30xx Stations
+          <br/><span class='comment'>Including Ambient Weather, Elecsa, Maplin,
+            Tycon, Watson</span>
+        </td>
+        <td>
+          <a href="hardware/ws1080.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ws1080.png" class='hardware_image'/></a>
+          <div class="highslide-caption">1080/1081</div>
+          <br/>108x
+        </td>
+        <td>
+          <a href="hardware/ws1090.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ws1090.png" class='hardware_image'/></a>
+          <div class="highslide-caption">1090/1091</div>
+          <br/>109x
+        </td>
+        <td>
+          <a href="hardware/ws2080.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ws2080.png" class='hardware_image'/></a>
+          <div class="highslide-caption">2080/2081</div>
+          <br/>208x
+        </td>
+        <td>
+          <a href="hardware/ws2090.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ws2090.png" class='hardware_image'/></a>
+          <div class="highslide-caption">2095</div>
+          <br/>209x
+        </td>
+        <td>
+          <a href="hardware/wh3080.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/wh3080.png" class='hardware_image'/></a>
+          <div class="highslide-caption">3080/3081</div>
+          <br/>308x
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://www.lacrossetechnology.com/">LaCrosse</a>
+          <br/>WS-23XX Stations
+          <br/><span class='comment'>Including TFA Matrix</span>
+        </td>
+        <td>
+          <a href="hardware/ws2308.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ws2308.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WS-2308</div>
+          <br/>WS-2308
+        </td>
+        <td>
+          <a href="hardware/ws2310.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ws2310.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WS-2310</div>
+          <br/>WS-2310
+        </td>
+        <td>
+          <a href="hardware/ws2317.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ws2317.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WS-2317</div>
+          <br/>WS-2317
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://www.lacrossetechnology.com/">LaCrosse</a>
+          <br/>WS-28XX Stations
+          <br/><span class='comment'>Including TFA Primus, TFA Opus</span>
+        </td>
+        <td>
+          <a href="hardware/ws2810.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ws2810.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WS-2810</div>
+          <br/>WS-2810
+        </td>
+        <td>
+          <a href="hardware/ws2812.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ws2812.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WS-2812</div>
+          <br/>WS-2812
+        </td>
+        <td>
+          <a href="hardware/c86234.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/c86234.png" class='hardware_image'/></a>
+          <div class="highslide-caption">WS-2814/C86234</div>
+          <br/>C86234
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://www.hidekielectronics.com/">Hideki</a>
+          <br/>TE923 Stations
+          <br/><span class='comment'>Including Cresta, Honeywell, IROX, Meade, Mebus, TFA Nexus, Ventus</span>
+        </td>
+        <td>
+          <a href="hardware/dv928.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/dv928.png" class='hardware_image'/></a>
+          <div class="highslide-caption">DV928</div>
+          <br/>DV928
+        </td>
+        <td>
+          <a href="hardware/te831.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/te831.png" class='hardware_image'/></a>
+          <div class="highslide-caption">TE831</div>
+          <br/>TE831
+        </td>
+        <td>
+          <a href="hardware/te923.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/te923.png" class='hardware_image'/></a>
+          <div class="highslide-caption">TE923</div>
+          <br/>TE923
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://www.peetbros.com/">Peet Bros</a>
+          <br/>Ultimeter Stations
+        </td>
+        <td>
+          <a href="hardware/ult100.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ult100.png" class='hardware_image'/></a>
+          <div class="highslide-caption">Ultimeter 100</div>
+          <br/>100
+        </td>
+        <td>
+          <a href="hardware/ult800.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ult800.png" class='hardware_image'/></a>
+          <div class="highslide-caption">Ultimeter 800</div>
+          <br/>800
+        </td>
+        <td>
+          <a href="hardware/ult2000.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ult2000.png" class='hardware_image'/></a>
+          <div class="highslide-caption">Ultimeter 2000</div>
+          <br/>2000
+        </td>
+        <td>
+          <a href="hardware/ult2100.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ult2100.png" class='hardware_image'/></a>
+          <div class="highslide-caption">Ultimeter 2100</div>
+          <br/>2100
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://www.argentdata.com/">Argent Data Systems</a>
+          <br/>WS1 Stations
+        </td>
+        <td>
+          <a href="hardware/ws1.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ws1.png" class='hardware_image'/></a>
+          <div class="highslide-caption">ADS WS1</div>
+          <br/>WS1
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://www.rainwise.com/">RainWise</a>
+          <br/>MKIII Stations
+          <br/><span class='comment'>Including CC-3000 data logger</span>
+        </td>
+        <td>
+          <a href="hardware/mk3pl.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/mk3pl.png" class='hardware_image'/></a>
+          <div class="highslide-caption">MKIII</div>
+          <br/>MKIII
+        </td>
+        <td>
+          <a href="hardware/cc3000.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/cc3000.png" class='hardware_image'/></a>
+          <div class="highslide-caption">CC3000</div>
+          <br/>CC3000
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://www.acurite.com/">AcuRite</a>
+          <br/>5-in-1 Stations with USB port
+        </td>
+        <td>
+          <a href="hardware/01035.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/01035.png" class='hardware_image'/></a>
+          <div class="highslide-caption">01035</div>
+          <br/>01035
+        </td>
+        <td>
+          <a href="hardware/01036.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/01036.png" class='hardware_image'/></a>
+          <div class="highslide-caption">01036</div>
+          <br/>01036
+        </td>
+        <td>
+          <a href="hardware/01525.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/01525.png" class='hardware_image'/></a>
+          <div class="highslide-caption">01525</div>
+          <br/>01525
+        </td>
+        <td>
+          <a href="hardware/02032c.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/02032c.png" class='hardware_image'/></a>
+          <div class="highslide-caption">02032/02032C</div>
+          <br/>02032
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="http://owfs.org/">OWFS</a>
+          <br/>1-wire Devices
+          <br/><span class='comment'>Including Maxim, Hobby-Boards, RainWise</span>
+        </td>
+        <td>
+          <a href="hardware/ow-ds9490r.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ow-ds9490r.png" class='hardware_image'/></a>
+          <div class="highslide-caption">USB Adaptor (DS9490R)</div>
+          <br/>DS9490R
+        </td>
+        <td>
+          <a href="hardware/ow-ds18b20.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ow-ds18b20.png" class='hardware_image'/></a>
+          <div class="highslide-caption">Temperature Sensor (DS18B20)</div>
+          <br/>DS18B20
+        </td>
+        <td>
+          <a href="hardware/ow-lightning-detector.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ow-lightning-detector.png" class='hardware_image'/></a>
+          <div class="highslide-caption">Lightning Detector</div>
+          <br/>Lightning
+        </td>
+        <td>
+          <a href="hardware/ow-thr-sensor.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ow-thr-sensor.png" class='hardware_image'/></a>
+          <div class="highslide-caption">Temperature/Humidity/Radiation Sensor</div>
+          <br/>Radiation
+        </td>
+        <td>
+          <a href="hardware/aag.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/aag.png" class='hardware_image'/></a>
+          <div class="highslide-caption">AAG One-Wire Weather Station</div>
+          <br/>AAG
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <a href="hardware/ow-rain-gauge.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ow-rain-gauge.png" class='hardware_image'/></a>
+          <div class="highslide-caption">RainWise Rain Gauge</div>
+          <br/>Rain Gauge
+        </td>
+        <td>
+          <a href="hardware/ow-ads-anemometer.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ow-ads-anemometer.png" class='hardware_image'/></a>
+          <div class="highslide-caption">ADS Anemometer</div>
+          <br/>ADS
+        </td>
+        <td>
+          <a href="hardware/ow-inspeed-anemometer.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ow-inspeed-anemometer.png" class='hardware_image'/></a>
+          <div class="highslide-caption">Inspeed Anemometer</div>
+          <br/>Inspeed
+        </td>
+        <td>
+          <a href="hardware/ow-soil-moisture-sensor.png"
+             class="highslide" onclick="return hs.expand(this)">
+            <img src="hardware/ow-soil-moisture-sensor.png" class='hardware_image'/></a>
+          <div class="highslide-caption">Soil Moisture Sensor</div>
+          <br/>Moisture
+        </td>
+      </tr>
+    </table>
+
+  </div>
+  <!-- End Content -->
+
+  <div style='clear:both'>&nbsp;</div>
+
+  <!-- Begin Footer -->
+  <div id="footer">
+    <p>Copyright &copy; Tom Keffer, all rights reserved</p>
+  </div>
+  <!-- End Footer -->
+
+</div>
+<!-- End Container -->
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-11386156-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body>
+
+</html>
