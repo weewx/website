@@ -1,0 +1,46 @@
+weewx station registry
+24nov2013 mwall
+
+this is a quick hack to enable weewx stations to phone home so they can be
+plotted on a google map.  stations phone home periodically with their url,
+location, lat/lon, and station type.  these data are plotted on a map.  if
+a station does not phone home after a certain period of time it will be
+removed from the map.
+
+as of weewx 2.5, the client-side of station registry is included in the
+weewx distribution in restful.py.
+
+
+these are the server-side bits:
+
+register.cgi - runs on the web server, accepts connections from stations
+
+mkstations.pl - generate the html page by injecting station data into template
+
+savecounts.pl - record changes to number and types of stations
+
+archivelog.pl - rollover the register logfile
+
+stations.html.in - template html page
+
+crontab.reg - crontab entries for generating pages, log rollover, history
+
+
+to configure the server:
+
+1) install prerequisites
+
+apt-get install libdbd-sqlite3-perl
+
+2) install the cgi script
+
+cp register.cgi /var/lib/cgi-bin
+
+3) set up database location
+
+mkdir /var/lib/weewx
+chown www-data /var/lib/weewx
+
+4) configure crontab to generate the html page
+
+crontab -u www-data crontab.reg

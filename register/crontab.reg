@@ -1,0 +1,7 @@
+# generate stations file every 10 minutes
+5,15,25,35,45,55 * * * * /home/content/t/o/m/tomkeffer/html/register/mkstations.pl 2>> /home/content/t/o/m/tomkeffer/html/register/register.log
+# rollover the log file once per month
+1 1 1 * * /home/content/t/o/m/tomkeffer/html/register/archivelog.pl
+# keep a history of the active/inactive counts for each station type
+1 2 * * * /home/content/t/o/m/tomkeffer/html/register/savecounts.pl 2>> /home/content/t/o/m/tomkeffer/html/register/register.log
+

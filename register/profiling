@@ -1,0 +1,17 @@
+24nov13 mwall
+
+as of 24nov2013 there are 82 stations registered.  here are the biggest time
+sinks when loading stations.html (firefox 24 on macosx 10.6):
+
+  ms   file           location   size
+  524  stations.html  weewx.com  26.16 KB
+  187  weewx.css      weewx.com   2.47 KB
+  192  weewx.js       weewx.com   5.48 KB
+   92  weewx-logo     weewx.com  15.89 KB
+
+everything else is under 50 ms and comes from maps.gstatic.com or
+maps.googleapis.com
+
+the biggest file sizes are 6 from google, ranging from 46.11 KB to 27.71 KB.
+
+total: 30 requests, 405.34 KB, 7.81 seconds
