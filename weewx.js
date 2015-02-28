@@ -1,4 +1,3 @@
-/* $Id: weewx.js 2202 2014-05-01 03:49:45Z tkeffer $ */
 /* javascript for weewx.com web site */
 /* author: matthew wall, 2013 */
 
