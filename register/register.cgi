@@ -806,6 +806,7 @@ function draw_plot(width, height, stacked, sequential, fill) {
 
   /* horizontal axis */
   var inc = 2592000; /* 30 days */
+  var last_year = 0;
   for(var t=starttime; t<now; t+=inc) {
     var v = plotw * (t - starttime) / (now - starttime);
     c.strokeStyle = "#dddddd";
@@ -821,8 +822,10 @@ function draw_plot(width, height, stacked, sequential, fill) {
     var d = new Date(t*1000);
     var s = d.getUTCDate() + "." + (d.getUTCMonth()+1);
     c.fillText(s, v+1, voffset+ploth+vlabelbuf+5);
-    if(d.getUTCMonth() == 0 && d.getUTCDate() < 8) {
+    var this_year = d.getUTCFullYear();
+    if(last_year != this_year) {
       c.fillText(d.getUTCFullYear(), v+1, voffset+ploth+2*vlabelbuf+5);
+      last_year = this_year;
     }
   }
 
