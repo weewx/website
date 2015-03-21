@@ -625,7 +625,9 @@ sub history_bg {
 sub history {
     my(%rqpairs) = @_;
 
-    my($errmsg, $tref, $cref, $sref, $elapsed) = get_history_data();
+    my $interval = $rqpairs{interval} ? $rqpairs{interval} : 2;
+
+    my($errmsg, $tref, $cref, $sref, $elapsed) = get_history_data($interval);
     if($errmsg ne q()) {
         &writereply('Database Failure', 'FAIL', $errmsg);
         return;
