@@ -699,11 +699,12 @@ function draw_plot(width, height, stacked, sequential, fill) {
   var haxisbuf = 20;
   var rpad = 5;
   var ticwidth = 4;
-  var voffset = 50;
+  var voffset = 40;
+  var bottom_offset = 200;
   var w = c.canvas.width;
   var h = c.canvas.height;
   var plotw = w - haxisbuf - hlabelbuf;
-  var ploth = h - vlabelbuf*3 - voffset;
+  var ploth = h - bottom_offset - voffset;
   var maxcnt = 0;
   if(stacked) {
     for(var i=0; i<data.totals.length; i++) {
