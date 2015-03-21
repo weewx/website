@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-# $Id: register.cgi 2807 2014-12-11 15:24:46Z mwall $
 # Copyright 2013 Matthew Wall
 #
 # register/update a weewx station via GET or POST request
@@ -23,7 +22,7 @@
 use strict;
 use POSIX;
 
-my $version = '$Id: register.cgi 2807 2014-12-11 15:24:46Z mwall $';
+my $version = '$Id: register.cgi 2051 2015-03-21 16:24:03Z mwall $';
 
 my $basedir = '/home/content/t/o/m/tomkeffer';
 
@@ -76,13 +75,19 @@ if($RMETHOD eq 'GET' || $RMETHOD eq 'POST') {
     } elsif($rqpairs{action} eq 'getcounts') {
         &runcmd('save counts', $savecntapp);
     } elsif($rqpairs{action} eq 'history') {
-        &history(%rqpairs);
+        if($rqpairs{bg}) {
+            &history_bg(%rqpairs);
+        } else {
+            &history(%rqpairs);
+        }
     } elsif($rqpairs{action} eq 'summary') {
         &summary(%rqpairs);
     } else {
         &handleregistration(%rqpairs);
     }
 } else {
+#    my %rqpairs;
+#    &history(%rqpairs);
     &writereply('Bad Request','FAIL',"Unsupported request method '$RMETHOD'.");
 }
 
@@ -487,7 +492,7 @@ sub summary {
        $sref_cnt, $plref_cnt, $pyref_cnt, $wref_cnt) = get_summary_data();
     if($errmsg ne q()) {
         &writereply('Database Failure', 'FAIL', $errmsg);
-        return
+        return;
     }
 
     my $tstr = &getformatteddate();
@@ -529,6 +534,11 @@ sub dump_data {
 }
 
 sub get_history_data {
+    my($interval) = @_;
+
+    $interval = 2 if ! $interval;
+    my $tstart = time();
+
     use DBI;
     my @times;
     my @counts;
@@ -563,7 +573,13 @@ sub get_history_data {
     $sth->finish();
     undef $sth;
 
+    my $cnt = 0;
+    my @newtimes;
     foreach my $t (@times) {
+	$cnt += 1;
+	next if $cnt % $interval != 0;
+	push @newtimes, $t;
+
 	my %c;
 	foreach my $s (@stypes) {
 	    $c{$s} = 0;
@@ -585,16 +601,34 @@ sub get_history_data {
     $dbh->disconnect();
     undef $dbh;
 
-    return q(), \@times, \@counts, \@stypes;
+    my $elapsed = time() - $tstart;
+
+    return q(), \@newtimes, \@counts, \@stypes, $elapsed;
+}
+
+sub history_bg {
+    my(%rqpairs) = @_;
+    $SIG{CHLD} = 'IGNORE';
+    my $pid;
+    if(!defined($pid=fork())) {
+	&writereply('Fork Failed', 'FAIL', '');
+    } elsif($pid == 0) {
+	open(my $OLDOUT, '>&', STDOUT);
+	open(STDOUT, '>', 'history.html');
+	&history(%rqpairs);
+	open(STDOUT, '>&', $OLDOUT);
+    } else {
+	&writereply('Fork Complete', 'OK', '');
+    }
 }
 
 sub history {
     my(%rqpairs) = @_;
 
-    my($errmsg, $tref, $cref, $sref) = get_history_data();
+    my($errmsg, $tref, $cref, $sref, $elapsed) = get_history_data();
     if($errmsg ne q()) {
         &writereply('Database Failure', 'FAIL', $errmsg);
-        return
+        return;
     }
 
     my @times = @$tref;
@@ -602,8 +636,8 @@ sub history {
     my @stations = @$sref;
 
     my $width = $rqpairs{width} ? $rqpairs{width} : 1200;
-    my $height = $rqpairs{height} ? $rqpairs{height} : 1000;
-    my $stacked = $rqpairs{stacked} eq '0' ? '0' : '1';
+    my $height = $rqpairs{height} ? $rqpairs{height} : 1500;
+    my $stacked = $rqpairs{stacked} eq '1' ? '1' : '0';
     my $sequential = $rqpairs{sequential} eq '1' ? '1' : '0';
     my $fill = $rqpairs{fill} eq '1' ? '1' : '0';
 
@@ -836,7 +870,7 @@ function sort_by_count(a,b) {
 <br/>
 EoB2
 
-    &writefooter($tstr);
+    &writefooter($tstr,$elapsed);
 }
 
 sub writecontenttype {
@@ -893,13 +927,16 @@ sub writeheader {
 };
 
 sub writefooter {
-    my($mdate) = @_;
+    my($mdate,$elapsed) = @_;
 
     if($mdate) {
         print STDOUT "<p>\n";
         print STDOUT "<small><i>\n";
         print STDOUT "$mdate<br/>\n";
         print STDOUT "$version<br/>\n";
+	if($elapsed) {
+	    print STDOUT "$elapsed seconds<br/>\n";
+	}
         print STDOUT "</i></small>\n";
         print STDOUT "</p>\n";
     }
