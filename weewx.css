@@ -58,8 +58,9 @@ body {
 .navitem {
   text-align: center;
   float: right;
-  width: 80px;
   font-size: 90%;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 .logo {
   width: 48px;
@@ -119,12 +120,6 @@ body {
   text-decoration: none;
   display: block;
   padding: 5px;
-}
-#navigation a:hover {
-  color: #fff;
-  text-decoration: none;
-  border: 1px solid #5f8ea9;
-  background-color: #5f8ea9;
 }
 
 /* Content Styles */
