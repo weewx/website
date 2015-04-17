@@ -73,6 +73,7 @@ body {
   text-align: right;
   width: 25%;
   padding-top: 10px;
+  display: none;
 }
 #footer {
   margin-top: 30px;
@@ -182,4 +183,10 @@ dd {
   font-family: monospace;
   font-size: 1.3em;
   padding-left: 40px;
+}
+
+@media only screen and (min-width: 40em) {
+  #screenshots {
+    display: inline;
+  }
 }
