@@ -60,6 +60,9 @@ my $max_urls = 10;
 # how far in the past to consider counts
 my $cutoff = time() - 30*24*3600;
 
+# how much should we aggregate the results?
+my $default_interval = 4;
+
 # parameters that we recognize
 my @params = qw(station_url description latitude longitude station_type station_model weewx_info python_info platform_info);
 
@@ -536,7 +539,7 @@ sub dump_data {
 sub get_history_data {
     my($interval) = @_;
 
-    $interval = 2 if ! $interval;
+    $interval = $default_interval if ! $interval;
     my $tstart = time();
 
     use DBI;
@@ -625,7 +628,7 @@ sub history_bg {
 sub history {
     my(%rqpairs) = @_;
 
-    my $interval = $rqpairs{interval} ? $rqpairs{interval} : 2;
+    my $interval = $rqpairs{interval} ? $rqpairs{interval} : $default_interval;
 
     my($errmsg, $tref, $cref, $sref, $elapsed) = get_history_data($interval);
     if($errmsg ne q()) {
