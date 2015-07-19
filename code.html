@@ -1,13 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
 
 <head>
-  <title>WeeWX: Code</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="initial-scale=1" />
-  <link href="favicon.ico" rel="icon" type="image/x-icon" />
-  <link href="weewx.css" rel="stylesheet" type="text/css" />
-  <script src="weewx.js" type="text/javascript"></script>
+    <title>WeeWX: Code</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="initial-scale=1"/>
+    <link href="favicon.ico" rel="icon" type="image/x-icon"/>
+    <link href="weewx.css" rel="stylesheet" type="text/css"/>
+    <script src="weewx.js" type="text/javascript"></script>
 </head>
 
 <body onload="populate_header('code'); populate_screenshots(2,1);">
@@ -15,54 +16,66 @@
 <!-- Begin Container -->
 <div id="container">
 
-  <!-- Begin Masthead -->
-  <div id="masthead">
-    <h1><a href='.'>WeeWX</a></h1>
-    <p>Open source software for your weather station</p>
-  </div>
-  <!-- End Masthead -->
+    <!-- Begin Masthead -->
+    <div id="masthead">
+        <h1><a href='.'>WeeWX</a></h1>
 
-  <div id="navigation"></div>
+        <p>Open source software for your weather station</p>
+    </div>
+    <!-- End Masthead -->
 
-  <div id='screenshots'></div>
+    <div id="navigation"></div>
 
-  <!-- Begin Content -->
-  <div id="content">
+    <div id='screenshots'></div>
 
-    <h2>Code</h2>
-    <p>The releases are available at SourceForge:</p>
-    <p class='url'><a href="https://sourceforge.net/projects/weewx/files/">https://sourceforge.net/projects/weewx/files/</a></p>
-    <p>GPG keys for verifying releases:</p>
-    <p class='url'><a href="keys.html">http://weewx.com/keys.html</a></p>
-    <p>The change log enumerates the differences in each release:</p>
-    <p class='url'><a href="https://github.com/weewx/weewx/blob/master/docs/changes.txt">https://github.com/weewx/weewx/blob/master/docs/changes.txt</a></p>
+    <!-- Begin Content -->
+    <div id="content">
 
-    <p>&nbsp;</p>
+        <h2>Code</h2>
 
-    <p>The code is in a repository at GitHub:</p>
-    <p class='url'><a href="https://github.com/weewx/weewx">https://github.com/weewx/weewx</a></p>
+        <p>The latest release is available at Bintray</p>
 
-  </div>
-  <!-- End Content -->
+        <p>
+            <a href='https://bintray.com/tkeffer/weewx/Releases/_latestVersion'><img
+                    src='https://api.bintray.com/packages/tkeffer/weewx/Releases/images/download.svg'/></a></p>
 
-  <div style='clear:both'>&nbsp;</div>
+        <p>GPG keys for verifying releases:</p>
 
-  <div id="footer">
-    <p>Copyright &copy; Tom Keffer, all rights reserved</p>
-  </div>
+        <p class='url'><a href="keys.html">http://weewx.com/keys.html</a></p>
+
+        <p>The change log enumerates the differences in each release:</p>
+
+        <p class='url'><a href="https://github.com/weewx/weewx/blob/master/docs/changes.txt">https://github.com/weewx/weewx/blob/master/docs/changes.txt</a>
+        </p>
+
+        <p>&nbsp;</p>
+
+        <p>The code is in a repository at GitHub:</p>
+
+        <p class='url'><a href="https://github.com/weewx/weewx">https://github.com/weewx/weewx</a></p>
+
+    </div>
+    <!-- End Content -->
+
+    <div style='clear:both'>&nbsp;</div>
+
+    <div id="footer">
+        <p>Copyright &copy; Tom Keffer, all rights reserved</p>
+    </div>
 
 </div>
 <!-- End Container -->
 
 <script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
 <script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-11386156-1");
-pageTracker._trackPageview();
-} catch(err) {}</script>
+    try {
+        var pageTracker = _gat._getTracker("UA-11386156-1");
+        pageTracker._trackPageview();
+    } catch (err) {
+    }</script>
 
 </body>
 
