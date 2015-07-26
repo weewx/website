@@ -126,7 +126,7 @@ function populate_header(page) {
 <a href='docs.html'>DOCS</a>\
 </div>\
 <div class='navitem'>\
-<a href='https://bintray.com/tkeffer/weewx/Releases/_latestVersion/#files'>DOWNLOAD</a>\
+<a href='downloads'>DOWNLOAD</a>\
 </div>";
         tmp = document.createElement('div');
         tmp.setAttribute('class', 'nav');
