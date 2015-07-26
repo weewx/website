@@ -45,8 +45,10 @@ my $max_file_size = 2_097_152; # 1 MB
 
 # sizes for thumbnail, in pixels
 my $snap_width = 300;
-my $thumb_width = 100;
-my $thumb_height = 500;
+my $small_width = 100;
+my $small_height = 500;
+my $thumb_width = 50;
+my $thumb_height = 100;
 
 # format for logging
 my $DATE_FORMAT_LOG = "%b %d %H:%M:%S";
@@ -63,7 +65,6 @@ while($ARGV[0]) {
 # query the station database for the current data
 my $now = time;
 my %stations;
-my $errmsg = q();
 if (-f $db) {
     my $dbh = DBI->connect("dbi:SQLite:$db", q(), q(), { RaiseError => 0 });
     if ($dbh) {
@@ -82,20 +83,17 @@ if (-f $db) {
             $sth->finish();
             undef $sth;
 	} else {
-	    $errmsg = "cannot prepare select statement: $DBI::errstr";
-	    logerr($errmsg);
+	    logerr("cannot prepare select statement: $DBI::errstr");
             exit 1;
 	}
 	$dbh->disconnect();
         undef $dbh;
     } else {
-	$errmsg = "cannot connect to database: $DBI::errstr";
-	logerr($errmsg);
+	logerr("cannot connect to database: $DBI::errstr");
         exit 1;
     }
 } else {
-    $errmsg = "no database at $db";
-    logerr($errmsg);
+    logerr("no database at $db");
     exit 1;
 }
 
@@ -105,41 +103,40 @@ foreach my $k (keys %stations) {
     $ctx->add($k);
     my $fn = $ctx->hexdigest;
     my $ofile = "$imgdir/$fn.$imgext";
-    if (-f $ofile) {
-	my @stats = stat($ofile);
-	if ($now - $stats[9] > $stale) {
-	    $needupdate = 1;
-	}
-    } else {
-	$needupdate = 1;
-    }
-    if ($needupdate) {
-	# the raw download is going to be too big to keep
+    my @stats = stat($ofile);
+    # if no shot or shot is stale, do a grab and make the thumbnails
+    if (! scalar @stats || $now - $stats[9] > $stale) {
 	my $rfile = "$imgdir/$fn.raw.$imgext";
+        my $sfile = "$imgdir/$fn.sm.$imgext";
+        my $tfile = "$imgdir/$fn.tn.$imgext";
+        logout("capture $fn ($k)");
 	`$app $k $rfile`;
-	# FIXME: test for failure
+	# the raw download is going to be too big to keep
 	if (-f $rfile) {
 	    # shrink to something we can keep
+            logout("create image for $fn");
 	    `convert $rfile -resize $snap_width $ofile`;
-            my @stats = stat($ofile);
-            if ($stats[7] > $max_file_size || $stats[7] == 0) {
-                `cp $placeholder $ofile`;
-            }
+            # create a small version for the pin bubble on the map
+            logout("create small image for $fn");
+	    `convert $rfile -resize $small_width $sfile`;
 	    # create thumbnail that is scaled to standard width and cropped
-	    # to standard height
-	    my $tfile = "$imgdir/$fn.tn.$imgext";
+	    # to standard height so it fits in table nicely
+            logout("create thumbnail image for $fn");
 	    `convert $rfile -resize $thumb_width -crop ${thumb_width}x${thumb_height}+0+0 $tfile`;
-            @stats = stat($ofile);
-            if ($stats[7] > $max_file_size || $stats[7] == 0) {
-                `cp $placeholder $tfile`;
+            foreach my $f ($ofile, $sfile, $tfile) {
+                my @stats = stat($f);
+                if ($stats[7] > $max_file_size || $stats[7] == 0) {
+                    `cp $placeholder $f`;
+                }
             }
             # remove the raw file now that we are done
             unlink $rfile;
 	} else {
             # copy placeholder if the capture failed, but only if none already
-            if (! -f $ofile) {
-                `cp $placeholder $ofile`;
-            }
+            logout("using placeholder for $fn");
+            `cp $placeholder $ofile` if ! -f $ofile;
+            `cp $placeholder $sfile` if ! -f $sfile;
+            `cp $placeholder $tfile` if ! -f $tfile;
         }
     }
 }
