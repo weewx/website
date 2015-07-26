@@ -19,6 +19,9 @@ upload:
 upload-highslide:
 	ftp -u $(USER)@$(DST) highslide/*.js highslide/*.css highslide/graphics/*.png highslide/graphics/*.gif highslide/graphics/*.cur highslide/graphics/outlines/*.png highslide/graphics/outlines/*.psd
 
+upload-apaxy:
+	ftp -u $(USER)@$(DST) theme/*.html theme/*.css theme/icons/* downloads/.htaccess
+
 upload-register:
 	ftp -u $(USER)@$(DST) register/allkeys.txt register/archivelog.pl register/mkstations.pl register/register.cgi register/savecounts.pl register/stations.html.in
 
