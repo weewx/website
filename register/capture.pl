@@ -39,11 +39,12 @@ my $placeholder_small = "$basedir/html/blank-100x100.png";
 my $placeholder_thumb = "$basedir/html/blank-50x50.png";
 
 # how long ago do we consider stale, in seconds
-my $stale = 2_592_000; # 30 days
+my $active = 2_592_000; # older than 30 days is no longer active
+my $stale = 604_800; # older than 7 days is stale
 
 # max file size that we permit, in bytes
-# godaddy limit is 10G, so that would be about 5000 2MB images
-my $max_file_size = 2_097_152; # 1 MB
+# godaddy limit is 10G, so that would be about 10000 1MB images
+my $max_file_size = 1_048_576; # 1 MB
 
 # sizes for thumbnail, in pixels
 my $snap_width = 600;
@@ -59,12 +60,14 @@ while($ARGV[0]) {
     my $arg = shift;
     if ($arg eq '--stale') {
         $stale = shift;
+    } elsif ($arg eq '--active') {
+        $active = shift;
     } elsif ($arg eq '--db') {
         $db = shift;
     }
 }
 
-# query the station database for the current data
+# query the station database for stations.  keep any that are active.
 my $now = time;
 my %stations;
 if (-f $db) {
@@ -78,7 +81,7 @@ if (-f $db) {
 		my %r;
 		$r{station_type} = $st;
 		$r{last_seen} = $ts;
-		if ($now - $ts < $stale) {
+		if ($now - $ts < $active) {
 		    $stations{$url} = \%r;
 		}
 	    }
