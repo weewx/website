@@ -20,6 +20,7 @@
   font-family: Helvetic, Arial, sans-serif;
   font-size: 10pt;
   font-weight: bold;
+  max-width: 200px;
 }
 .location_details {
   font-family: Helvetic, Arial, sans-serif;
