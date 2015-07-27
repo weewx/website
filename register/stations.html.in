@@ -295,7 +295,7 @@ function populate_station_list(sort_metric, sort_order) {
   var tbdy = document.createElement('tbody');
   var rowclass = 'oddrow';
   var tr = document.createElement('tr');
-  var td = document.createElement('td');
+  var td = document.createElement('th');
   var buttons = create_buttons("Description", "description");
   buttons += create_buttons("URL", "url");
   buttons += create_buttons("Latitude", "latitude");
