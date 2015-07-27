@@ -7,6 +7,8 @@
   <title>WeeWX: Stations Running WeeWX</title>
   <link href="weewx.css" rel="stylesheet" type="text/css" />
   <script src="weewx.js" type="text/javascript"></script>
+  <script src="md5.js" type="text/javascript"></script>
+  <script src="echo.js" type="text/javascript"></script>
   <style>
 #map_container {
   margin-top: 10px;
@@ -22,6 +24,11 @@
 .location_details {
   font-family: Helvetic, Arial, sans-serif;
   font-size: 8pt;
+  float: left;
+  padding-right: 20px;
+}
+.location_img {
+  float: right;
 }
 .gm-style-iw {
   width: 250px;
@@ -59,6 +66,8 @@
 #site_listing td {
   background-repeat: no-repeat;
   background-position: center;
+  vertical-align: top;
+  height: 104px;
 }
 .sort_buttons {
   padding-top: 10px;
@@ -73,7 +82,7 @@
   text-align: right;
 }
 .oddrow {
-  background-color: #f8f8f8;
+  background-color: #f4f4f4;
 }
 .evenrow {
   background-color: #ffffff;
@@ -166,7 +175,7 @@ function initialize() {
     var mkr = new google.maps.Marker({
       position: pos,
       map: map,
-      title: title,
+      title: title + "\n" + sites[i].station,
       icon: redDotURL,
     });
     sites[i].marker = mkr;
@@ -294,7 +303,7 @@ function populate_station_list(sort_metric, sort_order) {
   buttons += create_buttons("Version", "weewx_info");
   buttons += create_buttons("Last Seen", "last_seen");
   td.innerHTML = buttons;
-  td.colSpan = "3";
+  td.colSpan = "4";
   td.className = 'sort_buttons';
   tr.appendChild(td);
   tbdy.appendChild(tr);
@@ -307,6 +316,10 @@ function populate_station_list(sort_metric, sort_order) {
     var td = document.createElement('td');
     var date = new Date(sites[indices[i]].last_seen * 1000);
     td.innerHTML = '<div style="float: left">' + sites[indices[i]].weewx_info + '</div><div style="float: right">' + sites[indices[i]].station + '</div><div style="clear:both; float:right"><small>' + date.toUTCString() + '</small></div>';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    var basename = '/shots/' + md5(sites[indices[i]].url);
+    td.innerHTML = '<a href="' + basename + '.jpg"><img src="/blank.gif" alt="" data-echo="' + basename + '.tn.jpg" width="50"></a>';
     tr.appendChild(td);
     td = document.createElement('td');
     td.id = 'site_' + indices[i];
@@ -323,6 +336,8 @@ function populate_station_list(sort_metric, sort_order) {
   }
   tbl.appendChild(tbdy);
   s.appendChild(tbl);
+  /* let the lazy loader do its thing */
+  echo.init();
 }
 
 function create_buttons(label, sort_metric) {
@@ -390,6 +405,7 @@ function draw_ping_histogram(pings, maxpings, total) {
 }
 
 function create_content(idx) {
+  var fn = md5(sites[idx].url) + '.sm.jpg';
   var str = '<p class="location">';
   str += '<a href="' + sites[idx].url + '">';
   if(sites[idx].description.length > 0) {
@@ -398,6 +414,9 @@ function create_content(idx) {
     str += sites[idx].url;
   }
   str += '</a></p>';
+  str += '<p class="location_img">';
+  str += '<img src="/shots/' + fn + '" width="100">';
+  str += '</p>';
   str += '<p class="location_details">';
   str += sites[idx].latitude.toFixed(3) + ', ';
   str += sites[idx].longitude.toFixed(3) + '<br/>';

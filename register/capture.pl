@@ -34,7 +34,9 @@ my $imgext = 'jpg';
 my $db = "$basedir/weereg/stations.sdb";
 
 # placeholder file when capture is too big to keep
-my $placeholder = "$basedir/html/weewx-logo-128x128.png";
+my $placeholder = "$basedir/html/blank-600x200.png";
+my $placeholder_small = "$basedir/html/blank-100x100.png";
+my $placeholder_thumb = "$basedir/html/blank-50x50.png";
 
 # how long ago do we consider stale, in seconds
 my $stale = 2_592_000; # 30 days
@@ -44,9 +46,9 @@ my $stale = 2_592_000; # 30 days
 my $max_file_size = 2_097_152; # 1 MB
 
 # sizes for thumbnail, in pixels
-my $snap_width = 300;
+my $snap_width = 600;
 my $small_width = 100;
-my $small_height = 500;
+my $small_height = 200;
 my $thumb_width = 50;
 my $thumb_height = 100;
 
@@ -118,15 +120,18 @@ foreach my $k (keys %stations) {
 	    `convert $rfile -resize $snap_width $ofile`;
             # create a small version for the pin bubble on the map
             logout("create small image for $fn");
-	    `convert $rfile -resize $small_width $sfile`;
+	    `convert $rfile -resize $small_width -crop ${small_width}x${small_height}+0+0 $sfile`;
 	    # create thumbnail that is scaled to standard width and cropped
 	    # to standard height so it fits in table nicely
             logout("create thumbnail image for $fn");
 	    `convert $rfile -resize $thumb_width -crop ${thumb_width}x${thumb_height}+0+0 $tfile`;
-            foreach my $f ($ofile, $sfile, $tfile) {
+            my %files = ($ofile => $placeholder,
+                         $sfile => $placeholder_small,
+                         $tfile => $placeholder_thumb);
+            foreach my $f (keys %files) {
                 my @stats = stat($f);
                 if ($stats[7] > $max_file_size || $stats[7] == 0) {
-                    `cp $placeholder $f`;
+                    `cp $files{$f} $f`;
                 }
             }
             # remove the raw file now that we are done
@@ -135,8 +140,8 @@ foreach my $k (keys %stations) {
             # copy placeholder if the capture failed, but only if none already
             logout("using placeholder for $fn");
             `cp $placeholder $ofile` if ! -f $ofile;
-            `cp $placeholder $sfile` if ! -f $sfile;
-            `cp $placeholder $tfile` if ! -f $tfile;
+            `cp $placeholder_small $sfile` if ! -f $sfile;
+            `cp $placeholder_thumb $tfile` if ! -f $tfile;
         }
     }
 }
