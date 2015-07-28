@@ -68,7 +68,6 @@
   background-repeat: no-repeat;
   background-position: center;
   vertical-align: top;
-  height: 104px;
 }
 .sort_buttons {
   padding-top: 10px;
@@ -92,6 +91,9 @@
   width: 18px;
   border: 1px solid #2f5e79;
   cursor: cell;
+}
+.thumbnail {
+  height: 104px;
 }
   </style>
   <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
@@ -303,9 +305,12 @@ function populate_station_list(sort_metric, sort_order) {
   buttons += create_buttons("Station", "station");
   buttons += create_buttons("Version", "weewx_info");
   buttons += create_buttons("Last Seen", "last_seen");
+  buttons += '<div class="button_pair">Show Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()" checked /></div>';
   td.innerHTML = buttons;
-  td.colSpan = "4";
+  td.colSpan = "2";
   td.className = 'sort_buttons';
+  tr.appendChild(td);
+  td = document.createElement('td');
   tr.appendChild(td);
   tbdy.appendChild(tr);
   for (var i=0; i<indices.length; i++) {
@@ -320,6 +325,7 @@ function populate_station_list(sort_metric, sort_order) {
     tr.appendChild(td);
     td = document.createElement('td');
     var basename = '/shots/' + md5(sites[indices[i]].url);
+    td.className = 'thumbnail';
     td.innerHTML = '<a href="' + basename + '.jpg"><img src="/blank.gif" alt="" data-echo="' + basename + '.tn.jpg" width="50"></a>';
     tr.appendChild(td);
     td = document.createElement('td');
@@ -564,6 +570,22 @@ function get_title(x) {
     title = title.substr(0,maxTitleLen).concat('...');
   }
   return title;
+}
+
+function toggle_thumbnails() {
+  var tn = document.getElementsByClassName('thumbnail');
+  var showing = 1;
+  if (tn[0].style.display == 'none') {
+    showing = 0;
+  }
+  for (var i=0; i<tn.length; i++) {
+    if (showing) {
+      tn[i].style.display = 'none';
+    } else {
+      tn[i].style.display = 'inline';
+      tn[i].height = 104;
+    }
+  }
 }
   </script>
 </head>
