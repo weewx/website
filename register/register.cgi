@@ -45,8 +45,14 @@ my $arclogapp = "$basedir/html/register/archivelog.pl";
 # location of the count app
 my $savecntapp = "$basedir/html/register/savecounts.pl";
 
+# location of the screen capture app
+my $captureapp = "$basedir/html/register/capture.pl";
+
 # location of the log file
 my $logfile = "$basedir/html/register/register.log";
+
+# location of the capture log file
+my $caplogfile = "$basedir/html/register/capture.log";
 
 # format of the date as returned in the html footers
 my $DATE_FORMAT = "%Y.%m.%d %H:%M:%S UTC";
@@ -178,6 +184,7 @@ sub handleregistration {
     if($status eq 'OK') {
         &writereply('Registration Complete','OK', $msg, $rec, $rqpairs{debug});
         &updatestations();
+	&updatecapture($rec->{station_url});
     } else {
         &writereply('Registration Failed','FAIL', $msg, $rec, $rqpairs{debug});
     }
@@ -189,6 +196,12 @@ sub updatestations() {
     system("$savecntapp >> $logfile 2>&1 &");
 #    `$genhtmlapp >> $logfile 2>&1`;
 #    `$savecntapp >> $logfile 2>&1`;
+}
+
+# update the screen capture for the indicated station
+sub updatecapture() {
+    my($url) = @_;
+    system("$captureapp --url $url >> $caplogfile 2>&1 &");
 }
 
 # if this is a new station, add an entry to the database.  if an entry already

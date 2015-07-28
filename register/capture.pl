@@ -115,7 +115,7 @@ foreach my $k (keys %stations) {
         my $sfile = "$imgdir/$fn.sm.$imgext";
         my $tfile = "$imgdir/$fn.tn.$imgext";
         logout("capture $fn ($k)");
-	`$app $k $rfile`;
+	`$app --quiet $k $rfile`;
 	# the raw download is going to be too big to keep
 	if (-f $rfile) {
 	    # shrink to something we can keep
