@@ -2,6 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
 <head>
   <!-- map of weewx weather stations, by matthew wall -->
+  <!-- the page includes a map, a list of stations (site_listing), and a -->
+  <!-- list of hardware (station_types).  it also includes a small graph -->
+  <!-- that contains a histogram of when the last contact was made over  -->
+  <!-- the past 'pingdays' days. -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="initial-scale=1" />
   <title>WeeWX: Stations Running WeeWX</title>
@@ -303,7 +307,7 @@ function populate_station_list(sort_metric, sort_order) {
   buttons += create_buttons("URL", "url");
   buttons += create_buttons("Latitude", "latitude");
   buttons += create_buttons("Longitude", "longitude");
-  buttons += create_buttons("Station", "station");
+  buttons += create_buttons("Hardware", "station");
   buttons += create_buttons("Version", "weewx_info");
   buttons += create_buttons("Last Seen", "last_seen");
   buttons += '<div class="button_pair">Show Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()"';
@@ -622,7 +626,7 @@ function toggle_thumbnails() {
         <div id='ping_details_container'>
           <canvas id='ping_details'></canvas>
         </div>
-        <div onclick="toggle(this,'station_types')" style='cursor: pointer'>&#x25b6; <strong>Station Types</strong></div>
+        <div onclick="toggle(this,'station_types')" style='cursor: pointer'>&#x25b6; <strong>Hardware</strong></div>
         <div id='station_types' style='display:none'></div>
       </div>
 
@@ -637,7 +641,7 @@ function toggle_thumbnails() {
       </div>
 
       <div id='sites'>
-        <div onclick="toggle(this,'site_listing')" style='cursor: pointer'>&#x25b6; <strong>Station List</strong></div>
+        <div onclick="toggle(this,'site_listing')" style='cursor: pointer'>&#x25b6; <strong>Stations</strong></div>
         <div id='site_listing' style='display:none'></div>
       </div>
     </div>
