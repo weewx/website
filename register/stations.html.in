@@ -105,6 +105,7 @@ var infowindow = new google.maps.InfoWindow({
   content: 'nothing selected'
 });
 
+var showThumbs = 1;
 var oldZoomLevel = 0;
 var zoomThreshold = 7; /* when to switch from dots to pins */
 var pingdays = 30; /* number of days in ping histogram */
@@ -305,7 +306,11 @@ function populate_station_list(sort_metric, sort_order) {
   buttons += create_buttons("Station", "station");
   buttons += create_buttons("Version", "weewx_info");
   buttons += create_buttons("Last Seen", "last_seen");
-  buttons += '<div class="button_pair">Show Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()" checked /></div>';
+  buttons += '<div class="button_pair">Show Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()"';
+  if (showThumbs) {
+    buttons += ' checked';
+  }
+  buttons += ' /></div>';
   td.innerHTML = buttons;
   td.colSpan = "2";
   td.className = 'sort_buttons';
@@ -313,6 +318,10 @@ function populate_station_list(sort_metric, sort_order) {
   td = document.createElement('td');
   tr.appendChild(td);
   tbdy.appendChild(tr);
+  var disp = 'none';
+  if (showThumbs) {
+    disp = 'inline';
+  }
   for (var i=0; i<indices.length; i++) {
     var title = get_title(sites[indices[i]]);
     var tr = document.createElement('tr');
@@ -325,8 +334,7 @@ function populate_station_list(sort_metric, sort_order) {
     tr.appendChild(td);
     td = document.createElement('td');
     var basename = '/shots/' + md5(sites[indices[i]].url);
-    td.className = 'thumbnail';
-    td.innerHTML = '<a href="' + basename + '.jpg"><img src="/blank.gif" alt="" data-echo="' + basename + '.tn.jpg" width="50"></a>';
+    td.innerHTML = '<div class="thumbnail" style="display:' + disp + '"><a href="' + basename + '.jpg"><img src="/blank.gif" alt="" data-echo="' + basename + '.tn.jpg" width="50"></a></div>';
     tr.appendChild(td);
     td = document.createElement('td');
     td.id = 'site_' + indices[i];
@@ -573,17 +581,18 @@ function get_title(x) {
 }
 
 function toggle_thumbnails() {
-  var tn = document.getElementsByClassName('thumbnail');
-  var showing = 1;
-  if (tn[0].style.display == 'none') {
-    showing = 0;
+  if (showThumbs) {
+    showThumbs = 0;
+  } else {
+    showThumbs = 1;
   }
+  var tn = document.getElementsByClassName('thumbnail');
   for (var i=0; i<tn.length; i++) {
-    if (showing) {
-      tn[i].style.display = 'none';
-    } else {
+    if (showThumbs) {
       tn[i].style.display = 'inline';
       tn[i].height = 104;
+    } else {
+      tn[i].style.display = 'none';
     }
   }
 }
