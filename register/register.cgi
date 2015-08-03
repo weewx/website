@@ -201,7 +201,9 @@ sub updatestations() {
 # update the screen capture for the indicated station
 sub updatecapture() {
     my($url) = @_;
-    system("$captureapp --url $url >> $caplogfile 2>&1 &");
+    $url =~ s/\'/%27/g;
+    $url =~ s/\"/%22/g;
+    system("$captureapp --url '$url' >> $caplogfile 2>&1 &");
 }
 
 # if this is a new station, add an entry to the database.  if an entry already

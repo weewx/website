@@ -3,16 +3,17 @@
 #
 # Scan the registered stations and get a screen capture for each one.
 # If we already have a recent capture, skip it.  If there is no reply, then
-# do nothing for that one.  Save as png image with name that is hash of the
+# do nothing for that one.  Save as jpg image with name that is hash of the
 # identifying url for the station.
 #
 # Create a thumbnail of each image so that map thumbs do not take forever to
-# load.  These are scaled to 300 pixels wide and cropped to 100 pixels tall.
+# load.  These are scaled to 50 pixels wide and cropped to 100 pixels tall.
 #
 # Some captures result in massive (over 100MB) png images.  If that happens,
 # punt the image.
 #
 # Run this script periodically to get screen captures of each station.
+# Specify a URL to get a capture of a specific url.
 
 use Digest::MD5 qw(md5 md5_hex md5_base64);
 use DBI;
@@ -53,6 +54,10 @@ my $small_height = 200;
 my $thumb_width = 50;
 my $thumb_height = 100;
 
+# which url should we capture?  default is to query the database then capture
+# everything we find.  if a url is specified, then just do that one.
+my $url = q();
+
 # format for logging
 my $DATE_FORMAT_LOG = "%b %d %H:%M:%S";
 
@@ -64,48 +69,65 @@ while($ARGV[0]) {
         $active = shift;
     } elsif ($arg eq '--db') {
         $db = shift;
+    } elsif ($arg eq '--url') {
+        $url = shift;
     }
 }
 
-# query the station database for stations.  keep any that are active.
 my $now = time;
 my %stations;
-if (-f $db) {
-    my $dbh = DBI->connect("dbi:SQLite:$db", q(), q(), { RaiseError => 0 });
-    if ($dbh) {
-	my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
-	if ($sth) {
-	    $sth->execute();
-	    $sth->bind_columns(\my($url,$st,$ts));
-	    while($sth->fetch()) {
-		my %r;
-		$r{station_type} = $st;
-		$r{last_seen} = $ts;
-		if ($now - $ts < $active) {
-		    $stations{$url} = \%r;
-		}
-	    }
-            $sth->finish();
-            undef $sth;
-	} else {
-	    logerr("cannot prepare select statement: $DBI::errstr");
-            exit 1;
-	}
-	$dbh->disconnect();
-        undef $dbh;
-    } else {
-	logerr("cannot connect to database: $DBI::errstr");
-        exit 1;
-    }
+if ($url eq q()) {
+    $stations{$url} = 1; # placeholder - all we need is the url as key
 } else {
-    logerr("no database at $db");
-    exit 1;
+    %stations = get_stations($db, $now);
+}
+foreach my $url (keys %stations) {
+    capture_station($url, $now);
 }
 
-foreach my $k (keys %stations) {
-    my $needupdate = 0;
+exit 0;
+
+
+# query the station database for stations.  keep any that are active.
+sub get_stations {
+    my ($db, $now) = @_;
+    my %stations;
+    if (-f $db) {
+        my $dbh = DBI->connect("dbi:SQLite:$db", q(), q(), { RaiseError => 0 });
+        if ($dbh) {
+            my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
+            if ($sth) {
+                $sth->execute();
+                $sth->bind_columns(\my($url,$st,$ts));
+                while($sth->fetch()) {
+                    my %r;
+                    $r{station_type} = $st;
+                    $r{last_seen} = $ts;
+                    if ($now - $ts < $active) {
+                        $stations{$url} = \%r;
+                    }
+                }
+                $sth->finish();
+                undef $sth;
+            } else {
+                logerr("cannot prepare select statement: $DBI::errstr");
+            }
+            $dbh->disconnect();
+            undef $dbh;
+        } else {
+            logerr("cannot connect to database: $DBI::errstr");
+        }
+    } else {
+        logerr("no database at $db");
+    }
+    return %stations;
+}
+
+# do a capture of the specified url
+sub capture_station {
+    my ($url, $now) = @_;
     my $ctx = Digest::MD5->new;
-    $ctx->add($k);
+    $ctx->add($url);
     my $fn = $ctx->hexdigest;
     my $ofile = "$imgdir/$fn.$imgext";
     my @stats = stat($ofile);
@@ -114,8 +136,8 @@ foreach my $k (keys %stations) {
 	my $rfile = "$imgdir/$fn.raw.$imgext";
         my $sfile = "$imgdir/$fn.sm.$imgext";
         my $tfile = "$imgdir/$fn.tn.$imgext";
-        logout("capture $fn ($k)");
-	`$app --quiet $k $rfile`;
+        logout("capture $fn ($url)");
+	`$app --quiet $url $rfile`;
 	# the raw download is going to be too big to keep
 	if (-f $rfile) {
 	    # shrink to something we can keep
@@ -148,9 +170,6 @@ foreach my $k (keys %stations) {
         }
     }
 }
-
-exit 0;
-
 
 sub logout {
     my ($msg) = @_;
