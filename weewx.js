@@ -94,6 +94,9 @@ var sites = [
   { description: 'Bacchus Marsh, Victoria, AU',
     url: 'http://wotid.dyndns.org/weather/',
     screenshot: 'bacchusmarsh.png' },
+  { description: 'Conlig Co. Down, N. Ireland',
+    url: 'http://www.darkmoon.org.uk/weather',
+    screenshot: 'conlig.png'}
              ];
 
 /* inject navigation links into the navigation div */
