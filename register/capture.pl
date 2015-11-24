@@ -23,7 +23,10 @@ use strict;
 my $basedir = '/home/content/t/o/m/tomkeffer';
 
 # the app that makes the screen captures
-my $app = "$basedir/app/wkhtmltox/bin/wkhtmltoimage";
+my $imgapp = "$basedir/app/wkhtmltox/bin/wkhtmltoimage";
+
+# the app that converts and resizes images
+my $cvtapp = 'convert';
 
 # where to put the image files
 my $imgdir = "$basedir/html/shots";
@@ -61,6 +64,10 @@ my $url = q();
 # format for logging
 my $DATE_FORMAT_LOG = "%b %d %H:%M:%S";
 
+# should we spit out a log message about every little thing?  if not, then
+# log only errors.
+my $verbose = 0;
+
 while($ARGV[0]) {
     my $arg = shift;
     if ($arg eq '--stale') {
@@ -71,9 +78,15 @@ while($ARGV[0]) {
         $db = shift;
     } elsif ($arg eq '--url') {
         $url = shift;
+    } elsif ($arg eq '--verbose') {
+        $verbose = 1;
     }
 }
 
+my $logargs = q();
+#if (! $verbose) {
+#    $logargs = '> /dev/null 2>&1';
+#}
 my $now = time;
 my %stations;
 if ($url eq q()) {
@@ -137,19 +150,19 @@ sub capture_station {
         my $sfile = "$imgdir/$fn.sm.$imgext";
         my $tfile = "$imgdir/$fn.tn.$imgext";
         logout("capture $fn ($url)");
-	`$app --quiet $url $rfile`;
+	`$imgapp --quiet $url $rfile $logargs`;
 	# the raw download is going to be too big to keep
-	if (-f $rfile) {
+	if (-f $rfile && -s $rfile > 0) {
 	    # shrink to something we can keep
             logout("create image for $fn");
-	    `convert $rfile -resize $snap_width $ofile`;
+	    `$cvtapp $rfile -resize $snap_width $ofile $logargs`;
             # create a small version for the pin bubble on the map
             logout("create small image for $fn");
-	    `convert $rfile -resize $small_width -crop ${small_width}x${small_height}+0+0 $sfile`;
+	    `$cvtapp $rfile -resize $small_width -crop ${small_width}x${small_height}+0+0 $sfile $logargs`;
 	    # create thumbnail that is scaled to standard width and cropped
 	    # to standard height so it fits in table nicely
             logout("create thumbnail image for $fn");
-	    `convert $rfile -resize $thumb_width -crop ${thumb_width}x${thumb_height}+0+0 $tfile`;
+	    `$cvtapp $rfile -resize $thumb_width -crop ${thumb_width}x${thumb_height}+0+0 $tfile $logargs`;
             my %files = ($ofile => $placeholder,
                          $sfile => $placeholder_small,
                          $tfile => $placeholder_thumb);
@@ -173,8 +186,10 @@ sub capture_station {
 
 sub logout {
     my ($msg) = @_;
-    my $tstr = strftime $DATE_FORMAT_LOG, gmtime time;
-    print STDOUT "$tstr $msg\n";
+    if ($verbose) {
+        my $tstr = strftime $DATE_FORMAT_LOG, gmtime time;
+        print STDOUT "$tstr $msg\n";
+    }
 }
 
 sub logerr {
