@@ -18,7 +18,6 @@
   mea plexus
   lacross c83612
   netatmo wind sensor
-  davis envoy
 -->
 
   <script type="text/javascript">
@@ -166,6 +165,69 @@ var stations = {
   },
 
 
+  'envoy': {
+    'manufacturer': {'name': 'Davis', 'url': 'http://www.davisnet.com/'},
+    'family': 'Envoy',
+    'introduced': '2004?',
+    'models': [
+      'Envoy',
+      'Envoy 6316',
+      'Envoy 6318'
+    ],
+    'pictures': [['envoy.png', 'Envoy']],
+    'computer_interface': ['USB', 'Ethernet'],
+    'components': ['Receiver', 'ISS (TH, Rain, UV)', 'Anemometer'],
+    'configuration': [ ['envoy.png', 'Envoy']],
+    'console_temperature': {
+      'metric': {'range': '0-60 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
+      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
+    },
+    'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'temperature': {
+      'metric': {'range': '-40-66 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
+      'imperial': {'range': '-40-150 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
+    },
+    'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'pressure': {
+      'metric': {'range': '540-1100 mbar', 'res': '0.34 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '16-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}
+    },
+    'wind_speed': {
+      'metric': {'range': '3-220 kph', 'res': '1.5 kph', 'acc': '2% or 5%'},
+      'imperial': {'range': '2-150 mph', 'res': '1 mph', 'acc': '2% or 5%'}
+    },
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
+    'rain': {
+      'metric': {'range': '0-5080 mm', 'res': '0.254 mm', 'acc': '4%'},
+      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}
+    },
+    'uv': {'range': '0-16', 'res': '0.1', 'acc': '5%'},
+    'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '5%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [
+      'Up to 6 remote:',
+      'Soil Moisture/Temperature',
+      'Leaf Wetness',
+      'Water Temperature',
+      'Temperature/Humidity'
+    ],
+    'sensor_updates': [ '2.5s' ],
+    'wireless_range': {'metric': '330 m', 'imperial': '1000 ft'},
+    'power': ['Console: 3 C or AC', 'ISS: solar'],
+    'battery_life': ['9 mo (wireless)', '1 mo (wired)'],
+    'memory': ['2064 records'],
+    'calibration': ['altitude', 'latitude', 'longitude', 'time zone'],
+    'calculated': ['sunrise', 'sunset', 'barometer'],
+    'features': [
+      'separate data logger required to connect console to computer',
+      'optional rain bucket heater'
+    ],
+    'driver': 'Vantage'
+  },
+
+
   'fo': {
     'manufacturer': {'name': 'Fine Offset', 'url': 'http://www.foshk.com/'},
     'family': 'WS/WH 10xx, 20xx, 30xx',
@@ -259,7 +321,7 @@ var stations = {
     'computer_interface': ['WiFi'],
     'components': ['Console', 'Cluster (TH, Rain, Anemometer)', 'Indoor Sensor'],
     'configuration': [
-      ['fohp-console.png', 'HP 100x'],
+      ['fohp-console.png', 'HP 100x with Console'],
       ['fohp-bridge.png', 'HP 100x']],
     'console_temperature': {
       'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
@@ -1091,6 +1153,9 @@ function get_cookie(name) {
           <input type='checkbox' name='station'
                  value='vvue' id='control.vvue'
                  onclick='toggle(this, "vvue")'>Vantage Vue</input><br/>
+          <input type='checkbox' name='station'
+                 value='envoy' id='control.envoy'
+                 onclick='toggle(this, "envoy")'>Envoy</input><br/>
           <input type='checkbox' name='station'
                  value='fo' id='control.fo'
                  onclick='toggle(this, "fo")'>FO WH/WS</input><br/>
