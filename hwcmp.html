@@ -12,6 +12,15 @@
 <!--[if lt IE 7]>
   <link rel="stylesheet" type="text/css" href="highslide/highslide-ie6.css" />
 <![endif]-->
+
+<!-- TODO:
+  mea weather station
+  mea plexus
+  lacross c83612
+  netatmo wind sensor
+  davis envoy
+-->
+
   <script type="text/javascript">
 //<![CDATA[
 hs.registerOverlay({
@@ -24,59 +33,871 @@ hs.wrapperClassName = 'borderless';
 hs.outlineType = 'rounded-white';
 //]]>
 
-var stations = [
-  'vpro', 'vvue',
-  'wmr100','wmr200','wmr300','wmr9x8',
-  'fo', 'fohp',
-  'netatmo',
-  'ws23xx','ws28xx',
-  'hideki',
-  'rwmk3',
-  'wh56xx', 'whsig',
-  'ws1',
-  'twi',
-  'ultimeter',
-  'acurite',
-  'capricorn', 'orion', 'magellan', 'pulsar',
-  'nm',
-  'kl',
-  'hobo',
-];
+var unit_groups = {
+  'temperature': ['F', 'C'],
+  'pressure': ['inHg', 'mbar'],
+  'speed': ['mph', 'kph'],
+  'length': ['in', 'mm'],
+  'range': ['ft', 'm']
+};
 
-var units = [ 'F', 'inHg', 'mph', 'in', 'ft' ];
+var stations = {
+  'vpro': {
+    'manufacturer': {'name': 'Davis', 'url': 'http://www.davisnet.com/'},
+    'family': 'Vantage',
+    'introduced': '2004?',
+    'models': [
+      'Vantage',
+      'Vantage Pro',
+      'Vantage Pro 2',
+      'Vantage Pro 2 6152',
+      'Vantage Pro 2 6153',
+      'Vantage Pro 2+ 6162',
+      'Vantage Pro 2+ 6163'
+    ],
+    'pictures': [['vantagepro2.png', 'Vantage Pro 2']],
+    'computer_interface': ['Serial', 'USB', 'Ethernet'],
+    'components': ['Console', 'ISS (TH, Rain, UV)', 'Anemometer'],
+    'configuration': [
+      ['vpro-wired.png', 'Vantage Pro Wired'],
+      ['vpro-wireless.png', 'Vantage Pro Wireless']],
+    'console_temperature': {
+      'metric': {'range': '0-60 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
+      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
+    },
+    'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'temperature': {
+      'metric': {'range': '-40-66 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
+      'imperial': {'range': '-40-150 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
+    },
+    'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'pressure': {
+      'metric': {'range': '540-1100 mbar', 'res': '0.34 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '16-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}
+    },
+    'wind_speed': {
+      'metric': {'range': '3-220 kph', 'res': '1.5 kph', 'acc': '2% or 5%'},
+      'imperial': {'range': '2-150 mph', 'res': '1 mph', 'acc': '2% or 5%'}
+    },
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
+    'rain': {
+      'metric': {'range': '0-5080 mm', 'res': '0.254 mm', 'acc': '4%'},
+      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}
+    },
+    'uv': {'range': '0-16', 'res': '0.1', 'acc': '5%'},
+    'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '5%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [
+      'Up to 6 remote:',
+      'Soil Moisture/Temperature',
+      'Leaf Wetness',
+      'Water Temperature',
+      'Temperature/Humidity'
+    ],
+    'sensor_updates': [ '2.5s' ],
+    'wireless_range': {'metric': '330 m', 'imperial': '1000 ft'},
+    'power': ['Console: 3 C or AC', 'ISS: solar'],
+    'battery_life': ['9 mo (wireless)', '1 mo (wired)'],
+    'memory': ['2064 records'],
+    'calibration': ['altitude', 'latitude', 'longitude', 'time zone'],
+    'calculated': ['sunrise', 'sunset', 'barometer'],
+    'features': [
+      'separate data logger required to connect console to computer',
+      'optional rain bucket heater'
+    ],
+    'driver': 'Vantage'
+  },
+
+
+  'vvue': {
+    'manufacturer': {'name': 'Davis', 'url': 'http://www.davisnet.com/'},
+    'family': 'Vantage Vue',
+    'introduced': '2006?',
+    'pictures': [ ['vantagevue.png', 'Vantage Vue'] ],
+    'models': [
+      'Vantage Vue',
+      'Vantage Vue 6250'
+    ],
+    'computer_interface': ['USB'],
+    'components': ['Console', 'ISS (TH, Rain, UV, Anemometer)'],
+    'configuration': [['vvue.png', 'Vantage Vue']],
+    'console_temperature': {
+      'metric': {'range': '0-60 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
+      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
+    },
+    'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'temperature': {
+      'metric': {'range': '-40-66 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
+      'imperial': {'range': '-40-150 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
+    },
+    'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'pressure': {
+      'metric': {'range': '540-1100 mbar', 'res': '0.34 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '16-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}
+    },
+    'wind_speed': {
+      'metric': {'range': '3-220 kph', 'res': '1.5 kph', 'acc': '2% or 5%'},
+      'imperial': {'range': '2-150 mph', 'res': '1 mph', 'acc': '2% or 5%'}
+    },
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
+    'rain': {
+      'metric': {'range': '0-5080 mm', 'res': '0.254 mm', 'acc': '4%'},
+      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}
+    },
+    'uv': {'range': '0-16', 'res': '0.1', 'acc': '5%'},
+    'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '5%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [ '2.5s' ],
+    'wireless_range': {'metric': '330 m', 'imperial': '1000 ft'},
+    'power': ['Console: 3 C or AC', 'ISS: solar'],
+    'battery_life': ['9 mo (wireless)'],
+    'memory': ['1400 records'],
+    'calibration': ['altitude', 'latitude', 'longitude', 'time zone'],
+    'calculated': ['sunrise', 'sunset', 'barometer'],
+    'features': [
+      'separate data logger required to connect console to computer'
+    ],
+    'driver': 'Vantage'
+  },
+
+
+  'fo': {
+    'manufacturer': {'name': 'Fine Offset', 'url': 'http://www.foshk.com/'},
+    'family': 'WS/WH 10xx, 20xx, 30xx',
+    'introduced': '2008',
+    'pictures': [
+      ['ws1080.png', '1080/1081'],
+      ['ws1090.png', '1090/1091'],
+      ['ws2080.png', '2080/2081'],
+      ['ws2090.png', '2090'],
+      ['wh3080.png', '3080/3081'] ],
+    'models': [
+      'Aercus WS2083',
+      'Aercus WS3083',
+      'Ambient Weather WS1090',
+      'Ambient Weather WS2080',
+      'Ambient Weather WS2080A',
+      'Ambient Weather WS2090',
+      'Elecsa 6975',
+      'Elecsa 6976',
+      'Maplin N96GY',
+      'Maplin N96FY',
+      'National Geographic 265',
+      'Sinometer WS1080/WS1081',
+      'Sinometer WS3100/WS3101',
+      'Tycon TP1080WC',
+      'Watson W-8681',
+      'Watson WX-2008',
+      'Velleman WS3080'
+    ],
+    'computer_interface': ['USB'],
+    'components': ['Console', 'TH', 'Rain', 'Anemometer', 'UV (30xx)'],
+    'configuration': [['fousb.png', 'WH/WS 10xx/20xx/30xx']],
+    'console_temperature': {
+      'metric': {'range': '0-60 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}
+    },
+    'console_humidity': {'range': '10-99%', 'res': '1%', 'acc': '5%'},
+    'temperature': {
+      'metric': {'range': '-40-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-40-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}
+    },
+    'humidity': {'range': '10-99%', 'res': '1%', 'acc': '5%'},
+    'pressure': {
+      'metric': {'range': '300-1100 mbar', 'res': '0.34 mbar', 'acc': '2.7 mbar'},
+      'imperial': {'range': '8.85-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.08 inHg'}
+    },
+    'wind_speed': {
+      'metric': {'range': '0-164 kph', 'res': '0.15 kph', 'acc': '3.2% or 10%'},
+      'imperial': {'range': '0-112 mph', 'res': '0.1 mph', 'acc': '2.2 mph or 10%'}
+    },
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '22.5&deg;'},
+    'rain': {
+      'metric': {'range': '0-9999 mm', 'res': '0.3 mm', 'acc': '10%'},
+      'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': '10%'}
+    },
+    'uv': {'range': '0-16', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'0-400k Lux', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [ '48s', '60s (30xx UV sensor)' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
+    'power': ['Console: 2 AA or USB', 'TH: 2 AA'],
+    'battery_life': ['1 yr'],
+    'memory': ['4080 records', '3264 records (30xx)'],
+    'calibration': ['time zone', 'pressure offset', 'temperature (2080A)', 'humidity (2080A)'],
+    'calculated': [],
+    'features': [
+      'WWVB', 'touch screen (10xx)', 'multiple consoles'
+    ],
+    'driver': 'FineOffsetUSB'
+  },
+
+
+  'fohp': {
+    'manufacturer': {'name': 'Fine Offset', 'url': 'http://foshk.com/'},
+    'family': 'HP 100x',
+    'introduced': '2014',
+    'pictures': [
+      ['hp1000.png', '1000/1003'],
+      ['ws1400ip.png', '1000/1003'] ],
+    'models': [
+      'HP1000',
+      'HP1003',
+      'Ambient Weather WS-1001-WiFi',
+      'Ambient Weather WS-1200',
+      'Ambient Weather WS-1200-IP',
+      'Ambient Weather WS-1400-IP'
+    ],
+    'computer_interface': ['WiFi'],
+    'components': ['Console', 'Cluster (TH, Rain, Anemometer)', 'Indoor Sensor'],
+    'configuration': [
+      ['fohp-console.png', 'HP 100x'],
+      ['fohp-bridge.png', 'HP 100x']],
+    'console_temperature': {
+      'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}
+    },
+    'console_humidity': {'range': '1-99%', 'res': '1%', 'acc': '5%'},
+    'temperature': {
+      'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}
+    },
+    'humidity': {'range': '1-99%', 'res': '1', 'acc': '5%'},
+    'pressure': {
+      'metric': {'range': '300-1100 mbar', 'res': '0.34 mbar', 'acc': '2.7 mbar'},
+      'imperial': {'range': '8.85-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.08 inHg'}
+    },
+    'wind_speed': {
+      'metric': {'range': '0-160 kph', 'res': '0.15 kph', 'acc': '3.2 kph or 10%'},
+      'imperial': {'range': '0-100 mph', 'res': '0.1 mph', 'acc': '2.2 mph or 10%'}
+    },
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '22.5&deg;'},
+    'rain': {
+      'metric': {'range': '0-9999 mm', 'res': '0.3 mm', 'acc': '10%'},
+      'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': '10%'}
+    },
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'0-400k Lux', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [ '' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '330 ft'},
+    'power': ['Base: 5V DC', 'Sensors: 3 AA', 'TH: 2 AAA'],
+    'battery_life': [''],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': ['SD card'],
+    'driver': 'ObserverIP'
+  },
+
+
+  'wmr9x8': {
+    'manufacturer': {'name': 'Oregon Scientific', 'url': 'http://oregonscientific.com/'},
+    'family': 'WMR-9x8',
+    'introduced': '?',
+    'pictures': [
+      ['wmr918.png', 'WMR918'],
+      ['wmr928n.png', 'WMR928N'],
+      ['wmr968.png', 'WMR968'] ],
+    'models': [
+      'WMR918',
+      'WMR928N',
+      'WMR968',
+      'Huger WM918',
+      'Radio Shack 63-1016'
+    ],
+    'computer_interface': ['Serial'],
+    'components': ['Console', 'TH', 'Rain', 'Anemometer'],
+    'configuration': [['wmr9x8.png', 'WMR9x8']],
+    'console_temperature': {
+      'metric': {'range': '-5-50 &deg;C', 'res': '0.1 &deg;C', 'acc': ''},
+      'imperial': {'range': '23-122 &deg;F', 'res': '0.2 &deg;F', 'acc': ''}
+    },
+    'console_humidity': {'range': '2-98%', 'res': '1%', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-20-60 &deg;C', 'res': '0.1 &deg;C', 'acc': ''},
+      'imperial': {'range': '-4-140 &deg;F', 'res': '0.2 &deg;F', 'acc': ''}
+    },
+    'humidity': {'range': '2-98%', 'res': '1%', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '795-1050 mbar', 'res': '1 mbar', 'acc': ''},
+      'imperial': {'range': '23.48-31.01 inHg', 'res': '0.03 inHg', 'acc': ''}
+    },
+    'wind_speed': {
+      'metric': {'range': '0-184 kph', 'res': '0.59 kph', 'acc': ''},
+      'imperial': {'range': '0-125.3 mph', 'res': '0.4 mph', 'acc': ''}
+    },
+    'wind_dir': {'range': '0-359&deg;', 'res': '1&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': '0-9999 mm', 'res': '1 mm', 'acc': ''},
+      'imperial': {'range': '0-394 in', 'res': '0.04 in', 'acc': ''}
+    },
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Up to 7 remote instruments', 'Up to 3 remote TH sensors'],
+    'sensor_updates': [ '' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '330 ft'},
+    'power': ['Console: AC', 'TH: solar', 'Rain: solar', 'Wind: solar'],
+    'battery_life': [''],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': [''],
+    'driver': 'WMR9x8'
+  },
+
+
+  'wmr100': {
+    'manufacturer': {'name': 'Oregon Scientific', 'url': 'http://oregonscientific.com/'},
+    'family': 'WMR-100',
+    'introduced': '?',
+    'pictures': [
+      ['wmr88a.png', 'WMR88'],
+      ['wmr100.png', 'WMR100'],
+      ['wmr180.png', 'WMR180'],
+      ['wmrs200.png', 'WMRS200'] ],
+    'models': [
+      'WMR88',
+      'WMR100',
+      'WMR100N',
+      'WMR180',
+      'WMRS200'
+    ],
+    'computer_interface': ['USB'],
+    'components': ['Console', 'TH', 'Rain', 'Anemometer'],
+    'configuration': [['wmr100.png', 'WMR100']],
+    'console_temperature': {
+      'metric': {'range': '-20-53 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-4-148 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}
+    },
+    'console_humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
+    'temperature': {
+      'metric': {'range': '-46-79 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-50-158 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}
+    },
+    'humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
+    'pressure': {
+      'metric': {'range': '700-1050 mbar', 'res': '0.34 mbar', 'acc': '9.82 mbar'},
+      'imperial': {'range': '20.67-31.01 inHg', 'res': '0.01 inHg', 'acc': '0.29 inHg'}
+    },
+    'wind_speed': {
+      'metric': {'range': '3-183 kph', 'res': '1.5 kph', 'acc': '10%'},
+      'imperial': {'range': '2-125 mph', 'res': '1 mph', 'acc': '10%'}
+    },
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '10%'},
+    'rain': {
+      'metric': {'range': '0-9999.99 mm', 'res': '1 mm', 'acc': '5%'},
+      'imperial': {'range': '0-393.7 in', 'res': '0.04 in', 'acc': '5%'}
+    },
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ 'Up to 10 remote', 'TH', 'Floating pool/spa' ],
+    'sensor_updates': [ 'Wind: 14s', 'Other sensors: 60s' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
+    'power': ['Console: 4 AA or AC', 'TH: 2 AAA', 'Rain: 2 AA', 'Wind: 2 AA'],
+    'battery_life': [''],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': [''],
+    'driver': 'WMR100'
+  },
+
+
+  'wmr200': {
+    'manufacturer': {'name': 'Oregon Scientific', 'url': 'http://oregonscientific.com/'},
+    'family': 'WMR-200',
+    'introduced': '?',
+    'pictures': [
+      ['wmr200.png', 'WMR200'],
+      ['wmr200a.png', 'WMR200A'] ],
+    'models': [
+      'WMR200',
+      'WMR200A'
+    ],
+    'computer_interface': ['USB'],
+    'components': ['Console', 'TH', 'Rain', 'Anemometer'],
+    'configuration': [['wmr100.png', 'WMR100']],
+    'console_temperature': {
+      'metric': {'range': '-20-53 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-4-148 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}
+    },
+    'console_humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
+    'temperature': {
+      'metric': {'range': '-46-79 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-50-158 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}
+    },
+    'humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
+    'pressure': {
+      'metric': {'range': '700-1050 mbar', 'res': '0.01 mbar', 'acc': '9.82 mbar'},
+      'imperial': {'range': '20.67-31.01 inHg', 'res': '0.01 inHg', 'acc': '0.29 inHg'}
+    },
+    'wind_speed': {
+      'metric': {'range': '3-183 kph', 'res': '1.5 kph', 'acc': '10%'},
+      'imperial': {'range': '2-125 mph', 'res': '1 mph', 'acc': '10%'}
+    },
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '10%'},
+    'rain': {
+      'metric': {'range': '0-9999.99 mm', 'res': '1 mm', 'acc': '5%'},
+      'imperial': {'range': '0-393.7 in', 'res': '0.04 in', 'acc': '5%'}
+    },
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ 'Up to 10 remote', 'TH', 'Floating pool/spa' ],
+    'sensor_updates': [ 'Wind: 14s', 'Other sensors: 60s' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
+    'power': ['Console: 4 AA or AC', 'TH: 2 AAA', 'Rain: 2 AA', 'Wind: 2 AA' ],
+    'battery_life': [''],
+    'memory': ['41760 records'],
+    'calibration': [''],
+    'calculated': [''],
+    'features': [''],
+    'driver': 'WMR200'
+  },
+
+
+  'wmr300': {
+    'manufacturer': {'name': 'Oregon Scientific', 'url': 'http://oregonscientific.com/'},
+    'family': 'WMR-300',
+    'introduced': '2012',
+    'pictures': [ ['wmr300.png', 'WMR300'] ],
+    'models': [
+      'WMR300',
+      'WMR300A'
+    ],
+    'computer_interface': ['USB'],
+    'components': ['Console', 'Cluster (TH, Rain, UV)', 'Anemometer'],
+    'configuration': [['wmr300.png', 'WMR300']],
+    'console_temperature': {
+      'metric': {'range': '0-60 &deg;C', 'res': '0.1 &deg;C', 'acc': '0.5 &deg;C'},
+      'imperial': {'range': '0-140 &deg;F', 'res': '0.2 &deg;F', 'acc': '1 &deg;F'}
+    },
+    'console_humidity': {'range': '0-99%', 'res': '1%', 'acc': '3%'},
+    'temperature': {
+      'metric': {'range': '-40-65 &deg;C', 'res': '0.1 &deg;C', 'acc': '0.5 &deg;C'},
+      'imperial': {'range': '-40-149 &deg;F', 'res': '0.2 &deg;F', 'acc': '1 &deg;F'}
+    },
+    'humidity': {'range': '0-99%', 'res': '1%', 'acc': '3%'},
+    'pressure': {
+      'metric': {'range': '540-1100 mbar', 'res': '0.1 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '16-32.5 inHg', 'res': '0.003 inHg', 'acc': '0.03 inHg'}
+    },
+    'wind_speed': {
+      'metric': {'range': '0-80 m/s', 'res': '0.1 m/s', 'acc': '0.9 m/s to 5% (over 18 m/s)'},
+      'imperial': {'range': '0-179 mph', 'res': '0.2 mph', 'acc': '1 mph to 5% (over 40 mph)'}
+    },
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
+    'rain': {
+      'metric': {'range': '0-5080 mm', 'res': '0.254 mm', 'acc': '4%'},
+      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}
+    },
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ 'Up to 8 remote TH', 'UV' ],
+    'sensor_updates': [ 'TH: 10-12s', 'Rain: 20-24s', 'Wind: 2.5-3s' ],
+    'wireless_range': {'metric': '300 m', 'imperial': '1000 ft'},
+    'power': ['Console: 3 C or AC', 'Transmitter: 1 AA'],
+    'battery_life': [''],
+    'memory': ['32000 records'],
+    'calibration': ['altitude', 'latitude', 'longitude'],
+    'calculated': [''],
+    'features': ['RCC', 'touch screen'],
+    'driver': 'WMR300'
+  },
+
+
+  'lw301': {
+    'manufacturer': {'name': 'Oregon Scientific', 'url': 'http://oregonscientific.com/'},
+    'family': 'LW301',
+    'introduced': '?',
+    'pictures': [
+      ['lw301.png', 'LW301'],
+      ['lw302.png', 'LW302'] ],
+    'models': [
+      'LW301',
+      'LW302'
+    ],
+    'computer_interface': ['WiFi'],
+    'components': ['Bridge', 'Receiver', 'TH', 'Rain', 'Anemometer'],
+    'configuration': [['lw301.png', 'LW301']],
+    'console_temperature': {
+      'metric': {'range': '-50-70 &deg;C', 'res': '0.1 &deg;C', 'acc': '1-3 &deg;C'},
+      'imperial': {'range': '-58-158 &deg;F', 'res': '0.1 &deg;F', 'acc': '2-6 &deg;F'}
+    },
+    'console_humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
+    'temperature': {
+      'metric': {'range': '-50-70 &deg;C', 'res': '0.1 &deg;C', 'acc': '1-3 &deg;C'},
+      'imperial': {'range': '-58-158 &deg;F', 'res': '0.1 &deg;F', 'acc': '2-6 &deg;F'}
+    },
+    'humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
+    'pressure': {
+      'metric': {'range': '700-1050 mbar', 'res': '1.0 mbar', 'acc': '10 mbar'},
+      'imperial': {'range': '20.67-31 inHg', 'res': '0.029 inHg', 'acc': '0.3 inHg'}
+    },
+    'wind_speed': {
+      'metric': {'range': '0-56 m/s', 'res': '1 m/s', 'acc': '3 m/s or 10%'},
+      'imperial': {'range': '0-125 mph', 'res': '2 mph', 'acc': '6 mph or 10%'}
+    },
+    'wind_dir': {'range': '0-360', 'res': '22.5%', 'acc': '22.5%'},
+    'rain': {
+      'metric': {'range': '0-999 mm/hr', 'res': '1 mm/hr', 'acc': '1 mm to 7%'},
+      'imperial': {'range': '0-40 in', 'res': '0.04 in', 'acc': '0.04 in to 7%'}
+    },
+    'uv': {'range': '0-16', 'res': '0.0', 'acc': '1%'},
+    'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '1%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ 'Rain', 'Wind', 'TH', 'Pool sensor', 'UV' ],
+    'sensor_updates': [ 'Wind: 14s', 'Transmission: 60s' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '328 ft'},
+    'power': ['TH: 2 AAA', 'Wind: 2 AA', 'Rain: 2 AA'],
+    'battery_life': [''],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': [''],
+    'driver': ''
+  },
+
+
+  'template': {
+    'manufacturer': {'name': '', 'url': 'http://.com/'},
+    'family': '',
+    'introduced': '?',
+    'pictures': [
+      ['.png', ''],
+      ['.png', ''] ],
+    'models': [
+      '',
+      ''
+    ],
+    'computer_interface': [''],
+    'components': ['Console', 'TH'],
+    'configuration': [['.png', '']],
+    'console_temperature': {
+      'metric': {'range': '0-0 &deg;C', 'res': '0.0 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '0-0 &deg;F', 'res': '0.0 &deg;F', 'acc': '1 &deg;F'}
+    },
+    'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'temperature': {
+      'metric': {'range': '-0-0 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-0-0 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
+    },
+    'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'pressure': {
+      'metric': {'range': '0-0 mbar', 'res': '0.0 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '0-0 inHg', 'res': '0.0 inHg', 'acc': '1 inHg'}
+    },
+    'wind_speed': {
+      'metric': {'range': '0-0 kph', 'res': '1 kph', 'acc': '1%'},
+      'imperial': {'range': '0-0 mph', 'res': '1 mph', 'acc': '1%'}
+    },
+    'wind_dir': {'range': '0-0&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
+    'rain': {
+      'metric': {'range': '0-0 mm', 'res': '0.0 mm', 'acc': '1%'},
+      'imperial': {'range': '0-0 in', 'res': '0.0 in', 'acc': '1%'}
+    },
+    'uv': {'range': '0-16', 'res': '0.0', 'acc': '1%'},
+    'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '1%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [ '1s' ],
+    'wireless_range': {'metric': '330 m', 'imperial': '1000 ft'},
+    'power': ['', ''],
+    'battery_life': [''],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': [''],
+    'driver': ''
+  }
+
+
+};
+
 
 function setup() {
+  // the legend should always be showing
   var e = document.getElementById('legend');
-  if(e) {
-    e.style.display = 'inline';
+  e.style.display = 'inline';
+
+  // create a section for each station, default to hidden
+  for(var id in stations) {
+    setup_station('listing', id, stations[id]);
   }
-  for(var i=0; i<stations.length; i++) {
-    var id = stations[i];
+
+  // show/hide the station sections based on cookie state
+  for(var id in stations) {
     var ctrl = document.getElementById('control.'+id);
     if(ctrl) {
       var v = get_cookie('compare_'+id);
       var flag = (v == "") ? false : ((v.toLowerCase() == "true") ? true : false)
       set_cookie('compare_'+id, flag);
-      showhide(id, flag);
+      showhide_station(id, flag);
       ctrl.checked = flag;
     }
   }
-  for(var i=0; i<units.length; i++) {
-    var ctrl = document.getElementById('control.'+units[i]);
-    if(ctrl) {
-      ctrl.checked = true;
+
+  // display units and unit controls based on cookie state
+  for(var i in unit_groups) {
+    var v = get_cookie('group_'+i);
+    if(v == "" || (v != unit_groups[i][0] && v != unit_groups[i][1])) {
+      v = unit_groups[i][0];
     }
+    showhide_units(i, v);
+    cfg_units_control(i, v);
   }
 }
 
-function set_units(c_on, c_off) {
-  var items = document.getElementsByClassName(c_off);
+// create a div that contains all of the station information.
+// attach it to the station listing div.
+function setup_station(divid, sid, sd) {
+  var div = document.createElement('div');
+  div.className = 'hardware';
+  div.id = sid;
+  var html = "\
+<div class='hardware_mfr'>\
+  <a href='" + sd['manufacturer']['url'] + "'>" + sd['manufacturer']['name'] + "</a>\
+  <br/>" + sd['family'] + "\
+  <br/>" + sd['introduced'] + "\
+</div>\
+<div class='hardware_pictures'>";
+
+for(var i=0; i<sd['pictures'].length; i++) {
+  var image = sd['pictures'][i][0];
+  var label = sd['pictures'][i][1];
+  html += "  <div>\
+<a href='hardware/" + image + "' class='highslide' onclick='return hs.expand(this)'>\
+<img src='hardware/" + image + "' class='hardware_image' /></a>\
+<div class='highslide-caption'>" + label + "</div>\
+  </div>";
+}
+
+  html += "</div>\
+<div class='hardware_models'>";
+
+for(var i=0; i<sd['models'].length; i++) {
+  html += sd['models'][i] + "<br/>\n";
+}
+
+  html += "</div>\
+<div class='hardware_specs'>\
+  <div>";
+
+for(var i=0; i<sd['computer_interface'].length; i++) {
+  html += sd['computer_interface'][i] + "<br/>\n";
+}
+
+  html += "  </div>\
+  <div class='components'>";
+
+for(var i=0; i<sd['components'].length; i++) {
+  html += sd['components'][i] + "<br/>\n";
+}
+
+  html += "  </div>\
+  <div class='configuration'>";
+
+for(var i=0; i<sd['configuration'].length; i++) {
+  var image = sd['configuration'][i][0];
+  var label = sd['configuration'][i][1];
+  html += "<a href='cfg/" + image + "'\
+ class='cfg' onclick='return hs.expand(this)'>\
+<img src='cfg/" + image + "' class='cfg_image'/></a>\
+<div class='highslide-caption'>" + label + "</div>";
+}
+
+  html += "  </div>\
+  <div class='console_temperature'>\
+    <span class='F'>" +
+sd['console_temperature']['imperial']['range'] + "<br/>" +
+sd['console_temperature']['imperial']['res'] + "<br/>" +
+sd['console_temperature']['imperial']['acc'] + "</span>\
+    <span class='C'>" +
+sd['console_temperature']['metric']['range'] + "<br/>" +
+sd['console_temperature']['metric']['res'] + "<br/>" +
+sd['console_temperature']['metric']['acc'] + "</span>\
+  </div>\
+  <div>" +
+sd['console_humidity']['range'] + "<br/>" +
+sd['console_humidity']['res'] + "<br/>" +
+sd['console_humidity']['acc'] + "</div>\
+  <div>\
+    <span class='F'>" +
+sd['temperature']['imperial']['range'] + "<br/>" +
+sd['temperature']['imperial']['res'] + "<br/>" +
+sd['temperature']['imperial']['acc'] + "</span>\
+    <span class='C'>" +
+sd['temperature']['metric']['range'] + "<br/>" +
+sd['temperature']['metric']['res'] + "<br/>" +
+sd['temperature']['metric']['acc'] + "</span>\
+  </div>\
+  <div>" +
+sd['humidity']['range'] + "<br/>" +
+sd['humidity']['res'] + "<br/>" +
+sd['humidity']['acc'] + "</div>\
+  <div>\
+    <span class='inHg'>" +
+sd['pressure']['imperial']['range'] + "<br/>" +
+sd['pressure']['imperial']['res'] + "<br/>" +
+sd['pressure']['imperial']['acc'] + "</span>\
+    <span class='mbar'>" +
+sd['pressure']['metric']['range'] + "<br/>" +
+sd['pressure']['metric']['res'] + "<br/>" +
+sd['pressure']['metric']['acc'] + "</span>\
+  </div>\
+  <div>\
+    <span class='mph'>" +
+sd['wind_speed']['imperial']['range'] + "<br/>" +
+sd['wind_speed']['imperial']['res'] + "<br/>" +
+sd['wind_speed']['imperial']['acc'] + "</span>\
+    <span class='kph'>" +
+sd['wind_speed']['metric']['range'] + "<br/>" +
+sd['wind_speed']['metric']['res'] + "<br/>" +
+sd['wind_speed']['metric']['acc'] + "</span>\
+  </div>\
+  <div>" +
+sd['wind_dir']['range'] + "<br/>" +
+sd['wind_dir']['res'] + "<br/>" +
+sd['wind_dir']['acc'] + "</div>\
+  <div>\
+    <span class='in'>" +
+sd['rain']['imperial']['range'] + "<br/>" +
+sd['rain']['imperial']['res'] + "<br/>" +
+sd['rain']['imperial']['acc'] + "</span>\
+    <span class='mm'>" +
+sd['rain']['metric']['range'] + "<br/>" +
+sd['rain']['metric']['res'] + "<br/>" +
+sd['rain']['metric']['acc'] + "</span>\
+  </div>\
+  <div>" +
+sd['uv']['range'] + "<br/>" +
+sd['uv']['res'] + "<br/>" +
+sd['uv']['acc'] + "</div>\
+  <div>" +
+sd['solar_radiation']['range'] + "<br/>" +
+sd['solar_radiation']['res'] + "<br/>" +
+sd['solar_radiation']['acc'] + "</div>\
+  <div>" +
+sd['luminosity']['range'] + "<br/>" +
+sd['luminosity']['res'] + "<br/>" +
+sd['luminosity']['acc'] + "</div>\
+  <div>" +
+sd['co2']['range'] + "<br/>" +
+sd['co2']['res'] + "<br/>" +
+sd['co2']['acc'] + "</div>\
+  <div>" +
+sd['sound']['range'] + "<br/>" +
+sd['sound']['res'] + "<br/>" +
+sd['sound']['acc'] + "</div>\
+  <div class='optional_sensors'>";
+
+for(var i=0; i<sd['optional_sensors'].length; i++) {
+  html += sd['optional_sensors'][i] + "<br/>";
+}
+
+  html += "  </div>\
+  <div class='sensor_updates'>";
+
+for(var i=0; i<sd['sensor_updates'].length; i++) {
+  html += sd['sensor_updates'][i] + "<br/>";
+}
+
+  html += "  </div>\
+  <div>\
+    <span class='ft'>" + sd['wireless_range']['imperial'] + "</span>\
+    <span class='m'>" + sd['wireless_range']['metric'] + "</span>\
+  </div>\
+  <div class='power'>";
+
+for(var i=0; i<sd['power'].length; i++) {
+  html += sd['power'][i] + "<br/>";
+}
+
+  html += "  </div>\
+  <div class='battery_life'>";
+
+for(var i=0; i<sd['battery_life'].length; i++) {
+  html += sd['battery_life'][i] + "<br/>";
+}
+
+  html += "  </div>\
+  <div>";
+
+for(var i=0; i<sd['memory'].length; i++) {
+  html += sd['memory'][i] + "<br/>";
+}
+
+  html += "  </div>\
+  <div>";
+
+for(var i=0; i<sd['calibration'].length; i++) {
+  html += sd['calibration'][i] + "<br/>";
+}
+
+  html += "  </div>\
+  <div>";
+
+for(var i=0; i<sd['calculated'].length; i++) {
+  html += sd['calculated'][i] + "<br/>";
+}
+
+  html += "  </div>\
+  <div>";
+
+for(var i=0; i<sd['features'].length; i++) {
+  html += sd['features'][i] + "<br/>";
+}
+
+  html += "  </div>\
+  <div>" + sd['driver'] + "</div>\
+</div>";
+
+  div.innerHTML = html;  
+  var parent = document.getElementById(divid);
+  parent.appendChild(div);
+}
+
+function set_units(ugid, unit) {
+  set_cookie('group_'+ugid, unit);
+  showhide_units(ugid, unit);
+}
+
+function showhide_units(ugid, unit_on) {
+  var unit_off = get_complement(ugid, unit_on);
+  var items = document.getElementsByClassName(unit_off);
   if(items) {
     for(var i=0; i<items.length; i++) {
       items[i].style.display = 'none';
     }
   }
-  items = document.getElementsByClassName(c_on)
+  items = document.getElementsByClassName(unit_on)
   if(items) {
     for(var i=0; i<items.length; i++) {
       items[i].style.display = 'inline';
@@ -84,15 +905,33 @@ function set_units(c_on, c_off) {
   }
 }
 
+function cfg_units_control(ugid, unit) {
+  // set the control...
+  var ctrl = document.getElementById('control.'+unit);
+  if(ctrl) {
+    ctrl.checked = true;
+  }
+  // ...unset the complement
+  unit = get_complement(ugid, unit);
+  ctrl = document.getElementById('control.'+unit);
+  if(ctrl) {
+    ctrl.checked = false;
+  }
+}
+
+function get_complement(ugid, unit) {
+  return (unit == unit_groups[ugid][0]) ? unit_groups[ugid][1] : unit_groups[ugid][0];
+}
+
 function toggle(ctrl, id) {
   var e = document.getElementById(id);
   if(e) {
     set_cookie('compare_'+id, ctrl.checked);
-    showhide(id, ctrl.checked);
+    showhide_station(id, ctrl.checked);
   }
 }
 
-function showhide(id, flag) {
+function showhide_station(id, flag) {
   var e = document.getElementById(id);
   if(e) {
     if(flag) {
@@ -141,6 +980,24 @@ function get_cookie(name) {
   border-top: 1px solid #dddddd;
   font-size: 80%;
 }
+.hardware_specs .components {
+  height: 80px;
+}
+.hardware_specs .configuration {
+  height: 80px;
+}
+.hardware_specs .optional_sensors {
+  height: 100px;
+}
+.hardware_specs .sensor_updates {
+  height: 180px;
+}
+.hardware_specs .power {
+  height: 80px;
+}
+.hardware_specs .battery_life {
+  height: 80px;
+}
 .hardware_pictures {
   height: 220px;
 }
@@ -188,7 +1045,7 @@ function get_cookie(name) {
 }
 .control_block {
   float: left;
-  padding-right: 20px;
+  padding-left: 15px;
 }
 .corrections {
   font-size: 60%;
@@ -196,79 +1053,50 @@ function get_cookie(name) {
   color: #000000;
 }
 .C { display: none; }
+.F { display: none; }
 .mbar { display: none; }
+.inHg { display: none; }
 .kph { display: none; }
+.mph { display: none; }
 .mm { display: none; }
+.in { display: none; }
 .m { display: none; }
+.ft { display: none; }
   </style>
 </head>
 
 <body onload="populate_header(); setup();">
 
-<!-- Begin Container -->
 <div id="container">
 
-  <!-- Begin Masthead -->
   <div id="masthead">
     <h1><a href='.'>WeeWX</a></h1>
     <p>Open source software for your weather station</p>
     <div id="navigation">
     </div>
   </div>
-  <!-- End Masthead -->
 
-  <!-- Begin Content -->
   <div id="content">
     <h2>Weather Station Hardware Comparison<br/>
-    <span class='corrections'>Please post corrections at <a href="http://groups.google.com/group/weewx-user">weewx-user</a></span></h2>
+    <span class='corrections'>Please post corrections at
+      <a href="http://groups.google.com/group/weewx-user">weewx-user</a>
+    </span></h2>
 
     <div id='controls'>
       <form>
         <div class='control_block'>
-          <div style='float:left'>
-            <input type='radio' name='temperature'
-                   value='F' id='control.F'
-                   onclick='set_units("F","C")'>F</input><br/>
-            <input type='radio' name='pressure'
-                   value='inHg' id='control.inHg'
-                   onclick='set_units("inHg","mbar")'>inHg</input><br/>
-            <input type='radio' name='speed'
-                   value='mph' id='control.mph'
-                   onclick='set_units("mph","kph")'>mph</input><br/>
-            <input type='radio' name='length'
-                   value='in' id='control.in'
-                   onclick='set_units("in","mm")'>in</input><br/>
-            <input type='radio' name='range'
-                   value='ft' id='control.ft'
-                   onclick='set_units("ft","m")'>ft</input><br/>
-          </div>
-          <div style='float:left'>
-            <input type='radio' name='temperature'
-                   value='C' id='control.C'
-                   onclick='set_units("C","F")'>C</input><br/>
-            <input type='radio' name='pressure'
-                   value='mbar' id='control.mbar'
-                   onclick='set_units("mbar","inHg")'>mbar</input><br/>
-            <input type='radio' name='speed'
-                   value='kph' id='control.kph'
-                   onclick='set_units("kph","mph")'>kph</input><br/>
-            <input type='radio' name='length'
-                   value='mm' id='control.mm'
-                   onclick='set_units("mm","in")'>mm</input><br/>
-            <input type='radio' name='range'
-                   value='m' id='control.m'
-                   onclick='set_units("m","ft")'>m</input><br/>
-          </div>
-        </div>
-
-
-        <div class='control_block' style='padding-left:30px'>
           <input type='checkbox' name='station'
                  value='vpro' id='control.vpro'
                  onclick='toggle(this, "vpro")'>Vantage Pro</input><br/>
           <input type='checkbox' name='station'
                  value='vvue' id='control.vvue'
                  onclick='toggle(this, "vvue")'>Vantage Vue</input><br/>
+          <input type='checkbox' name='station'
+                 value='fo' id='control.fo'
+                 onclick='toggle(this, "fo")'>FO WH/WS</input><br/>
+          <input type='checkbox' name='station'
+                 value='fohp' id='control.fohp'
+                 onclick='toggle(this, "fohp")'>FO HP</input><br/>
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station'
@@ -283,14 +1111,17 @@ function get_cookie(name) {
           <input type='checkbox' name='station'
                  value='wmr300' id='control.wmr300'
                  onclick='toggle(this, "wmr300")'>WMR-300</input><br/>
+          <input type='checkbox' name='station'
+                 value='lw301' id='control.lw301'
+                 onclick='toggle(this, "lw301")'>LW301</input><br/>
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station'
-                 value='fo' id='control.fo'
-                 onclick='toggle(this, "fo")'>FO WH/WS</input><br/>
+                 value='acurite_5in1' id='control.acurite_5in1'
+                 onclick='toggle(this, "acurite_5in1")'>Acurite 5-in-1</input><br/>
           <input type='checkbox' name='station'
-                 value='fohp' id='control.fohp'
-                 onclick='toggle(this, "fohp")'>FO HP</input><br/>
+                 value='acurite_bridge' id='control.acurite_bridge'
+                 onclick='toggle(this, "acurite_bridge")'>Acurite Bridge</input><br/>
           <input type='checkbox' name='station'
                  value='ws23xx' id='control.ws23xx'
                  onclick='toggle(this, "ws23xx")'>WS23xx</input><br/>
@@ -308,9 +1139,6 @@ function get_cookie(name) {
           <input type='checkbox' name='station'
                  value='netatmo' id='control.netatmo'
                  onclick='toggle(this, "netatmo")'>Netatmo</input><br/>
-          <input type='checkbox' name='station'
-                 value='acurite' id='control.acurite'
-                 onclick='toggle(this, "acurite")'>Acurite</input><br/>
           <input type='checkbox' name='station'
                  value='ws1' id='control.ws1'
                  onclick='toggle(this, "ws1")'>WS1</input><br/>
@@ -352,2470 +1180,119 @@ function get_cookie(name) {
                  value='hobo' id='control.hobo'
                  onclick='toggle(this, "hobo")'>Hobo</input><br/>
         </div>
+        <div class='control_block'>
+          <input type='checkbox' name='station'
+                 value='mea' id='control.mea'
+                 onclick='toggle(this, "mea")'>MEA</input><br/>
+          <input type='checkbox' name='station'
+                 value='plexus' id='control.plexus'
+                 onclick='toggle(this, "plexus")'>Plexus</input><br/>
+        </div>
 
-        <div class='control_block' style='padding-left: 50px'>
+        <div class='control_block' style='padding-left: 40px'>
             Specifications:<br/>
             &nbsp;&nbsp;&nbsp;Range<br/>
             &nbsp;&nbsp;&nbsp;Resolution<br/>
             &nbsp;&nbsp;&nbsp;Accuracy<br/>
         </div>
+
+        <div class='control_block' style='padding-left: 40px'>
+          <div style='float:left'>
+            <input type='radio' name='temperature'
+                   value='F' id='control.F'
+                   onclick='set_units("temperature","F")'>F</input><br/>
+            <input type='radio' name='pressure'
+                   value='inHg' id='control.inHg'
+                   onclick='set_units("pressure","inHg")'>inHg</input><br/>
+            <input type='radio' name='speed'
+                   value='mph' id='control.mph'
+                   onclick='set_units("speed","mph")'>mph</input><br/>
+            <input type='radio' name='length'
+                   value='in' id='control.in'
+                   onclick='set_units("length","in")'>in</input><br/>
+            <input type='radio' name='range'
+                   value='ft' id='control.ft'
+                   onclick='set_units("range","ft")'>ft</input><br/>
+          </div>
+          <div style='float:left'>
+            <input type='radio' name='temperature'
+                   value='C' id='control.C'
+                   onclick='set_units("temperature","C")'>C</input><br/>
+            <input type='radio' name='pressure'
+                   value='mbar' id='control.mbar'
+                   onclick='set_units("pressure","mbar")'>mbar</input><br/>
+            <input type='radio' name='speed'
+                   value='kph' id='control.kph'
+                   onclick='set_units("speed","kph")'>kph</input><br/>
+            <input type='radio' name='length'
+                   value='mm' id='control.mm'
+                   onclick='set_units("length","mm")'>mm</input><br/>
+            <input type='radio' name='range'
+                   value='m' id='control.m'
+                   onclick='set_units("range","m")'>m</input><br/>
+          </div>
+        </div>
       </form>
     </div>
 
-    <div style='clear:both'></div>
+    <div id='listing' style='clear:both'>
 
-    <div id='legend' class='hardware'>
-      <div class='hardware_mfr'>
-        Manufacturer<br/>
-        <span style='font-weight:normal'>Family<br/>Introduced</span>
+      <div id='legend' class='hardware'>
+        <div class='hardware_mfr'>
+          Manufacturer<br/>
+          <span style='font-weight:normal'>Family<br/>Introduced</span>
+        </div>
+        <div class='hardware_pictures'></div>
+        <div class='hardware_models' style='font-style:normal'>Models</div>
+        <div class='hardware_specs'>
+          <div> Computer Interface</div>
+          <div class='components'>Components</div>
+          <div class='configuration'>Configuration</div>
+          <div>Console<br/>Temperature<br/>
+            <span class='F'>&deg;F</span>
+            <span class='C'>&deg;C</span>
+          </div>
+          <div>Console<br/>Humidity</div>
+          <div>Temperature<br/>
+            <span class='F'>&deg;F</span>
+            <span class='C'>&deg;C</span>
+          </div>
+          <div>Humidity</div>
+          <div>Pressure<br/>
+            <span class='inHg'>inHg</span>
+            <span class='mbar'>mbar</span>
+          </div>
+          <div>Wind Speed<br/>
+            <span class='mph'>mph</span>
+            <span class='kph'>kph</span>
+          </div>
+          <div>Wind Direction</div>
+          <div>Rain<br/>
+            <span class='in'>in</span>
+            <span class='mm'>mm</span>
+          </div>
+          <div>UV</div>
+          <div>Solar Radiation</div>
+          <div>Luminosity</div>
+          <div>CO<sub>2</sub></div>
+          <div>Sound</div>
+          <div class='optional_sensors'>Optional Sensors</div>
+          <div class='sensor_updates'>Sensor<br/>Updates</div>
+          <div>Wireless Range<br/>
+            <span class='ft'>ft</span>
+            <span class='m'>m</span>
+          </div>
+          <div class='power'>Power</div>
+          <div class='battery_life'>Battery Life</div>
+          <div>Memory</div>
+          <div>Calibration</div>
+          <div>Calculated</div>
+          <div>Features</div>
+          <div>WeeWX Driver</div>
+        </div>
       </div>
-      <div class='hardware_pictures'></div>
-      <div class='hardware_models' style='font-style:normal'>Models</div>
-      <div class='hardware_specs'>
-        <div> Computer Interface</div>
-        <div style='height:80px'>Components</div>
-        <div style='height:80px'>Configuration</div>
-        <div>Console<br/>Temperature<br/>
-          <span class='F'>&deg;F</span>
-          <span class='C'>&deg;C</span>
-        </div>
-        <div>Console<br/>Humidity</div>
-        <div>Temperature<br/>
-          <span class='F'>&deg;F</span>
-          <span class='C'>&deg;C</span>
-        </div>
-        <div>Humidity</div>
-        <div>Pressure<br/>
-          <span class='inHg'>inHg</span>
-          <span class='mbar'>mbar</span>
-        </div>
-        <div>Wind Speed<br/>
-          <span class='mph'>mph</span>
-          <span class='kph'>kph</span>
-        </div>
-        <div>Wind Direction</div>
-        <div>Rain<br/>
-          <span class='in'>in</span>
-          <span class='mm'>mm</span>
-        </div>
-        <div>UV</div>
-        <div>Solar Radiation</div>
-        <div>Luminosity</div>
-        <div>CO<sub>2</sub></div>
-        <div>Sound</div>
-        <div style='height:100px'>Optional Sensors</div>
-        <div style='height:180px'>Sensor<br/>Updates</div>
-        <div>Wireless Range<br/>
-          <span class='ft'>ft</span>
-          <span class='m'>m</span>
-        </div>
-        <div style='height:80px'>Power</div>
-        <div style='height:80px'>Battery Life</div>
-        <div>Memory</div>
-        <div>Calibration</div>
-        <div>Calculated</div>
-        <div>Features</div>
-        <div>WeeWX Driver</div>
-      </div>
+
     </div>
-
-    <div id='vpro' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.davisnet.com/">Davis</a>
-        <br/>Vantage
-        <br/>2004?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/vantagepro2.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/vantagepro2.png" class='hardware_image' /></a>
-          <div class="highslide-caption">Vantage Pro 2</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-          Vantage<br/>
-          Vantage Pro<br/>
-          Vantage Pro 2<br/>
-          Vantage Pro 2 6152<br/>
-          Vantage Pro 2 6153<br/>
-          Vantage Pro 2+ 6162<br/>
-          Vantage Pro 2+ 6163<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>
-          Serial<br/>
-          USB<br/>
-          Ethernet<br/>
-        </div>
-        <div style='height:80px'>
-          Console<br/>
-          ISS (TH, Rain, UV)<br/>
-          Anemometer<br/>
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/vpro-wired.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/vpro-wired.png" class='cfg_image'/></a>
-          <div class="highslide-caption">Vantage Pro Wired</div>
-	  <a href="cfg/vpro-wireless.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/vpro-wireless.png" class='cfg_image'/></a>
-          <div class="highslide-caption">Vantage Pro Wireless</div>
-        </div>
-        <div>
-          <span class='F'>32-140 &deg;F<br/>0.1 &deg;F<br/>1 &deg;F</span>
-          <span class='C'>0-60 &deg;C<br/>0.06 &deg;C<br/>0.6 &deg;C</span>
-        </div>
-        <div>0-100%<br/>1%<br/>3%</div>
-        <div>
-          <span class='F'>-40-150 &deg;F<br/>0.1 &deg;F<br/>1 &deg;F</span>
-          <span class='C'>-40-66 &deg;C<br/>0.06 &deg;C<br/>0.6 &deg;C</span>
-        </div>
-        <div>0-100%<br/>1%<br/>3%</div>
-        <div>
-          <span class='inHg'>16-32.5 inHg<br/>0.01 inHg<br/>0.03 inHg</span>
-          <span class='mbar'>540-1100 mbar<br/>0.34 mbar<br/>1 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>2-150 mph<br/>1 mph<br/>2% or 5%</span>
-          <span class='kph'>3-220 kph<br/>1.5 kph<br/>2% or 5%</span>
-        </div>
-        <div>0-360&deg;<br/>1&deg;<br/>3&deg;</div>
-        <div>
-          <span class='in'>0-199.99 in<br/>0.01 in<br/>4%</span>
-          <span class='mm'>0-5080 mm<br/>0.254 mm<br/>4%</span>
-        </div>
-        <div>0-16<br/>0.1<br/>5%</div>
-        <div>0-1800 W/m<sup>2</sup><br/>1 W/m<sup>2</sup><br/>5%</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Up to 6 remote:<br/>
-          Soil Moisture/Temperature<br/>Leaf Wetness<br/>
-          Water Temperature<br/>Temperature<br/>Humidity<br/>
-        </div>
-        <div style='height:180px'>2.5 s</div>
-        <div><span class='ft'>1000 ft</span><span class='m'>300 m</span></div>
-        <div style='height:80px'>Console: 3 C or AC<br/>ISS: solar</div>
-        <div style='height:80px'>9 mo (wireless)<br/>1 mo (wired)</div>
-        <div>2064 records</div>
-        <div>altitude<br/>latitude<br/>longitude<br/>time zone</div>
-        <div>sunrise<br/>sunset<br/>barometer</div>
-        <div>
-          separate data logger required to connect console to computer<br/>
-          optional rain bucket heater</div>
-        <div>Vantage</div>
-      </div>
-    </div>
-
-    <div id='vvue' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.davisnet.com/">Davis</a>
-        <br/>Vantage Vue
-        <br/>2006?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-	  <a href="hardware/vantagevue.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/vantagevue.png" class='hardware_image'/></a>
-          <div class="highslide-caption">VantageVue</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-          Vantage Vue<br/>
-          Vantage Vue 6250<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>
-          USB<br/>
-        </div>
-        <div style='height:80px'>
-          Console<br/>
-          ISS (TH, Rain, UV, Anemometer)<br/>
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/vvue.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/vvue.png" class='cfg_image'/></a>
-          <div class="highslide-caption">Vantage Vue</div>
-        </div>
-        <div>
-          <span class='F'>32-140 &deg;F<br/>0.1 &deg;F<br/>1 &deg;F</span>
-          <span class='C'>0-60 &deg;C<br/>0.06 &deg;C<br/>0.6 &deg;C</span>
-        </div>
-        <div>0-100%<br/>1%<br/>3%</div>
-        <div>
-          <span class='F'>-40-150 &deg;F<br/>0.1 &deg;F<br/>1 &deg;F</span>
-          <span class='C'>-40-66 &deg;C<br/>0.06 &deg;C<br/>0.6 &deg;C</span>
-        </div>
-        <div>0-100%<br/>1%<br/>3%</div>
-        <div>
-          <span class='inHg'>16-32.5 inHg<br/>0.01 inHg<br/>0.03 inHg</span>
-          <span class='mbar'>540-1100 mbar<br/>0.34 mbar<br/>1 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>2-150 mph<br/>1 mph<br/>2% or 5%</span>
-          <span class='kph'>3-220 kph<br/>1.5 kph<br/>2% or 5%</span>
-        </div>
-        <div>0-360&deg;<br/>1&deg;<br/>3&deg;</div>
-        <div>
-          <span class='in'>0-199.99 in<br/>0.01 in<br/>4%</span>
-          <span class='mm'>0-5080 mm<br/>0.254 mm<br/>4%</span>
-        </div>
-        <div>0-16<br/>0.1<br/>5%</div>
-        <div>0-1800 W/m<sup>2</sup><br/>1 W/m<sup>2</sup><br/>5%</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'></div>
-        <div style='height:180px'>2.5 s</div>
-        <div><span class='ft'>1000 ft</span><span class='m'>300 m</span></div>
-        <div style='height:80px'>Console: 3 C or AC<br/>ISS: solar</div>
-        <div style='height:80px'>9 mo (wireless)<br/>1 mo (wired)</div>
-        <div>1400 records</div>
-        <div>altitude<br/>latitude<br/>longitude<br/>time zone</div>
-        <div>sunrise<br/>sunset<br/>barometer</div>
-        <div>
-          separate data logger required to connect console to computer</div>
-        <div>Vantage</div>
-      </div>
-    </div>
-
-    <div id='wmr9x8' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://oregonscientific.com/">Oregon Scientific</a>
-        <br/>WMR-9x8
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/wmr918.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wmr918.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WMR918</div>
-        </div>
-        <div>
-          <a href="hardware/wmr928n.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wmr928n.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WMR928N</div>
-        </div>
-        <div>
-          <a href="hardware/wmr968.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wmr968.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WMR968</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        WMR918<br/>
-        WMR928N<br/>
-        WMR968<br/>
-        Huger WM918<br/>
-        Radio Shack 63-1016<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>Serial</div>
-        <div style='height:80px'>
-          Console<br/>TH<br/>Rain<br/>Anemometer
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/wmr9x8.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/wmr9x8.png" class='cfg_image'/></a>
-          <div class="highslide-caption">WMR9x8</div>
-        </div>
-        <div>
-          <span class='F'>23-122 &deg;F<br/>0.2 &deg;F</span>
-          <span class='C'>-5-50 &deg;C<br/>0.1 &deg;C</span>
-        </div>
-        <div>2-98%<br/>1%</div>
-        <div>
-          <span class='F'>-4-140 &deg;F<br/>0.2 &deg;F</span>
-          <span class='C'>-20-60 &deg;C<br/>0.1 &deg;C</span>
-        </div>
-        <div>2-98%<br/>1%</div>
-        <div>
-          <span class='inHg'>23.48-31.01 inHg<br/>0.03 inHg</span>
-          <span class='mbar'>795-1050 mbar<br/>1 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-125.3 mph<br/>0.4 mph</span>
-          <span class='kph'>0-184 kph<br/>0.59 kph</span>
-        </div>
-        <div>0-359&deg;<br/>1&deg;</div>
-        <div>
-          <span class='in'>0-394 in<br/>0.04 in</span>
-          <span class='mm'>0-9999 mm<br/>1 mm</span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Up to 7 remote instruments<br/>
-          Up to 3 remote TH sensors<br/>
-        </div>
-        <div style='height:180px'></div>
-        <div><span class='ft'>330 ft</span><span class='m'>100 m</span></div>
-        <div style='height:80px'>
-          Console: AC<br/>
-          TH: solar<br/>
-          Rain: solar<br/>
-          Wind: solar<br/>
-        </div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>WMR9x8</div>
-      </div>
-    </div>
-
-    <div id='wmr100' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://oregonscientific.com/">Oregon Scientific</a>
-        <br/>WMR-100
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/wmr88a.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wmr88a.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WMR88</div>
-        </div>
-        <div>
-          <a href="hardware/wmr100.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wmr100.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WMR100</div>
-        </div>
-        <div>
-          <a href="hardware/wmr180.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wmr180.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WMR180</div>
-        </div>
-        <div>
-          <a href="hardware/wmrs200.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wmrs200.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WMRS200</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        WMR88<br/>
-        WMR100<br/>
-        WMR100N<br/>
-        WMR180<br/>
-        WMRS200<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>USB</div>
-        <div style='height:80px'>
-          Console<br/>TH<br/>Rain<br/>Anemometer<br/>UV
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/wmr100.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/wmr100.png" class='cfg_image'/></a>
-          <div class="highslide-caption">WMR100</div>
-        </div>
-        <div>
-          <span class='F'>-4-148 &deg;F<br/>0.2 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>-20-53 &deg;C<br/>0.1 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>2-98%<br/>1%<br/>5-7%</div>
-        <div>
-          <span class='F'>-50-158 &deg;F<br/>0.2 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>-46-79 &deg;C<br/>0.1 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>2-98%<br/>1%<br/>5-7%</div>
-        <div>
-          <span class='inHg'>20.67-31.01 inHg<br/>0.01 inHg<br/>0.29 inHg</span>
-          <span class='mbar'>700-1050 mbar<br/>0.34 mbar<br/>9.82 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>2-125 mph<br/>1 mph<br/>10%</span>
-          <span class='kph'>3-183 kph<br/>1.5 kph<br/>10%</span>
-        </div>
-        <div>0-360&deg;<br/>22.5&deg;<br/>10%</div>
-        <div>
-          <span class='in'>0-393.7 in<br/>0.04 in<br/>5%</span>
-          <span class='mm'>0-9999.99 mm<br/>1 mm<br/>5%</span>
-        </div>
-        <div>option</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Up to 10 remote:<br/>TH<br/>Floating pool/spa
-        </div>
-        <div style='height:180px'>Wind: 14 s<br/>Other Sensors: 60 s</div>
-        <div><span class='ft'>300 ft</span><span class='m'>100 m</span></div>
-        <div style='height:80px'>
-          Console: 4 AA or AC<br/>
-          TH: 2 AAA<br/>
-          Rain: 2 AA<br/>
-          Wind: 2 AA<br/>
-        </div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>WMR100</div>
-      </div>
-    </div>
-
-    <div id='wmr200' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://oregonscientific.com/">Oregon Scientific</a>
-        <br/>WMR-200
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/wmr200.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wmr200.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WMR200</div>
-        </div>
-        <div>
-          <a href="hardware/wmr200a.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wmr200a.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WMR200A</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        WMR200<br/>
-        WMR200A<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>USB</div>
-        <div style='height:80px'>
-          Console<br/>TH<br/>Rain<br/>Anemometer<br/>UV
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/wmr100.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/wmr100.png" class='cfg_image'/></a>
-          <div class="highslide-caption">WMR200</div>
-        </div>
-        <div>
-          <span class='F'>-4-148 &deg;F<br/>0.2 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>-20-53 &deg;C<br/>0.1 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>2-98%<br/>1%<br/>5-7%</div>
-        <div>
-          <span class='F'>-50-158 &deg;F<br/>0.2 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>-46-79 &deg;C<br/>0.1 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>2-98%<br/>1%<br/>5-7%</div>
-        <div>
-          <span class='inHg'>20.67-31.01 inHg<br/>0.01 inHg<br/>0.29 inHg</span>
-          <span class='mbar'>700-1050 mbar<br/>0.34 mbar<br/>9.82 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>2-125 mph<br/>1 mph<br/>10%</span>
-          <span class='kph'>3-183 kph<br/>1.5 mph<br/>10%</span>
-        </div>
-        <div>0-360&deg;<br/>22.5&deg;<br/>10%</div>
-        <div>
-          <span class='in'>0-393.7 in<br/>0.04 in<br/>5%</span>
-          <span class='mm'>0-9999.99 mm<br/>1 mm<br/>5%</span>
-        </div>
-        <div>option</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Up to 10 remote:<br/>TH<br/>Floating pool/spa
-        </div>
-        <div style='height:180px'>Wind: 14 s<br/>Other sensors: 60 s</div>
-        <div><span class='ft'>300 ft</span><span class='m'>100 m</span></div>
-        <div style='height:80px'>
-          Console: 4 AA or AC<br/>
-          TH: 2 AAA<br/>
-          Rain: 2 AA<br/>
-          Wind: 2 AA<br/>
-        </div>
-        <div style='height:80px'></div>
-        <div>41,760 records</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>WMR200</div>
-      </div>
-    </div>
-
-    <div id='wmr300' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://oregonscientific.com/">Oregon Scientific</a>
-        <br/>WMR-300
-        <br/>2012
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/wmr300.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wmr300.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WMR300</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        WMR300<br/>
-        WMR300A<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>USB</div>
-        <div style='height:80px'>
-          Console<br/>Cluster (TH, Rain, UV)<br/>Anemometer
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/wmr300.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/wmr300.png" class='cfg_image'/></a>
-          <div class="highslide-caption">WMR300</div>
-        </div>
-        <div>
-          <span class='F'>0-140 &deg;F<br/>0.2 &deg;F<br/>1 &deg;F</span>
-          <span class='C'>0-60 &deg;C<br/>0.1 &deg;C<br/>0.5 &deg;C</span>
-        </div>
-        <div>0-99%<br/>1%<br/>3%</div>
-        <div>
-          <span class='F'>-40-149 &deg;F<br/>0.2 &deg;F<br/>1 &deg;F</span>
-          <span class='C'>-40-65 &deg;C<br/>0.1 &deg;C<br/>0.5 &deg;C</span>
-        </div>
-        <div>0-99%<br/>1%<br/>3%</div>
-        <div>
-          <span class='inHg'>16-32.5 inHg<br/>0.003 inHg<br/>0.03 inHg</span>
-          <span class='mbar'>540-1100 mbar<br/>0.1 mbar<br/>1 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-179 mph<br/>0.2 mph<br/>1 mph to 5% (over 40 mph)</span>
-          <span class='kph'>0-80 m/s<br/>0.1 m/s<br/>0.9 m/s to 5% (over 18 m/s)</span>
-        </div>
-        <div>0-360&deg;<br/>1&deg;<br/>3&deg;</div>
-        <div>
-          <span class='in'>0-199.99 in<br/>0.01 in<br/>4%</span>
-          <span class='mm'>0-5080 mm<br/>0.254 mm<br/>4%</span>
-        </div>
-        <div>option</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Up to 8 remote TH
-        </div>
-        <div style='height:180px'>
-          TH: 10-12 s<br/>
-          Rain: 20-24 s<br/>
-          Wind: 2.5-3 s<br/>
-        </div>
-        <div><span class='ft'>1000 ft</span><span class='m'>300 m</span></div>
-        <div style='height:80px'>
-          Console: 3 C or AC<br/>
-          Transmitter: 1 AA<br/>
-        </div>
-        <div style='height:80px'>
-        </div>
-        <div>32,000 records</div>
-        <div>altitude<br/>latitude<br/>longitude</div>
-        <div></div>
-        <div>RCC<br/>touch screen</div>
-        <div>WMR300</div>
-      </div>
-    </div>
-
-    <div id='fo' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.foshk.com/">Fine Offset</a>
-        <br/>WS/WH 10xx, 20xx, 30xx
-        <br/>2008
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/ws1080.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws1080.png" class='hardware_image'/></a>
-          <div class="highslide-caption">1080/1081</div>
-        </div>
-        <div>
-          <a href="hardware/ws1090.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws1090.png" class='hardware_image'/></a>
-          <div class="highslide-caption">1090/1091</div>
-        </div>
-        <div>
-          <a href="hardware/ws2080.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws2080.png" class='hardware_image'/></a>
-          <div class="highslide-caption">2080/2081</div>
-        </div>
-        <div>
-          <a href="hardware/ws2090.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws2090.png" class='hardware_image'/></a>
-          <div class="highslide-caption">2090</div>
-        </div>
-        <div>
-          <a href="hardware/wh3080.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wh3080.png" class='hardware_image'/></a>
-          <div class="highslide-caption">3080/3081</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-<!--        WS1080/WH1080/WH1081/WH1090<br/> -->
-<!--        WA2080/WA2081/WH2080/WH2081<br/> -->
-<!--        WH3080/WH3081<br/> -->
-        Aercus WS2083<br/>
-        Aercus WS3083<br/>
-        Ambient Weather WS1090<br/>
-        Ambient Weather WS2080<br/>
-        Ambient Weather WS2080A<br/>
-        Ambient Weather WS2090<br/>
-        Elecsa 6975<br/>
-        Elecsa 6976<br/>
-        Maplin N96GY<br/>
-        Maplin N96FY<br/>
-        National Geographic 265<br/>
-        Sinometer WS1080/WS1081<br/>
-        Sinometer WS3100/WS3101<br/>
-        Tycon TP1080WC<br/>
-        Watson W-8681<br/>
-        Watson WX-2008<br/>
-        Velleman WS3080<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>USB</div>
-        <div style='height:80px'>
-          Console<br/>TH<br/>Rain<br/>Anemometer<br/>UV (30xx)
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/fousb.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/fousb.png" class='cfg_image'/></a>
-          <div class="highslide-caption">WH/WS 10xx/20xx/30xx</div>
-        </div>
-        <div>
-          <span class='F'>32-140 &deg;F<br/>0.1 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>0-60 &deg;C<br/>0.05 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>10-99%<br/>1%<br/>5%</div>
-        <div>
-          <span class='F'>-40-149 &deg;F<br/>0.1 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>-40-65 &deg;C<br/>0.05 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>10-99%<br/>1%<br/>5%</div>
-        <div>
-          <span class='inHg'>8.85-32.50 inHg<br/>0.01 inHg<br/>0.08 inHg</span>
-          <span class='mbar'>300-1100 mbar<br/>0.34 mbar<br/>2.7 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-112 mph<br/>0.1 mph<br/>2.2 mph or 10%</span>
-          <span class='kph'>0-164 kph<br/>0.15 kph<br/>3.2 kph or 10%</span>
-        </div>
-        <div>0-360&deg;<br/>22.5&deg;<br/>22.5&deg;<br/></div>
-        <div>
-          <span class='in'>0-394 in<br/>0.01 in<br/>10%<br/></span>
-          <span class='mm'>0-9999 mm<br/>0.3 mm<br/>10%<br/></span>
-        </div>
-        <div>30xx only</div>
-        <div></div>
-        <div>30xx only</div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'></div>
-        <div style='height:180px'>48 s<br/>60 s (30xx UV sensor)</div>
-        <div><span class='ft'>300 ft</span><span class='m'>100 m</span></div>
-        <div style='height:80px'>Console: 2 AA or USB<br/>TH: 2 AA</div>
-        <div style='height:80px'>1 yr</div>
-        <div>4080 records<br/>3264 records (30xx)</div>
-        <div>
-          time zone<br/>
-          pressure offset<br/>
-          temperature (2080A)<br/>
-          humidity (2080A)<br/>
-        </div>
-        <div></div>
-        <div>WWVB<br/>touch screen (10xx)<br/>multiple consoles</div>
-        <div>FineOffsetUSB</div>
-      </div>
-    </div>
-
-    <div id='fohp' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.foshk.com/">Fine Offset</a>
-        <br/>HP 100x
-        <br/>2014
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/hp1000.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/hp1000.png" class='hardware_image'/></a>
-          <div class="highslide-caption">1000/1003</div>
-        </div>
-        <div>
-          <a href="hardware/ws1400ip.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws1400ip.png" class='hardware_image'/></a>
-          <div class="highslide-caption">1000/1003</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        HP1000<br/>
-        HP1003<br/>
-        Ambient Weather WS-1001-WiFi<br/>
-        Ambient Weather WS-1200<br/>
-        Ambient Weather WS-1200-IP<br/>
-        Ambient Weather WS-1400-IP<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>WiFi</div>
-        <div style='height:80px'>
-          Console<br/>
-          Cluster (TH, Rain, Anemometer)<br/>
-          Indoor Sensor<br/>
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/fohp-console.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/fohp-console.png" class='cfg_image'/></a>
-          <div class="highslide-caption">HP 100x</div>
-	  <a href="cfg/fohp-bridge.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/fohp-bridge.png" class='cfg_image'/></a>
-          <div class="highslide-caption">HP 100x</div>
-        </div>
-        <div>
-          <span class='F'>-22-149 &deg;F<br/>0.1 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>-30-65 &deg;C<br/>0.05 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>1-99%<br/>1%<br/>5%</div>
-        <div>
-          <span class='F'>-22-149 &deg;F<br/>0.1 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>-30-65 &deg;C<br/>0.05 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>1-99%<br/>1%<br/>5%</div>
-        <div>
-          <span class='inHg'>8.85-32.50 inHg<br/>0.01 inHg<br/>0.08 inHg</span>
-          <span class='mbar'>300-1100 mbar<br/>0.34 mbar<br/>2.7 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-100 mph<br/>0.1 mph<br/>2.2 mph or 10%</span>
-          <span class='kph'>0-160 kph<br/>0.15 kph<br/>3.2 kph or 10%</span>
-        </div>
-        <div>0-360&deg;<br/>22.5&deg;<br/>22.5&deg;<br/></div>
-        <div>
-          <span class='in'>0-394 in<br/>0.01 in<br/>10%<br/></span>
-          <span class='mm'>0-9999 mm<br/>0.3 mm<br/>10%<br/></span>
-        </div>
-        <div></div>
-        <div></div>
-        <div>0-400k Lux</div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'></div>
-        <div style='height:180px'></div>
-        <div><span class='ft'>330 ft</span><span class='m'>100 m</span></div>
-        <div style='height:80px'>
-          Base: 5V DC<br/>Sensors: 3 AA<br/>TH: 2 AAA
-        </div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>SD card<br/></div>
-        <div></div>
-      </div>
-    </div>
-
-    <div id='ws23xx' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.lacrossetechnology.com/">LaCrosse</a>
-        <br/>WS-23XX
-        <br/>2000?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/ws2308.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws2308.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WS-2308</div>
-        </div>
-        <div>
-          <a href="hardware/ws2310.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws2310.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WS-2310</div>
-        </div>
-        <div>
-          <a href="hardware/ws2317.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws2317.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WS-2317</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        WS2308<br/>
-        WS2310<br/>
-        WS2315<br/>
-        WS2317<br/>
-        TFA Matrix<br/>
-        TechnoLine 2350<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>Serial</div>
-        <div style='height:80px'>
-          Console<br/>TH<br/>Rain<br/>Anemometer
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/ws23xx-wired.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/ws23xx-wired.png" class='cfg_image'/></a>
-          <div class="highslide-caption">WS23xx Wired</div>
-	  <a href="cfg/ws23xx-wireless.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/ws23xx-wireless.png" class='cfg_image'/></a>
-          <div class="highslide-caption">WS23xx Wireless</div>
-        </div>
-        <div>
-          <span class='F'>14.2-139.8 &deg;F<br/>0.2 &deg;F</span>
-          <span class='C'>-9-60 &deg;C<br/>0.1 &deg;C</span>
-        </div>
-        <div>1-99%<br/>1%</div>
-        <div>
-          <span class='F'>-21.8-157.8 &deg;F<br/>0.2 &deg;F</span>
-          <span class='C'>-30-70 &deg;C<br/>0.1 &deg;C</span>
-        </div>
-        <div>1-99%</div>
-        <div>
-          <span class='inHg'>8.86-32.45 inHg</span>
-          <span class='mbar'>300-1099 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-111.8 mph<br/>0.1 mph</span>
-          <span class='kph'>0-164 kph<br/>0.15 kph</span>
-        </div>
-        <div>0-360&deg;<br/>22.5&deg;</div>
-        <div>
-          <span class='in'>0-98.42 in<br/>0.02 in</span>
-          <span class='mm'>0-2500 mm<br/>0.518 mm</span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'></div>
-        <div style='height:180px'>
-          Wind (wireless):<br/>
-          32 s when &gt; 22.36 mph<br/>
-          128 s when &lt; 22.36 mph<br/>
-          10 minutes after 5 failed attempts<br/>
-          Wind (wired): 8 s<br/>
-          Pressure: 15 s<br/>
-          Temperature: 15 s<br/>
-          Humidity: 20 s<br/>
-        </div>
-        <div><span class='ft'>330 ft</span><span class='m'>100 m</span></div>
-        <div style='height:80px'>
-          Console: 3 AA or AC<br/>
-          TH: 2 AA or AC<br/>
-        </div>
-        <div style='height:80px'>
-          12 mo (wireless)<br/>
-          6 mo (wired)<br/>
-        </div>
-        <div>175 records</div>
-        <div></div>
-        <div>wind chill<br/>dewpoint</div>
-        <div>WWVB</div>
-        <div>WS23xx</div>
-      </div>
-    </div>
-
-    <div id='ws28xx' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.lacrossetechnology.com/">LaCrosse</a>
-        <br/>WS-28XX
-        <br/>2007
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/ws2810.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws2810.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WS-2810</div>
-        </div>
-        <div>
-          <a href="hardware/ws2812.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws2812.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WS-2812</div>
-        </div>
-        <div>
-          <a href="hardware/c86234.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/c86234.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WS-2814/C86234</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        WS2810<br/>
-        WS2811<br/>
-        WS2812<br/>
-        WS2814<br/>
-        C86234<br/>
-        TFA Primus<br/>
-        TFA Opus<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>USB</div>
-        <div style='height:80px'>
-          Transceiver<br/>
-          Console<br/>
-          TH<br/>
-          Rain<br/>
-          Anemometer<br/>
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/ws28xx.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/ws28xx.png" class='cfg_image'/></a>
-          <div class="highslide-caption">WS28xx</div>
-        </div>
-        <div>
-          <span class='F'>41-104 &deg;F</span>
-          <span class='C'>5-40 &deg;C</span>
-        </div>
-        <div>3-99%</div>
-        <div>
-          <span class='F'>-40-139.8 &deg;F</span>
-          <span class='C'>-40-60 &deg;C</span>
-        </div>
-        <div>3-99%</div>
-        <div>
-          <span class='inHg'>27.10-31.90 inHg</span>
-          <span class='mbar'>918-1080 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-111.8 mph<br/>0.22 mph</span>
-          <span class='kph'>0-164 kph<br/>0.32 kph</span>
-        </div>
-        <div>0-360&deg;<br/>22.5&deg;</div>
-        <div>
-          <span class='in'>0-394 in<br/>0.01 in</span>
-          <span class='mm'>0-9999 mm<br/>0.26 mm</span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'></div>
-        <div style='height:180px'>
-          Temperature: 13 s<br/>
-          Humidity: 13 s<br/>
-          Pressure: 15 s<br/>
-          Wind: 17 s<br/>
-          Rain: 19 s<br/>
-        </div>
-        <div>
-          <span class='ft'>Console: 50 ft<br/>TH: 200 ft<br/>
-            Wind: 200 ft<br/>Rain: 200 ft</span>
-          <span class='m'>Console: 15 m<br/>TH: 60 m<br/>
-            Wind: 60 m<br/>Rain: 60 m</span>
-        </div>
-        <div style='height:80px'>
-          Console: 2 C<br/>
-          TH: 2 C<br/>
-          Rain: 2 AA<br/>
-          Wind: solar<br/>
-        </div>
-        <div style='height:80px'>
-          Console: 9 mo<br/>
-          TH: 1 yr<br/>
-          Rain: 1 yr<br/>
-        </div>
-        <div>1797 records</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>WS28xx</div>
-      </div>
-    </div>
-    
-    <div id='hideki' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.hidekielectronics.com/">Hideki</a>
-        <br/>TE923
-        <br/>2006
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/dv928.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/dv928.png" class='hardware_image'/></a>
-          <div class="highslide-caption">DV928</div>
-        </div>
-        <div>
-          <a href="hardware/te923.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/te923.png" class='hardware_image'/></a>
-          <div class="highslide-caption">TE923</div>
-        </div>
-        <div>
-          <a href="hardware/te831.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/te831.png" class='hardware_image'/></a>
-          <div class="highslide-caption">TE831</div>
-        </div>
-        <div>
-          <a href="hardware/ws1640.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws1640.png" class='hardware_image'/></a>
-          <div class="highslide-caption">TE838</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        Cresta WRX815<br/>
-        Cresta PWS720<br/>
-        Honeywell TE831W-2<br/>
-        Honeywell TE821W<br/>
-        Honeywell TE923W<br/>
-        Honeywell TN924W<br/>
-        IROX Pro X<br/>
-        Lacrosse WS1640<br/>
-        Meade TE923W<br/>
-        Meade TE923W-M<br/>
-        Meade TE924W<br/>
-        Mebus TE923<br/>
-        TFA Nexus<br/>
-        TFA Siinus<br/>
-        Ventus W831<br/>
-        Ventus W928<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>USB</div>
-        <div style='height:80px'>
-          Console<br/>
-          TH<br/>
-          Rain<br/>
-          Anemometer<br/>
-          UV<br/>
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/hideki.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/hideki.png" class='cfg_image'/></a>
-          <div class="highslide-caption">TE923/TE924</div>
-        </div>
-        <div>
-          <span class='F'>14.2-140 &deg;F<br/>0.2 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>-10-60 &deg;C<br/>0.1 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>0-99%<br/>1%<br/>5%</div>
-        <div>
-          <span class='F'>-40-176 &deg;F<br/>0.2 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>-40-80 &deg;C<br/>0.1 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>0-99%<br/>1%<br/>5%</div>
-        <div>
-          <span class='inHg'>14.75-32.44 inHg<br/>0.003 inHg<br/>0.015 inHg</span>
-          <span class='mbar'>500-1099 inHg<br/>0.1 mbar<br/>0.5 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-199.9 mph<br/>0.1 mph<br/>2 mph</span>
-          <span class='kph'>0-293 kph<br/>0.15 kph<br/>3 kph</span>
-        </div>
-        <div>0-360&deg;<br/>22.5&deg;<br/>11.25&deg;</div>
-        <div>
-          <span class='in'>0-787 in<br/>0.026 in<br/>5%</span>
-          <span class='mm'>0-19,999 mm<br/>0.6578 mm<br/>5%</span>
-        </div>
-        <div>option</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Up to 5 remote TH sensors<br/>UV
-        </div>
-        <div style='height:180px'>
-          Console<br/>
-          Pressure: 20 m<br/>
-          Temperature: 10 s<br/>
-          <br/>
-          Remote<br/>
-          Temperature: 47 s<br/>
-          Humidity: 47 s<br/>
-          Rain: 183 s<br/>
-          Wind Speed Display: 33 s<br/>
-          Wind Speed Sampling: 11 s<br/>
-          Wind Direction: 33 s<br/>
-        </div>
-        <div>
-          <span class='ft'>TH: 330 ft<br/>Rain: 100 ft<br/>
-            Wind: 100 ft<br/>UV: 330 ft</span>
-          <span class='m'>TH: 100 m<br/>Rain: 30 m<br/>
-            Wind: 30 m<br/>UV: 100 m</span>
-        </div>
-        <div style='height:80px'>
-          Console: 2 AA or AC<br/>
-          TH: 2 AA<br/>
-          Rain: 2 AA<br/>
-          Wind: 2 AA<br/>
-          UV: 2 AA<br/>
-        </div>
-        <div style='height:80px'>
-          Console: 2 mo<br/>
-          TH: 12 mo<br/>
-          UV: 2 yr<br/>
-          Wind: 2 yr<br/>
-          Rain: 2 yr<br/>
-        </div>
-        <div>200 records<br/>3000 records (TE831)</div>
-        <div>altitude<br/>latitude<br/>longitude</div>
-        <div>wind chill<br/>sunrise<br/>sunset<br/>barometer</div>
-        <div>WWVB<br/>remote control</div>
-        <div>TE923</div>
-      </div>
-    </div>
-
-    
-    <div id='kl' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.netatmo.com/">KlimaLogg</a>
-        <br/>TFA
-        <br/>2008
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/klpro.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/klpro.png" class='hardware_image'/></a>
-          <div class="highslide-caption">KlimaLogg Pro</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        KlimaLogg Pro<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>USB</div>
-        <div style='height:80px'>Transceiver<br/>Console<br/>TH</div>
-        <div style='height:80px'>
-	  <a href="cfg/kl.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/kl.png" class='cfg_image'/></a>
-          <div class="highslide-caption">KlimaLogg</div>
-        </div>
-        <div>
-          <span class='F'>32-112 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>0-50 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>1-99%<br/>3%</div>
-        <div>
-          <span class='F'>32-112 &deg;F<br/>2 &deg;F</span>
-          <span class='C'>0-50 &deg;C<br/>1 &deg;C</span>
-        </div>
-        <div>1-99%<br/>3%</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>Up to 8 TH modules</div>
-        <div style='height:180px'>5 minutes</div>
-        <div>
-          <span class='ft'>330 ft</span>
-          <span class='m'>100 m</span>
-        </div>
-        <div style='height:80px'>Base: 3 AA<br/>TH: 2 AA</div>
-        <div style='height:80px'>1 yr</div>
-        <div>50,000 records</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>KlimaLogg</div>
-      </div>
-    </div>
-
-    
-    <div id='netatmo' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.netatmo.com/">netatmo</a>
-        <br/>netatmo
-        <br/>2012
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/netatmo.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/netatmo.png" class='hardware_image'/></a>
-          <div class="highslide-caption">netatmo</div>
-        </div>
-        <div>
-          <a href="hardware/netatmo-rain-bucket.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/netatmo-rain-bucket.png" class='hardware_image'/></a>
-          <div class="highslide-caption">netatmo rain bucket</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        netatmo<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>WiFi</div>
-        <div style='height:80px'>Base Station<br/>TH</div>
-        <div style='height:80px'>
-	  <a href="cfg/netatmo.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/netatmo.png" class='cfg_image'/></a>
-          <div class="highslide-caption">NetAtmo</div>
-        </div>
-        <div>
-          <span class='F'>32-112 &deg;F<br/>0.54 &deg;F</span>
-          <span class='C'>0-50 &deg;C<br/>0.3 &deg;C</span>
-        </div>
-        <div>0-100%<br/>3%</div>
-        <div>
-          <span class='F'>-40-150 &deg;F<br/>0.54 &deg;F</span>
-          <span class='C'>-40-65 &deg;C<br/>0.3 &deg;C</span>
-        </div>
-        <div>0-100%<br/>3%</div>
-        <div>
-          <span class='inHg'>7.7-37.2 inHg<br/>0.03 inHg</span>
-          <span class='mbar'>260-1160 mbar<br/>1 mbar</span>
-        </div>
-        <div></div>
-        <div></div>
-        <div>
-          <span class='in'><br/>0.01 in<br/></span>
-          <span class='mm'><br/>0.254 mm<br/></span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>0-5000 ppm<br/>50 ppm or 5%</div>
-        <div>35-110 dB</div>
-        <div style='height:100px'>Additional TH modules<br/>Rain bucket</div>
-        <div style='height:180px'>5 minutes</div>
-        <div>
-          <span class='ft'>330 ft</span>
-          <span class='m'>100 m</span>
-        </div>
-        <div style='height:80px'>Base: USB<br/>TH: 2 AAA</div>
-        <div style='height:80px'>1 yr</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    </div>
-
-    
-    <div id='acurite' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.acurite.com/">Acurite</a>
-        <br/>5-in-1
-        <br/>2011
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/01035.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/01035.png" class='hardware_image'/></a>
-          <div class="highslide-caption">01035</div>
-        </div>
-        <div>
-          <a href="hardware/01036.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/01036.png" class='hardware_image'/></a>
-          <div class="highslide-caption">01036</div>
-        </div>
-        <div>
-          <a href="hardware/01525.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/01525.png" class='hardware_image'/></a>
-          <div class="highslide-caption">01525</div>
-        </div>
-        <div>
-          <a href="hardware/02032c.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/02032c.png" class='hardware_image'/></a>
-          <div class="highslide-caption">02032</div>
-        </div>
-        <div>
-          <a href="hardware/02064c.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/02064c.png" class='hardware_image'/></a>
-          <div class="highslide-caption">02064</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        01025<br/>
-        01025RX<br/>
-        01035<br/>
-        01036<br/>
-        01036CA1<br/>
-        01050<br/>
-        01057<br/>
-        01525<br/>
-        02032<br/>
-        02032C<br/>
-        02064C<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>USB</div>
-        <div style='height:80px'>
-          Console<br/>
-          5-in-1 (TH, Rain, Anemometer)
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/acurite.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/acurite.png" class='cfg_image'/></a>
-          <div class="highslide-caption">Acurite 5-in-1</div>
-        </div>
-        <div>
-          <span class='F'>32-122 &deg;F<br/><br/>4 &deg;F</span>
-          <span class='C'>0-50 &deg;C</span>
-        </div>
-        <div>16-98%<br/><br/>5%</div>
-        <div>
-          <span class='F'>-40-122 &deg;F<br/><br/>4 &deg;F</span>
-          <span class='C'>-40-158 &deg;C</span>
-        </div>
-        <div>1-99%<br/><br/>5%</div>
-        <div>
-          <span class='inHg'></span>
-          <span class='mbar'></span>
-        </div>
-        <div>
-          <span class='mph'>0-99 mph<br/><br/>5 mph</span>
-          <span class='kph'>0-159 kph</span>
-        </div>
-        <div>22.5 &deg;</div>
-        <div>
-          <span class='in'>0-99.99 in<br/>0.01 in<br/>0.05 in</span>
-          <span class='mm'>0-99.99 mm<br/>0.254 mm<br/>1.27 mm</span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'></div>
-        <div style='height:180px'>
-          Wind: 18 s<br/>
-          Wind direction: 30 s<br/>
-          Temperature: 36 s<br/>
-          Humidity: 36 s<br/>
-          Indoor Temperature: 60 s<br/>
-          Indoor Humidity: 60 s
-        </div>
-        <div>
-          <span class='ft'>330 ft</span>
-          <span class='m'>100 m</span>
-        </div>
-        <div style='height:80px'>Console: 5V DC or 6 AA<br/>
-          Sensors: 4 AA</div>
-        <div style='height:80px'>18 mo</div>
-        <div>512 KB<br/>(about 2 weeks of data)</div>
-        <div>temperature<br/>humidity<br/>rain</div>
-        <div></div>
-        <div>multiple consoles<br/>ethernet bridge</div>
-        <div>AcuRite</div>
-      </div>
-    </div>
-
-    
-    <div id='ws1' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.argentdata.com/">Argent Data Systems</a>
-        <br/>WS1
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/ws1.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ws1.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WS1</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        WS1<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>RS232</div>
-        <div style='height:80px'>
-          Base Unit<br/>
-          Anemometer<br/>
-          Rain<br/>
-          Temperature<br/>
-          Humidity<br/>
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/ws1.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/ws1.png" class='cfg_image'/></a>
-          <div class="highslide-caption">WS1</div>
-        </div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='inHg'></span>
-          <span class='mbar'></span>
-        </div>
-        <div>
-          <span class='mph'><br/>
-            Threshold: 1.5 mph</span>
-          <span class='kph'><br/>
-            Threshold: 2.4 kph</span>
-        </div>
-        <div>0-360&deg;<br/>22.5&deg;<br/></div>
-        <div>
-          <span class='in'></span>
-          <span class='mm'></span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Anemometer<br/>
-          Bucket-Tipping Rain Gauge<br/>
-          Outdoor Humidity/Temperature<br/>
-          Indoor Humidity/Temperature<br/>
-        </div>
-        <div style='height:180px'>
-          0.5 s<br/>
-        </div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'>
-          12V DC<br/>
-          3.6V Lithium Backup<br/>
-        </div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>WS1</div>
-      </div>
-    </div>
-
-    
-    <div id='ultimeter' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.peetbros.com/">Peet Bros</a>
-        <br/>Ultimeter
-        <br/>1992
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/ult100.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ult100.png" class='hardware_image'/></a>
-          <div class="highslide-caption">Ultimeter 100</div>
-        </div>
-        <div>
-          <a href="hardware/ult800.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ult800.png" class='hardware_image'/></a>
-          <div class="highslide-caption">Ultimeter 800</div>
-        </div>
-        <div>
-          <a href="hardware/ult2100.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/ult2100.png" class='hardware_image'/></a>
-          <div class="highslide-caption">Ultimeter 2100</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        Ultimeter 100<br/>
-        Ultimeter 800<br/>
-        Ultimeter 2000<br/>
-        Ultimeter 2100<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>RS232</div>
-        <div style='height:80px'>
-          Console<br/>
-          Anemometer<br/>
-          Rain<br/>
-          TH<br/>
-        </div>
-        <div style='height:80px'>
-	  <a href="cfg/ultimeter.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/ultimeter.png" class='cfg_image'/></a>
-          <div class="highslide-caption">Ultimeter</div>
-        </div>
-        <div>
-          <span class='F'>32-110 &deg;F<br/>1 &deg;F<br/>1 &deg;F</span>
-          <span class='C'>0-43 &deg;C<br/>.1 &deg;C<br/>0.5 &deg;C</span>
-          <br/>800/2100; optional on 100
-        </div>
-        <div>0-100%<br/>1%<br/>4%<br/>optional on 800/2100</div>
-        <div>
-          <span class='F'>-55-150 &deg;F<br/>1 &deg;F<br/>1 &deg;F</span>
-          <span class='C'>-48-66 &deg;C<br/>.1 &deg;C<br/>0.5 &deg;C</span>
-          <br/>optional on 800/2100
-        </div>
-        <div>0-100%<br/>1%<br/>4%<br/>optional on 800/2100</div>
-        <div>
-          <span class='inHg'>27.5-31.5 inHg<br/>0.1 inHg<br/>0.05 inHg</span>
-          <span class='mbar'>931.3-1067.0 mbar<br/>0.1 mbar<br/>1.7 mbar</span>
-          <br/>2100 only
-        </div>
-        <div>
-          <span class='mph'>0.2-160 mph<br/>0.1 mph<br/>2 mph<br/>
-            Threshold: 1.5 mph</span>
-          <span class='kph'>0.3-257.0 kph<br/>0.1 kph<br/>3.2 kph<br/>
-            Threshold: 2.4 kph</span>
-        </div>
-        <div>0-360&deg;<br/>1&deg;<br/>5%</div>
-        <div>
-          <span class='in'>0-199.99 in<br/>0.01 in<br/>1.5-5%</span>
-          <span class='mm'>0-1999.9 mm<br/>0.25 mm<br/>1.5-5%</span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Electronic Rain Gauge<br/>
-          Bucket-Tipping Rain Gauge<br/>
-          <br/>
-          800/2100 Only:<br/>
-          Outdoor Humidity/Temperature<br/>
-          Indoor Humidity<br/>
-        </div>
-        <div style='height:180px'>
-          Wind: 1 s or less<br/>
-        </div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'>
-          12V DC<br/>
-          9V battery backup<br/>
-        </div>
-        <div style='height:80px'></div>
-        <div>7-8 days of high/low</div>
-        <div></div>
-        <div>wind chill</div>
-        <div>rain gauge heater</div>
-        <div>Ultimeter</div>
-      </div>
-    </div>
-
-    
-    <div id='rwmk3' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.rainwise.com/">RainWise</a>
-        <br/>MKIII
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/mk3rti.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/mk3rti.png" class='hardware_image'/></a>
-          <div class="highslide-caption">RainWise MK-III RTI</div>
-        </div>
-        <div>
-          <a href="hardware/mk3rtr.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/mk3rtr.png" class='hardware_image'/></a>
-          <div class="highslide-caption">RainWise MK-III RTR</div>
-        </div>
-        <div>
-          <a href="hardware/mk3rtn.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/mk3rtn.png" class='hardware_image'/></a>
-          <div class="highslide-caption">RainWise MK-III RTN</div>
-        </div>
-        <div>
-          <a href="hardware/mk3pl.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/mk3pl.png" class='hardware_image'/></a>
-          <div class="highslide-caption">RainWise PortLog</div>
-        </div>
-        <div>
-          <a href="hardware/cc3000.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/cc3000.png" class='hardware_image'/></a>
-          <div class="highslide-caption">RainWise CC3000</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        MK-III RTI<br/>
-        MK-III RTN<br/>
-        MK-III RTR<br/>
-        MK-III RTI-LR<br/>
-        MK-III RTN-LR<br/>
-        PortLog<br/>
-        WindLog<br/>
-        CC-3000<br/>
-        CC-3000R<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>USB<br/>RS-232<br/>RS-485</div>
-        <div style='height:80px'>
-          Cluster (TH, Rain, Anemometer)<br/>
-          RTR: separate Rain</div>
-        <div style='height:80px'>
-	  <a href="cfg/cc3000.png"
-             class="cfg" onclick="return hs.expand(this)">
-            <img src="cfg/cc3000.png" class='cfg_image'/></a>
-          <div class="highslide-caption">CC3000</div>
-        </div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='F'>-66-150 &deg;F<br/>1 &deg;F</span>
-          <span class='C'>-54-65 &deg;C<br/>0.5 &deg;C</span>
-        </div>
-        <div>0-100%<br/>2%</div>
-        <div>
-          <span class='inHg'>8.85-32.48 inHg<br/>0.01 inHg</span>
-          <span class='mbar'>300-1100 mbar<br/>0.5 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-150 mph<br/>1 mph<br/>2%</span>
-          <span class='kph'>0-240 kph<br/>1 kph<br/>2%</span>
-          <br/>Threshold: 0.5 m/s
-        </div>
-        <div>0-360&deg;<br/>1&deg;<br/>3&deg;</div>
-        <div>
-          <span class='in'>unlimited<br/>0.01 in<br/>2%</span>
-          <span class='mm'>unlimited<br/>0.25 mm<br/>2%</span>
-          <br/>8 inch rain collector
-        </div>
-        <div></div>
-        <div>0-1500 W/m<sup>2</sup><br/>400-1200 nm<br/>5%</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'></div>
-        <div style='height:180px'>
-          Sensors: 2 s<br/>
-          Logger: 1 minute - 1 hour
-        </div>
-        <div>
-          <span class='ft'>300 ft</span>
-          <span class='m'>100 m</span>
-        </div>
-        <div style='height:80px'>
-          Integrated: Solar<br/>
-          Rain: 2 AA
-        </div>
-        <div style='height:80px'>
-          60 days without sun
-        </div>
-        <div>2MB (CC-3000)<br/>128KB (PortLog)</div>
-        <div></div>
-        <div></div>
-        <div>rain bucket heater<br/></div>
-        <div>CC3000</div>
-      </div>
-    </div>
-
-    
-    <div id='wh56xx' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.weatherhawk.com/">WeatherHawk</a>
-        <br/>5xx, 6xx
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/wh500.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wh500.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WH500</div>
-        </div>
-        <div>
-          <a href="hardware/wh600.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wh600.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WH600</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        510<br/>
-        511<br/>
-        521<br/>
-        610<br/>
-        611<br/>
-        620<br/>
-        621<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>Serial<br/>Wireless</div>
-        <div style='height:80px'>Cluster</div>
-        <div style='height:80px'></div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='F'>-58-140 &deg;F<br/>0.1 &deg;F<br/>0.36 &deg;F</span>
-          <span class='C'>-50-60 &deg;C<br/>0.1 &deg;C<br/>0.2 &deg;C</span>
-        </div>
-        <div>0-100%<br/>0.1%<br/>2%</div>
-        <div>
-          <span class='inHg'>8.86-35.44 inHg<br/>0.01 inHg</span>
-          <span class='mbar'>300-1200 mbar<br/>0.34 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-134 mph<br/>0.67 mph to 5%</span>
-          <span class='kph'>0-60 m/s<br/>0.3 m/s to 5%</span>
-        </div>
-        <div>0-359.9&deg;<br/>3&deg;</div>
-        <div>
-          <span class='in'>unlimited<br/>0.001 in</span>
-          <span class='mm'>unlimited<br/>0.01 mm</span>
-          <br/>rain or snow
-        </div>
-        <div></div>
-        <div>0-2000 W/m<sup>2</sup><br/>300-1100 nm<br/>5%</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'></div>
-        <div style='height:180px'></div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'>
-          3 AHr battery<br/>
-          Solar (610, 620)<br/>
-          AC (611, 621)<br/>
-        </div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>no moving parts</div>
-        <div></div>
-      </div>
-    </div>
-
-    
-    <div id='whsig' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.weatherhawk.com/">WeatherHawk</a>
-        <br/>Signature
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/whsig.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/whsig.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WH 232</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        232<br/>
-        240<br/>
-        916<br/>
-        922<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>Serial<br/>Wireless</div>
-        <div style='height:80px'>Cluster</div>
-        <div style='height:80px'></div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='F'>-40-122 &deg;F<br/>0.9 &deg;F</span>
-          <span class='C'>-40-50 &deg;C<br/>0.5 &deg;C</span>
-        </div>
-        <div>0-100%<br/>3-5%</div>
-        <div>
-          <span class='inHg'>4.43-33.96 inHg<br/>0.443 inHg</span>
-          <span class='mbar'>150-1150 mbar<br/>15 mbar</span>
-        </div>
-        <div>
-          <span class='mph'><br/><br/>2.2 mph</span>
-          <span class='kph'><br/><br/>1 m/s</span>
-          <br/>Threshold: 0.78 m/s
-        </div>
-        <div>0-360&deg;<br/>1%</div>
-        <div>
-          <span class='in'>unlimited<br/>0.04 in</span>
-          <span class='mm'>unlimited<br/>1 mm</span>
-          <br/>7.75 in<sup>2</sup> orifice
-        </div>
-        <div></div>
-        <div>0-2000 W/m<sup>2</sup><br/>300-1100 nm<br/>2%</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          0.01 inch rain bucket
-        </div>
-        <div style='height:180px'></div>
-        <div>
-          <span class='ft'>2640 ft (0.5 mile)</span>
-          <span class='m'>800 m</span>
-          <br/>line-of-sight
-        </div>
-        <div style='height:80px'>
-          0.8 AHr lead-acid<br/>
-          1.6W or 5W Solar Panel<br/>
-        </div>
-        <div style='height:80px'></div>
-        <div>128KB RAM<br/>32,000 data points</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    </div>
-
-    
-    <div id='twi' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://txwx.com/">Texas Weather Instruments</a>
-        <br/>WRx, WLS, WPS
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/wrxpagoda.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wrxpagoda.png" class='hardware_image'/></a>
-          <div class="highslide-caption">Pagoda for WR/WRL</div>
-        </div>
-        <div>
-          <a href="hardware/wrxconsole.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wrxconsole.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WRL Console</div>
-        </div>
-        <div>
-          <a href="hardware/wls8000.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/wls8000.png" class='hardware_image'/></a>
-          <div class="highslide-caption">WLS-8000</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        NWS<br/>
-        WLS-8000<br/>
-        WPS<br/>
-        WR<br/>
-        WR-25<br/>
-        WRL<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>RS232</div>
-        <div style='height:80px'>Console<br/>Pagoda</div>
-        <div style='height:80px'></div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='F'>-40-130 &deg;F<br/>0.2 &deg;F</span>
-          <span class='C'>-40-60 &deg;C<br/>0.1 &deg;C</span>
-        </div>
-        <div>0-100%<br/>3%</div>
-        <div>
-          <span class='inHg'>28-34 inHg<br/>0.01 inHg<br/>0.03 inHg</span>
-          <span class='mbar'>948-1151 mbar<br/>0.34 mbar<br/>1 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>1-200 mph<br/>1%</span>
-          <span class='kph'>1.6-320 kph<br/>1%</span>
-          <br/>Threshold: 1.1 m/s
-        </div>
-        <div>0-360&deg;<br/>1&deg;<br/>3&deg;</div>
-        <div>
-          <span class='in'>unlimited<br/>0.01 in</span>
-          <span class='mm'>unlimited<br/>0.254 mm</span>
-          <br/>6 inch orifice diameter
-        </div>
-        <div></div>
-        <div>0-1500 W/m<sup>2</sup><br/>400-1100 nm</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          leaf wetness<br/>lightning<br/>solar radiation
-        </div>
-        <div style='height:180px'></div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'></div>
-        <div style='height:80px'></div>
-        <div>4000 data points</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    </div>
-
-    
-    <div id='nm' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.newmountain.com/">New Mountain</a>
-        <br/>NM
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/nm150.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/nm150.png" class='hardware_image'/></a>
-          <div class="highslide-caption">New Mountain NM100</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        NM150<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>Serial</div>
-        <div style='height:80px'>All-in-one</div>
-        <div style='height:80px'></div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='F'>-22-122 &deg;F<br/>0.1 &deg;F<br/>2.7 &deg;F</span>
-          <span class='C'>-30-50 &deg;C<br/>0.1 &deg;C<br/>1.5 &deg;C</span>
-        </div>
-        <div>10-95%<br/><br/>4%</div>
-        <div>
-          <span class='inHg'>25-35 inHg<br/><br/>1.5%</span>
-          <span class='mbar'>850-1150 mbar<br/><br/>1.5%</span>
-        </div>
-        <div>
-          <span class='mph'>0.6-114.5 mph<br/>1.1 mph<br/>0.1 mph</span>
-          <span class='kph'>0.96-183.2 kph<br/>1.76 kph<br/>0.16 kph</span>
-        </div>
-        <div>0-360&deg;<br/>1<br/>1.5&deg;</div>
-        <div>
-          <span class='in'></span>
-          <span class='mm'></span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'></div>
-        <div style='height:180px'></div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'>10-16 VDC</div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>GPS<br/>3-axis accelerometer<br/>ultrasonic anemometer</div>
-        <div></div>
-      </div>
-    </div>
-
-    
-    <div id='capricorn' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.columbiaweather.com/">Columbia</a>
-        <br/>Capricorn
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/capricorn-flx.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/capricorn-flx.png" class='hardware_image'/></a>
-          <div class="highslide-caption">Columbia Capricorn</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        Capricorn FLX<br/>
-        Capricorn 2000<br/>
-        Capricorn 2000EX
-      </div>
-      <div class='hardware_specs'>
-        <div>RS232</div>
-        <div style='height:80px'>
-          TH<br/>
-          Anemometer<br/>
-          Rain Bucket<br/>
-          UV
-        </div>
-        <div style='height:80px'></div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='F'>14-185 &deg;F<br/>0.01 &deg;F<br/>0.9 &deg;F</span>
-          <span class='C'>-10-85 &deg;C<br/><br/>0.5 &deg;C</span>
-        </div>
-        <div>10-90%<br/>1%<br/>3%</div>
-        <div>
-          <span class='inHg'>14.8-32.5 inHg<br/>0.0001 inHg<br/>0.03 inHg</span>
-          <span class='mbar'>500-1100 mbar<br/>0.01 mbar<br/>1 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>24-160 mph<br/>1 mph<br/>1%</span>
-          <span class='kph'></span>
-          <br/>threshold: 0.9 mph
-        </div>
-        <div>360&deg;<br/>2&deg;<br/>4&deg;</div>
-        <div>
-          <span class='in'><br/>0.01 in<br/>1%</span>
-          <span class='mm'><br/>0.254 mm<br/>1%</span>
-        </div>
-        <div></div>
-        <div>0-1750 W/m<sup>2</sup><br/>1 W/m<sup>2</sup><br/>5%</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Up to 3 remote temperature<br/>
-          Solar Radiation<br/>
-          Tipping bucket<br/>
-          Leaf wetness<br/>
-          Visibility<br/>
-          Heated rain gauge
-        </div>
-        <div style='height:180px'></div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'></div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>
-          reed switch wind speed<br/>
-          heavy duty wind sensor
-        </div>
-        <div></div>
-      </div>
-    </div>
-
-    
-    <div id='orion' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.columbiaweather.com/">Columbia</a>
-        <br/>Orion
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/orion.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/orion.png" class='hardware_image'/></a>
-          <div class="highslide-caption">Columbia Orion</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        Orion
-      </div>
-      <div class='hardware_specs'>
-        <div>RS232</div>
-        <div style='height:80px'>All-in-one sensor</div>
-        <div style='height:80px'></div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='F'>-61.6-140 &deg;F<br/>0.1 &deg;F<br/>0.5 &deg;F</span>
-          <span class='C'>-52-60 &deg;C<br/>0.05 &deg;C<br/>0.25 &deg;C</span>
-        </div>
-        <div>0-100%<br/>1%<br/>3%</div>
-        <div>
-          <span class='inHg'>17.72-32.48 inHg<br/>0.01 inHg<br/>0.03 inHg</span>
-          <span class='mbar'>600-1100 mbar<br/>0.1 mbar<br/>1 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-135 mph<br/>0.1 mph<br/>3%</span>
-          <span class='kph'>0-216 kph<br/>0.1 m/s<br/>3%</span>
-        </div>
-        <div>0-360&deg;<br/>1&deg;<br/>3&deg;</div>
-        <div>
-          <span class='in'></span>
-          <span class='mm'></span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Solar radiation<br/>
-          Leaf wetness<br/>
-          Heated sensor head<br/>
-        </div>
-        <div style='height:180px'></div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'></div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>
-          ultrasonic wind speed and direction<br/>
-          impact rain sensor
-        </div>
-        <div></div>
-      </div>
-    </div>
-
-    
-    <div id='magellan' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.columbiaweather.com/">Columbia</a>
-        <br/>Magellan
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/magellan.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/magellan.png" class='hardware_image'/></a>
-          <div class="highslide-caption">Columbia Magellan</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        Magellan
-      </div>
-      <div class='hardware_specs'>
-        <div>RS232</div>
-        <div style='height:80px'>All-in-one sensor</div>
-        <div style='height:80px'></div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='F'>-58-122 &deg;F<br/>0.2 &deg;F<br/>0.4 &deg;F</span>
-          <span class='C'>-50-50 &deg;C<br/>0.1 &deg;C<br/>0.2 &deg;C</span>
-        </div>
-        <div>0-100%<br/>1%<br/>3%</div>
-        <div>
-          <span class='inHg'>17.5-32.5 inHg<br/>0.003 inHg<br/>0.01 inHg</span>
-          <span class='mbar'>600-1100 mbar<br/>0.1 mbar<br/>0.35 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-134 mph<br/>0.1 mph<br/>5%</span>
-          <span class='kph'>0-216 kph<br/>0.1 m/s<br/>0.5 m/s</span>
-        </div>
-        <div>0-360&deg;<br/>1&deg;<br/>5%</div>
-        <div>
-          <span class='in'></span>
-          <span class='mm'></span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Solar radiation<br/>
-          Leaf wetness<br/>
-          Visibility
-        </div>
-        <div style='height:180px'></div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'></div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>Internal fluxgate compass</div>
-        <div></div>
-      </div>
-    </div>
-
-    
-    <div id='pulsar' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://www.columbiaweather.com/">Columbia</a>
-        <br/>Pulsar
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/pulsar.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/pulsar.png" class='hardware_image'/></a>
-          <div class="highslide-caption">Columbia Pulsar</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        200<br/>
-        500<br/>
-        501<br/>
-        600<br/>
-        601<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>RS232</div>
-        <div style='height:80px'>All-in-one sensor</div>
-        <div style='height:80px'></div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div></div>
-        <div>
-          <span class='F'>-50-140 &deg;F<br/><br/>0.4 &deg;F</span>
-          <span class='C'>-50-60 &deg;C<br/><br/>0.2 &deg;C</span>
-        </div>
-        <div>0-100%<br/><br/>2%</div>
-        <div>
-          <span class='inHg'>8.86-35.44 inHg<br/><br/></span>
-          <span class='mbar'>300-1200 mbar<br/><br/>1.5 mbar</span>
-        </div>
-        <div>
-          <span class='mph'>0-135 mph<br/><br/>3%</span>
-          <span class='kph'>0-216 kph<br/><br/>0.3 m/s</span>
-        </div>
-        <div>0-359.9&deg;<br/><br/>3&deg;</div>
-        <div>
-          <span class='in'>unlimited<br/>0.008 in<br/>2%</span>
-          <span class='mm'>unlimited<br/>0.2 mm<br/>2%</span>
-          <br/>rain or snow
-        </div>
-        <div></div>
-        <div>0-1500 W/m<sup>2</sup><br/>20 W/m<sup>2</sup><br/>3%</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>
-          Solar radition (501)<br/>
-          Leaf wetness (601)<br/>
-          Additional temperature<br/>
-          Visibility
-        </div>
-        <div style='height:180px'></div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'></div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>
-          Doppler radar (600)<br/>
-          Tipping bucket (601)
-        </div>
-        <div></div>
-      </div>
-    </div>
-
-    
-    <div id='hobo' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href="http://onsetcomp.com/">onset</a>
-        <br/>HOBO
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/hobo.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/hobo.png" class='hardware_image'/></a>
-          <div class="highslide-caption">U30-NRC</div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        S-THB-M002<br/>
-        S-WSA-M003<br/>
-        S-WDA-M003<br/>
-        U30-NRC<br/>
-      </div>
-      <div class='hardware_specs'>
-        <div>USB</div>
-        <div style='height:80px'>Sensors<br/>Data Logger</div>
-        <div style='height:80px'>Logger-Computer: USB<br/>Sensors-Logger: wire
-        </div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div>%</div>
-        <div>
-          <span class='F'>-40-167 &deg;F<br/>0.04 &deg;F<br/>0.38 &deg;F</span>
-          <span class='C'>-40-74 &deg;C<br/>0.02 &deg;C<br/>0.21 &deg;C</span>
-        </div>
-        <div>0-100%<br/>0.1%<br/>2.5%</div>
-        <div>
-          <span class='inHg'></span>
-          <span class='mbar'></span>
-        </div>
-        <div>
-          <span class='mph'>0-100 mph<br/>0.85 mph<br/>2.4 mph<br/>threshold: 2.2 mph</span>
-          <span class='kph'>0-45 m/s<br/>0.38 m/s<br/>1.1 m/s<br/>threshold: 1 m/s</span>
-        </div>
-        <div>0-355&deg;<br/>1.4&deg;<br/>5&deg;</div>
-        <div>
-          <span class='in'></span>
-          <span class='mm'></span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'>Up to 10 Smart Sensors</div>
-        <div style='height:180px'></div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'></div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>1.2W solar panel</div>
-        <div></div>
-      </div>
-    </div>
-
-
-    
-    <div id='' class='hardware'>
-      <div class='hardware_mfr'>
-        <a href=""></a>
-        <br/>?
-        <br/>?
-      </div>
-      <div class='hardware_pictures'>
-        <div>
-          <a href="hardware/.png"
-             class="highslide" onclick="return hs.expand(this)">
-            <img src="hardware/.png" class='hardware_image'/></a>
-          <div class="highslide-caption"></div>
-        </div>
-      </div>
-      <div class='hardware_models'>
-        <br/>
-      </div>
-      <div class='hardware_specs'>
-        <div></div>
-        <div style='height:80px'></div>
-        <div style='height:80px'></div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div>%</div>
-        <div>
-          <span class='F'></span>
-          <span class='C'></span>
-        </div>
-        <div>%</div>
-        <div>
-          <span class='inHg'></span>
-          <span class='mbar'></span>
-        </div>
-        <div>
-          <span class='mph'></span>
-          <span class='kph'></span>
-        </div>
-        <div>&deg;</div>
-        <div>
-          <span class='in'></span>
-          <span class='mm'></span>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style='height:100px'></div>
-        <div style='height:180px'></div>
-        <div>
-          <span class='ft'></span>
-          <span class='m'></span>
-        </div>
-        <div style='height:80px'></div>
-        <div style='height:80px'></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    </div>
-
 
   </div>
   <!-- End Content -->
