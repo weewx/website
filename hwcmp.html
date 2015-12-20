@@ -187,25 +187,25 @@ var stations = {
     },
     'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
     'temperature': {
-      'metric': {'range': '-40-66 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
-      'imperial': {'range': '-40-150 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}
     },
-    'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'humidity': {'range': '', 'res': '', 'acc': ''},
     'pressure': {
       'metric': {'range': '540-1100 mbar', 'res': '0.34 mbar', 'acc': '1 mbar'},
       'imperial': {'range': '16-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}
     },
     'wind_speed': {
-      'metric': {'range': '3-220 kph', 'res': '1.5 kph', 'acc': '2% or 5%'},
-      'imperial': {'range': '2-150 mph', 'res': '1 mph', 'acc': '2% or 5%'}
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}
     },
-    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
+    'wind_dir': {'range': '', 'res': '', 'acc': ''},
     'rain': {
-      'metric': {'range': '0-5080 mm', 'res': '0.254 mm', 'acc': '4%'},
-      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}
     },
-    'uv': {'range': '0-16', 'res': '0.1', 'acc': '5%'},
-    'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '5%'},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
     'luminosity': {'range':'', 'res':'', 'acc':''},
     'co2': {'range':'', 'res':'', 'acc':''},
     'sound': {'range':'', 'res':'', 'acc':''},
@@ -219,14 +219,13 @@ var stations = {
     ],
     'sensor_updates': [ '2.5s' ],
     'wireless_range': {'metric': '330 m', 'imperial': '1000 ft'},
-    'power': ['Console: 3 C or AC', 'ISS: solar'],
-    'battery_life': ['9 mo (wireless)', '1 mo (wired)'],
+    'power': ['Receiver: AC'],
+    'battery_life': [],
     'memory': ['2064 records'],
     'calibration': ['altitude', 'latitude', 'longitude', 'time zone'],
     'calculated': ['sunrise', 'sunset', 'barometer'],
     'features': [
-      'separate data logger required to connect receiver to computer',
-      'optional rain bucket heater'
+      'separate data logger required to connect receiver to computer'
     ],
     'driver': 'Vantage'
   },
