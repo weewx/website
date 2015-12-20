@@ -18,6 +18,9 @@
   mea plexus
   lacross c83612
   netatmo wind sensor
+  dycon
+  foobot
+  air-mentor
 -->
 
   <script type="text/javascript">
@@ -207,7 +210,8 @@ var stations = {
     'co2': {'range':'', 'res':'', 'acc':''},
     'sound': {'range':'', 'res':'', 'acc':''},
     'optional_sensors': [
-      'Up to 6 remote:',
+      'Up to 8 remote:',
+      'Wind speed/direction',
       'Soil Moisture/Temperature',
       'Leaf Wetness',
       'Water Temperature',
@@ -221,7 +225,7 @@ var stations = {
     'calibration': ['altitude', 'latitude', 'longitude', 'time zone'],
     'calculated': ['sunrise', 'sunset', 'barometer'],
     'features': [
-      'separate data logger required to connect console to computer',
+      'separate data logger required to connect receiver to computer',
       'optional rain bucket heater'
     ],
     'driver': 'Vantage'
@@ -762,18 +766,16 @@ for(var i=0; i<sd['pictures'].length; i++) {
 }
 
   html += "</div>\
-<div class='hardware_models'>";
-
-for(var i=0; i<sd['models'].length; i++) {
-  html += sd['models'][i] + "<br/>\n";
-}
-
-  html += "</div>\
 <div class='hardware_specs'>\
-  <div>";
+  <div class='configuration'>";
 
-for(var i=0; i<sd['computer_interface'].length; i++) {
-  html += sd['computer_interface'][i] + "<br/>\n";
+for(var i=0; i<sd['configuration'].length; i++) {
+  var image = sd['configuration'][i][0];
+  var label = sd['configuration'][i][1];
+  html += "<a href='cfg/" + image + "'\
+ class='cfg' onclick='return hs.expand(this)'>\
+<img src='cfg/" + image + "' class='cfg_image'/></a>\
+<div class='highslide-caption'>" + label + "</div>";
 }
 
   html += "  </div>\
@@ -784,15 +786,10 @@ for(var i=0; i<sd['components'].length; i++) {
 }
 
   html += "  </div>\
-  <div class='configuration'>";
+  <div>";
 
-for(var i=0; i<sd['configuration'].length; i++) {
-  var image = sd['configuration'][i][0];
-  var label = sd['configuration'][i][1];
-  html += "<a href='cfg/" + image + "'\
- class='cfg' onclick='return hs.expand(this)'>\
-<img src='cfg/" + image + "' class='cfg_image'/></a>\
-<div class='highslide-caption'>" + label + "</div>";
+for(var i=0; i<sd['computer_interface'].length; i++) {
+  html += sd['computer_interface'][i] + "<br/>\n";
 }
 
   html += "  </div>\
@@ -939,7 +936,14 @@ for(var i=0; i<sd['features'].length; i++) {
 
   html += "  </div>\
   <div>" + sd['driver'] + "</div>\
-</div>";
+</div>\
+<div class='hardware_models'>";
+
+for(var i=0; i<sd['models'].length; i++) {
+  html += sd['models'][i] + "<br/>\n";
+}
+
+  html += "</div>";
 
   div.innerHTML = html;  
   var parent = document.getElementById(divid);
@@ -1073,7 +1077,7 @@ function get_cookie(name) {
 .hardware_models {
   font-style: italic;
   font-size: 80%;
-  height: 250px;
+  height: 300px;
   padding-top: 10px;
 }
 .borderless .highslide-caption {
@@ -1308,11 +1312,10 @@ function get_cookie(name) {
           <span style='font-weight:normal'>Family<br/>Introduced</span>
         </div>
         <div class='hardware_pictures'></div>
-        <div class='hardware_models' style='font-style:normal'>Models</div>
         <div class='hardware_specs'>
-          <div> Computer Interface</div>
-          <div class='components'>Components</div>
           <div class='configuration'>Configuration</div>
+          <div class='components'>Components</div>
+          <div> Computer Interface</div>
           <div>Console<br/>Temperature<br/>
             <span class='F'>&deg;F</span>
             <span class='C'>&deg;C</span>
@@ -1355,6 +1358,7 @@ function get_cookie(name) {
           <div>Features</div>
           <div>WeeWX Driver</div>
         </div>
+        <div class='hardware_models' style='font-style:normal'>Models</div>
       </div>
 
     </div>
