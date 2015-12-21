@@ -1904,7 +1904,9 @@ for(var i=0; i<sd['models'].length; i++) {
   parent.appendChild(div);
 }
 
-function set_units(ugid, unit) {
+function set_units(ctrl) {
+  var ugid = ctrl.name;
+  var unit = ctrl.value;
   set_cookie('group_'+ugid, unit);
   showhide_units(ugid, unit);
 }
@@ -1943,7 +1945,8 @@ function get_complement(ugid, unit) {
   return (unit == unit_groups[ugid][0]) ? unit_groups[ugid][1] : unit_groups[ugid][0];
 }
 
-function toggle(ctrl, id) {
+function toggle(ctrl) {
+  var id = ctrl.value;
   var e = document.getElementById(id);
   if(e) {
     set_cookie('compare_'+id, ctrl.checked);
@@ -2114,112 +2117,112 @@ function get_cookie(name) {
         <div class='control_block'>
           <input type='checkbox' name='station'
                  value='vpro' id='control.vpro'
-                 onclick='toggle(this, "vpro")'>Vantage Pro</input><br/>
+                 onclick='toggle(this)'>Vantage Pro</input><br/>
           <input type='checkbox' name='station'
                  value='vvue' id='control.vvue'
-                 onclick='toggle(this, "vvue")'>Vantage Vue</input><br/>
+                 onclick='toggle(this)'>Vantage Vue</input><br/>
           <input type='checkbox' name='station'
                  value='envoy' id='control.envoy'
-                 onclick='toggle(this, "envoy")'>Envoy</input><br/>
+                 onclick='toggle(this)'>Envoy</input><br/>
           <input type='checkbox' name='station'
                  value='fo' id='control.fo'
-                 onclick='toggle(this, "fo")'>FO WH/WS</input><br/>
+                 onclick='toggle(this)'>FO WH/WS</input><br/>
           <input type='checkbox' name='station'
                  value='fohp' id='control.fohp'
-                 onclick='toggle(this, "fohp")'>FO HP</input><br/>
+                 onclick='toggle(this)'>FO HP</input><br/>
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station'
                  value='wmr9x8' id='control.wmr9x8'
-                 onclick='toggle(this, "wmr9x8")'>WMR-9x8</input><br/>
+                 onclick='toggle(this)'>WMR-9x8</input><br/>
           <input type='checkbox' name='station'
                  value='wmr100' id='control.wmr100'
-                 onclick='toggle(this, "wmr100")'>WMR-100</input><br/>
+                 onclick='toggle(this)'>WMR-100</input><br/>
           <input type='checkbox' name='station'
                  value='wmr200' id='control.wmr200'
-                 onclick='toggle(this, "wmr200")'>WMR-200</input><br/>
+                 onclick='toggle(this)'>WMR-200</input><br/>
           <input type='checkbox' name='station'
                  value='wmr300' id='control.wmr300'
-                 onclick='toggle(this, "wmr300")'>WMR-300</input><br/>
+                 onclick='toggle(this)'>WMR-300</input><br/>
           <input type='checkbox' name='station'
                  value='lw301' id='control.lw301'
-                 onclick='toggle(this, "lw301")'>LW301</input><br/>
+                 onclick='toggle(this)'>LW301</input><br/>
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station'
                  value='acurite_5in1' id='control.acurite_5in1'
-                 onclick='toggle(this, "acurite_5in1")'>Acurite 5-in-1</input><br/>
+                 onclick='toggle(this)'>Acurite 5-in-1</input><br/>
           <input type='checkbox' name='station'
                  value='acurite_bridge' id='control.acurite_bridge'
-                 onclick='toggle(this, "acurite_bridge")'>Acurite Bridge</input><br/>
+                 onclick='toggle(this)'>Acurite Bridge</input><br/>
           <input type='checkbox' name='station'
                  value='c84612' id='control.c84612'
-                 onclick='toggle(this, "c84612")'>C84612</input><br/>
+                 onclick='toggle(this)'>C84612</input><br/>
           <input type='checkbox' name='station'
                  value='ws23xx' id='control.ws23xx'
-                 onclick='toggle(this, "ws23xx")'>WS23xx</input><br/>
+                 onclick='toggle(this)'>WS23xx</input><br/>
           <input type='checkbox' name='station'
                  value='ws28xx' id='control.ws28xx'
-                 onclick='toggle(this, "ws28xx")'>WS28xx</input><br/>
+                 onclick='toggle(this)'>WS28xx</input><br/>
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station' 
                  value='hideki' id='control.hideki'
-                 onclick='toggle(this, "hideki")'>Hideki</input><br/>
+                 onclick='toggle(this)'>Hideki</input><br/>
           <input type='checkbox' name='station'
                  value='kl' id='control.kl'
-                 onclick='toggle(this, "kl")'>Klimalogg</input><br/>
+                 onclick='toggle(this)'>Klimalogg</input><br/>
           <input type='checkbox' name='station'
                  value='netatmo' id='control.netatmo'
-                 onclick='toggle(this, "netatmo")'>Netatmo</input><br/>
+                 onclick='toggle(this)'>Netatmo</input><br/>
           <input type='checkbox' name='station'
                  value='ws1' id='control.ws1'
-                 onclick='toggle(this, "ws1")'>WS1</input><br/>
+                 onclick='toggle(this)'>WS1</input><br/>
           <input type='checkbox' name='station'
                  value='ultimeter' id='control.ultimeter'
-                 onclick='toggle(this, "ultimeter")'>Ultimeter</input><br/>
+                 onclick='toggle(this)'>Ultimeter</input><br/>
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station'
                  value='rwmk3' id='control.rwmk3'
-                 onclick='toggle(this, "rwmk3")'>MKIII</input><br/>
+                 onclick='toggle(this)'>MKIII</input><br/>
           <input type='checkbox' name='station'
                  value='wh56xx' id='control.wh56xx'
-                 onclick='toggle(this, "wh56xx")'>WH5xx/WH6xx</input><br/>
+                 onclick='toggle(this)'>WH5xx/WH6xx</input><br/>
           <input type='checkbox' name='station'
                  value='whsig' id='control.whsig'
-                 onclick='toggle(this, "whsig")'>WH Signature</input><br/>
+                 onclick='toggle(this)'>WH Signature</input><br/>
           <input type='checkbox' name='station'
                  value='twi' id='control.twi'
-                 onclick='toggle(this, "twi")'>TWI</input><br/>
+                 onclick='toggle(this)'>TWI</input><br/>
           <input type='checkbox' name='station'
                  value='nm' id='control.nm'
-                 onclick='toggle(this, "nm")'>New Mountain</input><br/>
+                 onclick='toggle(this)'>New Mountain</input><br/>
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station'
                  value='capricorn' id='control.capricorn'
-                 onclick='toggle(this, "capricorn")'>Capricorn</input><br/>
+                 onclick='toggle(this)'>Capricorn</input><br/>
           <input type='checkbox' name='station'
                  value='orion' id='control.orion'
-                 onclick='toggle(this, "orion")'>Orion</input><br/>
+                 onclick='toggle(this)'>Orion</input><br/>
           <input type='checkbox' name='station'
                  value='magellan' id='control.magellan'
-                 onclick='toggle(this, "magellan")'>Magellan</input><br/>
+                 onclick='toggle(this)'>Magellan</input><br/>
           <input type='checkbox' name='station'
                  value='pulsar' id='control.pulsar'
-                 onclick='toggle(this, "pulsar")'>Pulsar</input><br/>
+                 onclick='toggle(this)'>Pulsar</input><br/>
           <input type='checkbox' name='station'
                  value='hobo' id='control.hobo'
-                 onclick='toggle(this, "hobo")'>Hobo</input><br/>
+                 onclick='toggle(this)'>Hobo</input><br/>
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station'
                  value='mea' id='control.mea'
-                 onclick='toggle(this, "mea")'>MEA</input><br/>
+                 onclick='toggle(this)'>MEA</input><br/>
           <input type='checkbox' name='station'
                  value='plexus' id='control.plexus'
-                 onclick='toggle(this, "plexus")'>Plexus</input><br/>
+                 onclick='toggle(this)'>Plexus</input><br/>
         </div>
 
         <div class='control_block' style='padding-left: 40px'>
@@ -2233,36 +2236,36 @@ function get_cookie(name) {
           <div style='float:left'>
             <input type='radio' name='temperature'
                    value='F' id='control.F'
-                   onclick='set_units("temperature","F")'>F</input><br/>
+                   onclick='set_units(this)'>F</input><br/>
             <input type='radio' name='pressure'
                    value='inHg' id='control.inHg'
-                   onclick='set_units("pressure","inHg")'>inHg</input><br/>
+                   onclick='set_units(this)'>inHg</input><br/>
             <input type='radio' name='speed'
                    value='mph' id='control.mph'
-                   onclick='set_units("speed","mph")'>mph</input><br/>
+                   onclick='set_units(this)'>mph</input><br/>
             <input type='radio' name='length'
                    value='in' id='control.in'
-                   onclick='set_units("length","in")'>in</input><br/>
+                   onclick='set_units(this)'>in</input><br/>
             <input type='radio' name='range'
                    value='ft' id='control.ft'
-                   onclick='set_units("range","ft")'>ft</input><br/>
+                   onclick='set_units(this)'>ft</input><br/>
           </div>
           <div style='float:left'>
             <input type='radio' name='temperature'
                    value='C' id='control.C'
-                   onclick='set_units("temperature","C")'>C</input><br/>
+                   onclick='set_units(this)'>C</input><br/>
             <input type='radio' name='pressure'
                    value='mbar' id='control.mbar'
-                   onclick='set_units("pressure","mbar")'>mbar</input><br/>
+                   onclick='set_units(this)'>mbar</input><br/>
             <input type='radio' name='speed'
                    value='kph' id='control.kph'
-                   onclick='set_units("speed","kph")'>kph</input><br/>
+                   onclick='set_units(this)'>kph</input><br/>
             <input type='radio' name='length'
                    value='mm' id='control.mm'
-                   onclick='set_units("length","mm")'>mm</input><br/>
+                   onclick='set_units(this)'>mm</input><br/>
             <input type='radio' name='range'
                    value='m' id='control.m'
-                   onclick='set_units("range","m")'>m</input><br/>
+                   onclick='set_units(this)'>m</input><br/>
           </div>
         </div>
       </form>
