@@ -16,11 +16,10 @@
 <!-- TODO:
   mea weather station
   mea plexus
-  lacross c83612
-  netatmo wind sensor
   dycon
   foobot
   air-mentor
+  wmr89
 -->
 
   <script type="text/javascript">
@@ -687,6 +686,53 @@ var stations = {
     'memory': [],
     'calibration': [],
     'calculated': [],
+    'features': [],
+    'driver': ''
+  },
+
+
+  'c84612': {
+    'manufacturer': {'name': 'LaCrosse', 'url': 'http://www.lacrossetechnology.com/'},
+    'family': 'C84612',
+    'introduced': '?',
+    'pictures': [['c84612.png', 'C84612']],
+    'models': ['C84612'],
+    'computer_interface': ['WiFi'],
+    'components': ['Gateway', 'Console', 'TH', 'Rain', 'Anemometer'],
+    'configuration': [['c84612.png', 'C84612']],
+    'console_temperature': {
+      'metric': {'range': '4-40 &deg;C', 'res': '0.0 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '41-104 &deg;F', 'res': '0.0 &deg;F', 'acc': '1 &deg;F'}},
+    'console_humidity': {'range': '3-99%', 'res': '1%', 'acc': '3%'},
+    'temperature': {
+      'metric': {'range': '-40-59.9 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-40-139.8 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
+    'humidity': {'range': '3-99%', 'res': '1%', 'acc': '3%'},
+    'pressure': {
+      'metric': {'range': '919-1080 mbar', 'res': '', 'acc': ''},
+      'imperial': {'range': '27.10-31.90 inHg', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-178 kph', 'res': '0.1 m/s', 'acc': ''},
+      'imperial': {'range': '0-111 mph', 'res': '0.22 mph', 'acc': ''}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': '0-9999.9 mm', 'res': '', 'acc': ''},
+      'imperial': {'range': '0-393.7 in', 'res': '', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [],
+    'sensor_updates': ['TH: 13s', 'Wind: 17s', 'Rain: 19s', 'Pressure: 15s'],
+    'wireless_range': {
+      'metric': 'Gateway: 60m<br/>TH: 60m<br/>Wind: 60m<br/>Rain: 60m',
+      'imperial': 'Gateway: 200ft<br/>TH: 200ft<br/>Wind: 200ft<br/>Rain: 200ft'},
+    'power': ['Gateway: 20V AC', 'Console: 3C', 'TH: 2C', 'Wind: solar', 'Rain: 2AA'],
+    'battery_life': ['Console: 2yr', 'TH: 2yr', 'Rain: 2yr'],
+    'memory': [],
+    'calibration': [],
+    'calculated': ['windchill', 'heat index'],
     'features': [],
     'driver': ''
   },
@@ -2107,16 +2153,19 @@ function get_cookie(name) {
                  value='acurite_bridge' id='control.acurite_bridge'
                  onclick='toggle(this, "acurite_bridge")'>Acurite Bridge</input><br/>
           <input type='checkbox' name='station'
+                 value='c84612' id='control.c84612'
+                 onclick='toggle(this, "c84612")'>C84612</input><br/>
+          <input type='checkbox' name='station'
                  value='ws23xx' id='control.ws23xx'
                  onclick='toggle(this, "ws23xx")'>WS23xx</input><br/>
           <input type='checkbox' name='station'
                  value='ws28xx' id='control.ws28xx'
                  onclick='toggle(this, "ws28xx")'>WS28xx</input><br/>
+        </div>
+        <div class='control_block'>
           <input type='checkbox' name='station' 
                  value='hideki' id='control.hideki'
                  onclick='toggle(this, "hideki")'>Hideki</input><br/>
-        </div>
-        <div class='control_block'>
           <input type='checkbox' name='station'
                  value='kl' id='control.kl'
                  onclick='toggle(this, "kl")'>Klimalogg</input><br/>
