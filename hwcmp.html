@@ -1061,12 +1061,273 @@ var stations = {
     'sensor_updates': [ 'Wind: 1s or less' ],
     'wireless_range': {'metric': '', 'imperial': ''},
     'power': ['12V DC', '9V battery backup'],
-    'battery_life': [''],
+    'battery_life': [],
     'memory': ['7-8 days of high/low'],
-    'calibration': [''],
+    'calibration': [],
     'calculated': ['windchill'],
     'features': ['rain gauge heater'],
     'driver': 'Ultimeter'
+  },
+
+
+  'rwmk3': {
+    'manufacturer': {'name': 'RainWise', 'url': 'http://www.rainwise.com/'},
+    'family': 'MKIII',
+    'introduced': '?',
+    'pictures': [
+      ['mk3rti.png', 'RainWise MK-III RTI'],
+      ['mk3rtr.png', 'RainWise MK-III RTR'],
+      ['mk3rtn.png', 'RainWise MK-III RTN'],
+      ['mk3pl.png', 'RainWise PortLog'],
+      ['cc3000.png', 'RainWise CC3000']],
+    'models': [
+      'MK-III RTI',
+      'MK-III RTN',
+      'MK-III RTR',
+      'MK-III RTI-LR',
+      'MK-III RTN-LR',
+      'PortLog',
+      'WindLog',
+      'CC-3000',
+      'CC-3000R'],
+    'computer_interface': ['USB', 'RS-232', 'RS-485'],
+    'components': ['Cluster (TH, Rain, Anemometer)', 'RTR: separate Rain'],
+    'configuration': [['cc3000.png', 'CC3000']],
+    'console_temperature': {
+      'metric': {'range': '0-0 &deg;C', 'res': '', 'acc': ''},
+      'imperial': {'range': '0-0 &deg;F', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '0-100%', 'res': '2%', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-54-65 &deg;C', 'res': '0.5 &deg;C', 'acc': ''},
+      'imperial': {'range': '-66-150 &deg;F', 'res': '1 &deg;F', 'acc': ''}},
+    'humidity': {'range': '0-100%', 'res': '2%', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '300-1100 mbar', 'res': '0.5 mbar', 'acc': ''},
+      'imperial': {'range': '8.85-32.48 inHg', 'res': '0.01 inHg', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-240 kph', 'res': '1 kph', 'acc': '2%<br/>Threshold: 0.5 m/s'},
+      'imperial': {'range': '0-150 mph', 'res': '1 mph', 'acc': '2%<br/>Threshold: 0.5 m/s'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
+    'rain': {
+      'metric': {'range': 'unlimited', 'res': '0.25 mm', 'acc': '2%'},
+      'imperial': {'range': 'unlimited', 'res': '0.01 in', 'acc': '2%'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '0-1500 W/m<sup>2</sup>', 'res': '400-1200 nm', 'acc': '5%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [ 'Sensors: 2s', 'Logger: 1 minute - 1 hour' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
+    'power': ['Integrated: Solar', 'Rain: 2 AA'],
+    'battery_life': ['60 days without sun'],
+    'memory': ['2 MB (CC-3000)', '128KB (PortLog)'],
+    'calibration': [],
+    'calculated': [],
+    'features': ['rain bucket heater'],
+    'driver': 'CC3000'
+  },
+
+
+  'wh56xx': {
+    'manufacturer': {'name': 'WeatherHawk', 'url': 'http://www.weatherhawk.com/'},
+    'family': '5xx, 6xx',
+    'introduced': '?',
+    'pictures': [
+      ['wh500.png', 'WH500'],
+      ['wh600.png', 'WH600']],
+    'models': [
+      '510',
+      '511',
+      '521',
+      '610',
+      '611',
+      '620',
+      '621'],
+    'computer_interface': ['Serial','Wireless'],
+    'components': ['Cluster'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-50-60 &deg;C', 'res': '0.1 &deg;C', 'acc': '0.2 &deg;C'},
+      'imperial': {'range': '-58-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '0.36 &deg;F'}},
+    'humidity': {'range': '0-100%', 'res': '0.1%', 'acc': '2%'},
+    'pressure': {
+      'metric': {'range': '8.86-35.44 mbar', 'res': '0.01 mbar', 'acc': ''},
+      'imperial': {'range': '300-1200 inHg', 'res': '0.34 inHg', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-60 m/s', 'res': '0.3 m/s', 'acc': '5%'},
+      'imperial': {'range': '0-134 mph', 'res': '0.67 mph', 'acc': '5%'}},
+    'wind_dir': {'range': '0-359.9&deg;', 'res': '3&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': 'unlimited', 'res': '0.01 mm', 'acc': ''},
+      'imperial': {'range': 'unlimited', 'res': '0.001 in', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '0-2000 W/m<sup>2</sup>', 'res': '300-1100 nm', 'acc': '5%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': ['3 Ahr battery', 'Solar (610,620)', 'AC (611,621)'],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': ['no moving parts'],
+    'driver': ''
+  },
+
+
+  'whsig': {
+    'manufacturer': {'name': 'WeatherHawk', 'url': 'http://www.weatherhawk.com/'},
+    'family': 'Signature',
+    'introduced': '?',
+    'pictures': [['whsig.png', 'WH 232']],
+    'models': [
+      '232',
+      '240',
+      '916',
+      '922'],
+    'computer_interface': ['Wireless'],
+    'components': ['Cluster'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-40-50 &deg;C', 'res': '0.5 &deg;C', 'acc': ''},
+      'imperial': {'range': '-40-122 &deg;F', 'res': '0.9 &deg;F', 'acc': ''}},
+    'humidity': {'range': '0-100%', 'res': '3-5%', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '150-1150 mbar', 'res': '15 mbar', 'acc': ''},
+      'imperial': {'range': '4.43-33.96 inHg', 'res': '0.443 inHg', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-0 kph', 'res': '', 'acc': '1 m/s<br/>Threshold: 0.78 m/s'},
+      'imperial': {'range': '0-0 mph', 'res': '1 mph', 'acc': '2.2 mph'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': 'unlimited', 'res': '1 mm', 'acc': ''},
+      'imperial': {'range': 'unlimited', 'res': '0.04 in', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '0-2000 W/m<sup>2</sup>', 'res': '300-1100 nm', 'acc': '2%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '800 m', 'imperial': '2640 ft (0.5 mile)'},
+    'power': ['0.8 AHr lead-acid', '1.6W or 5W solar panel'],
+    'battery_life': [],
+    'memory': ['128KB RAM', '32,000 data points'],
+    'calibration': [],
+    'calculated': [],
+    'features': ['0.01 inch rain bucket'],
+    'driver': ''
+  },
+
+
+  'twi': {
+    'manufacturer': {'name': 'Texas Weather Instruments', 'url': 'http://txwx.com/'},
+    'family': 'WRx, WLS, WPS',
+    'introduced': '?',
+    'pictures': [
+      ['wrxpagoda.png', 'Pagoda for WR/WRL'],
+      ['wrxconsole.png', 'WRL Console'],
+      ['wls8000.png', 'WLS-8000']],
+    'models': [
+      'NWS',
+      'WLS-8000',
+      'WPS',
+      'WR',
+      'WR-25',
+      'WRL'],
+    'computer_interface': ['RS232'],
+    'components': ['Console', 'Pagoda'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-40-60 &deg;C', 'res': '0.1 &deg;C', 'acc': ''},
+      'imperial': {'range': '-40-130 &deg;F', 'res': '0.2 &deg;F', 'acc': ''}},
+    'humidity': {'range': '0-100%', 'res': '3%', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '948-1151 mbar', 'res': '0.34 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '28-34 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '1.6-320 kph', 'res': '1%', 'acc': '<br/>Threshold: 1.1 m/s'},
+      'imperial': {'range': '1-200 mph', 'res': '1%', 'acc': '<br/>Threshold: 1.1 m/s'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
+    'rain': {
+      'metric': {'range': 'unlimited', 'res': '0.254 mm', 'acc': ''},
+      'imperial': {'range': 'unlimited', 'res': '0.01 in', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '0-1500 W/m<sup>2</sup>', 'res': '400-1100 nm', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['leaf wetness', 'lightning', 'solar radiation'],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': [],
+    'battery_life': [],
+    'memory': ['4000 data points'],
+    'calibration': [],
+    'calculated': [],
+    'features': [],
+    'driver': ''
+  },
+
+
+  'nm': {
+    'manufacturer': {'name': 'New Mountain', 'url': 'http://www.newmountain.com/'},
+    'family': 'NM',
+    'introduced': '?',
+    'pictures': [['nm150.png', 'New Mountain NM100']],
+    'models': ['NM150'],
+    'computer_interface': ['Serial'],
+    'components': ['All-in-One'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-30-50 &deg;C', 'res': '0.1 &deg;C', 'acc': '1.5 &deg;C'},
+      'imperial': {'range': '-22-122 &deg;F', 'res': '0.1 &deg;F', 'acc': '2.7 &deg;F'}},
+    'humidity': {'range': '10-95%', 'res': '4%', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '850-1150 mbar', 'res': '1.5%', 'acc': ''},
+      'imperial': {'range': '25-35 inHg', 'res': '1.5%', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0.96-183.2 kph', 'res': '1.76 kph', 'acc': '0.16 kph'},
+      'imperial': {'range': '0.6-114.5 mph', 'res': '1 mph', 'acc': '0.1 mph'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '1.5&deg;'},
+    'rain': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': ['10-16V DC'],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': ['GPS', '3-axis accelerometer', 'ultrasonic anemometer'],
+    'driver': ''
   },
 
 
