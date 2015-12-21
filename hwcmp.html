@@ -1331,6 +1331,243 @@ var stations = {
   },
 
 
+  'capricorn': {
+    'manufacturer': {'name': 'Columbia', 'url': 'http://www.columbiaweather.com/'},
+    'family': 'Capricorn',
+    'introduced': '?',
+    'pictures': [['capricorn-flx.png', 'Columbia Capricorn']],
+    'models': [
+      'Capricorn FLX',
+      'Capricorn 2000',
+      'Capricorn 2000EX'],
+    'computer_interface': ['RS232'],
+    'components': ['TH', 'Anemometer', 'Rain Bucket', 'UV'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-10-85 &deg;C', 'res': '0.5 &deg;C', 'acc': ''},
+      'imperial': {'range': '14-185 &deg;F', 'res': '0.01 &deg;F', 'acc': '0.9 &deg;F'}},
+    'humidity': {'range': '10-90%', 'res': '1%', 'acc': '3%'},
+    'pressure': {
+      'metric': {'range': '500-1100 mbar', 'res': '0.01 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '14.8-32.5 inHg', 'res': '0.0001 inHg', 'acc': '0.03 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0-256 kph', 'res': '1.6 kph', 'acc': '1%<br/>Threshold: 1.5 kph'},
+      'imperial': {'range': '0-160 mph', 'res': '1 mph', 'acc': '1%<br/>Threshold: 0.9 mph'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '2&deg;', 'acc': '4&deg;'},
+    'rain': {
+      'metric': {'range': '0-0 mm', 'res': '0.254 mm', 'acc': '1%'},
+      'imperial': {'range': '0-0 in', 'res': '0.01 in', 'acc': '1%'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '0-1750 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '5%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Up to 3 remote temperature', 'Solar Radiation',
+      'Tipping Bucket', 'Leaf Wetness', 'Visibility', 'Heated rain gauge'],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': [],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': ['reed switch wind speed', 'heavy duty wind sensor'],
+    'driver': ''
+  },
+
+
+  'orion': {
+    'manufacturer': {'name': 'Columbia', 'url': 'http://www.columbiaweather.com/'},
+    'family': 'Orion',
+    'introduced': '?',
+    'pictures': [['orion.png', 'Columbia Orion']],
+    'models': ['Orion'],
+    'computer_interface': ['RS232'],
+    'components': ['All-in-One Sensor'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-52-60 &deg;C', 'res': '0.0.05 &deg;C', 'acc': '0.25 &deg;C'},
+      'imperial': {'range': '-61.6-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '0.5 &deg;F'}},
+    'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'pressure': {
+      'metric': {'range': '600-1100 mbar', 'res': '0.1 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '17.72-32.48 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0-216 kph', 'res': '0.1 kph', 'acc': '3%'},
+      'imperial': {'range': '0-135 mph', 'res': '0.1 mph', 'acc': '3%'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
+    'rain': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Solar radiation', 'Leaf wetness', 'Heated sensor head'],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': [],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': [
+      'ultrasonic wind speed and directions',
+      'impact rain sensor'],
+    'driver': ''
+  },
+
+
+  'magellan': {
+    'manufacturer': {'name': 'Columbia', 'url': 'http://www.columbiaweather.com/'},
+    'family': 'Magellan',
+    'introduced': '?',
+    'pictures': [['magellan.png', 'Columbian Magellan']],
+    'models': ['Magellan'],
+    'computer_interface': ['RS232'],
+    'components': ['All-in-One Sensor'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-50-50 &deg;C', 'res': '0.1 &deg;C', 'acc': '0.2 &deg;C'},
+      'imperial': {'range': '-58-122 &deg;F', 'res': '0.2 &deg;F', 'acc': '0.4 &deg;F'}},
+    'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'pressure': {
+      'metric': {'range': '600-1100 mbar', 'res': '0.1 mbar', 'acc': '0.35 mbar'},
+      'imperial': {'range': '17.5-32.5 inHg', 'res': '0.003 inHg', 'acc': '0.01 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0-216 kph', 'res': '0.1 kph', 'acc': '0.5 m/s'},
+      'imperial': {'range': '0-134 mph', 'res': '0.1 mph', 'acc': '5%'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '5%'},
+    'rain': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Solar radiation', 'Leaf wetness', 'Visibility'],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': [],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': ['Internal fluxgate compass'],
+    'driver': ''
+  },
+
+
+  'pulsar': {
+    'manufacturer': {'name': 'Columbia', 'url': 'http://www.columbiaweather.com/'},
+    'family': 'Pulsar',
+    'introduced': '?',
+    'pictures': [['pulsar.png', 'Columbia Pulsar']],
+    'models': ['200', '500', '501', '600', '601'],
+    'computer_interface': ['RS232'],
+    'components': ['All-in-One Sensor'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-50-60 &deg;C', 'res': '0.2 &deg;C', 'acc': ''},
+      'imperial': {'range': '-50-140 &deg;F', 'res': '0.4 &deg;F', 'acc': ''}},
+    'humidity': {'range': '0-100%', 'res': '2%', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '300-1200 mbar', 'res': '', 'acc': ''},
+      'imperial': {'range': '8.86-35.44 inHg', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-216 kph', 'res': '0.3 m/s', 'acc': ''},
+      'imperial': {'range': '0-135 mph', 'res': '3%', 'acc': ''}},
+    'wind_dir': {'range': '0-359.9&deg;', 'res': '3&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': 'unlimited', 'res': '0.2 mm', 'acc': '2%'},
+      'imperial': {'range': 'unlimited', 'res': '0.008 in', 'acc': '2%'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '0-1500 W/m<sup>2</sup>', 'res': '20 W/m<sup>2</sup>', 'acc': '3%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Solar radiation (501)', 'Leaf wetness (601)',
+      'Additional temperature', 'Visibility', 'Doppler radar (600)',
+      'Tipping bucket (601)'],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': [],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': [],
+    'driver': ''
+  },
+
+
+  'hobo': {
+    'manufacturer': {'name': 'Onset', 'url': 'http://onsetcomp.com/'},
+    'family': 'HOBO',
+    'introduced': '?',
+    'pictures': [['hobo.png', 'U30-NRC']],
+    'models': [
+      'S-THB-M002',
+      'S-WSA-M003',
+      'S-WDA-003',
+      'U30-NRC'],
+    'computer_interface': ['USB'],
+    'components': ['Sensors', 'Data Logger'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-40-74 &deg;C', 'res': '0.02 &deg;C', 'acc': '0.21 &deg;C'},
+      'imperial': {'range': '-40-167 &deg;F', 'res': '0.04 &deg;F', 'acc': '0.38 &deg;F'}},
+    'humidity': {'range': '0-100%', 'res': '0.1%', 'acc': '2.5%'},
+    'pressure': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-45 m/s', 'res': '0.38 m/s', 'acc': '1.1 m/s<br/>Threshold: 1 m/s'},
+      'imperial': {'range': '0-100 mph', 'res': '0.85 mph', 'acc': '2.4 mph<br/>Threshold: 2.2 mph'}},
+    'wind_dir': {'range': '0-355&deg;', 'res': '1.4&deg;', 'acc': '5&deg;'},
+    'rain': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Up to 10 Smart Sensors'],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': [],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': ['1.2W solar panel'],
+    'driver': ''
+  },
+
+
   'template': {
     'manufacturer': {'name': '', 'url': 'http://.com/'},
     'family': '',
