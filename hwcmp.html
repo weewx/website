@@ -28,7 +28,7 @@
 hs.registerOverlay({
   html: '<div class="closebutton" onclick="return hs.close(this)" title="Close"></div>',
   position: 'top right',
-  fade: 2 // fading the semi-transparent overlay looks bad in IE
+  fade: 2 // fading the translucent overlay looks bad in IE
 });
 hs.graphicsDir = 'highslide/graphics/';
 hs.wrapperClassName = 'borderless';
@@ -55,8 +55,7 @@ var stations = {
       'Vantage Pro 2 6152',
       'Vantage Pro 2 6153',
       'Vantage Pro 2+ 6162',
-      'Vantage Pro 2+ 6163'
-    ],
+      'Vantage Pro 2+ 6163'],
     'pictures': [['vantagepro2.png', 'Vantage Pro 2']],
     'computer_interface': ['Serial', 'USB', 'Ethernet'],
     'components': ['Console', 'ISS (TH, Rain, UV)', 'Anemometer'],
@@ -65,27 +64,22 @@ var stations = {
       ['vpro-wireless.png', 'Vantage Pro Wireless']],
     'console_temperature': {
       'metric': {'range': '0-60 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
-      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
-    },
+      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
     'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
     'temperature': {
       'metric': {'range': '-40-66 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
-      'imperial': {'range': '-40-150 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
-    },
+      'imperial': {'range': '-40-150 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
     'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
     'pressure': {
       'metric': {'range': '540-1100 mbar', 'res': '0.34 mbar', 'acc': '1 mbar'},
-      'imperial': {'range': '16-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}
-    },
+      'imperial': {'range': '16-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}},
     'wind_speed': {
       'metric': {'range': '3-220 kph', 'res': '1.5 kph', 'acc': '2% or 5%'},
-      'imperial': {'range': '2-150 mph', 'res': '1 mph', 'acc': '2% or 5%'}
-    },
+      'imperial': {'range': '2-150 mph', 'res': '1 mph', 'acc': '2% or 5%'}},
     'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
     'rain': {
       'metric': {'range': '0-5080 mm', 'res': '0.254 mm', 'acc': '4%'},
-      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}
-    },
+      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}},
     'uv': {'range': '0-16', 'res': '0.1', 'acc': '5%'},
     'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '5%'},
     'luminosity': {'range':'', 'res':'', 'acc':''},
@@ -96,8 +90,7 @@ var stations = {
       'Soil Moisture/Temperature',
       'Leaf Wetness',
       'Water Temperature',
-      'Temperature/Humidity'
-    ],
+      'Temperature/Humidity'],
     'sensor_updates': [ '2.5s' ],
     'wireless_range': {'metric': '330 m', 'imperial': '1000 ft'},
     'power': ['Console: 3 C or AC', 'ISS: solar'],
@@ -107,8 +100,7 @@ var stations = {
     'calculated': ['sunrise', 'sunset', 'barometer'],
     'features': [
       'separate data logger required to connect console to computer',
-      'optional rain bucket heater'
-    ],
+      'optional rain bucket heater'],
     'driver': 'Vantage'
   },
 
@@ -120,34 +112,28 @@ var stations = {
     'pictures': [ ['vantagevue.png', 'Vantage Vue'] ],
     'models': [
       'Vantage Vue',
-      'Vantage Vue 6250'
-    ],
+      'Vantage Vue 6250'],
     'computer_interface': ['USB'],
     'components': ['Console', 'ISS (TH, Rain, UV, Anemometer)'],
     'configuration': [['vvue.png', 'Vantage Vue']],
     'console_temperature': {
       'metric': {'range': '0-60 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
-      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
-    },
+      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
     'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
     'temperature': {
       'metric': {'range': '-40-66 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
-      'imperial': {'range': '-40-150 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
-    },
+      'imperial': {'range': '-40-150 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
     'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
     'pressure': {
       'metric': {'range': '540-1100 mbar', 'res': '0.34 mbar', 'acc': '1 mbar'},
-      'imperial': {'range': '16-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}
-    },
+      'imperial': {'range': '16-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}},
     'wind_speed': {
       'metric': {'range': '3-220 kph', 'res': '1.5 kph', 'acc': '2% or 5%'},
-      'imperial': {'range': '2-150 mph', 'res': '1 mph', 'acc': '2% or 5%'}
-    },
+      'imperial': {'range': '2-150 mph', 'res': '1 mph', 'acc': '2% or 5%'}},
     'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
     'rain': {
       'metric': {'range': '0-5080 mm', 'res': '0.254 mm', 'acc': '4%'},
-      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}
-    },
+      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}},
     'uv': {'range': '0-16', 'res': '0.1', 'acc': '5%'},
     'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '5%'},
     'luminosity': {'range':'', 'res':'', 'acc':''},
@@ -162,8 +148,7 @@ var stations = {
     'calibration': ['altitude', 'latitude', 'longitude', 'time zone'],
     'calculated': ['sunrise', 'sunset', 'barometer'],
     'features': [
-      'separate data logger required to connect console to computer'
-    ],
+      'separate data logger required to connect console to computer'],
     'driver': 'Vantage'
   },
 
@@ -175,35 +160,29 @@ var stations = {
     'models': [
       'Envoy',
       'Envoy 6316',
-      'Envoy 6318'
-    ],
+      'Envoy 6318'],
     'pictures': [['envoy.png', 'Envoy']],
     'computer_interface': ['USB', 'Ethernet'],
     'components': ['Receiver', 'ISS (TH, Rain, UV)', 'Anemometer'],
     'configuration': [ ['envoy.png', 'Envoy']],
     'console_temperature': {
       'metric': {'range': '0-60 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
-      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
-    },
+      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
     'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
     'temperature': {
       'metric': {'range': '', 'res': '', 'acc': ''},
-      'imperial': {'range': '', 'res': '', 'acc': ''}
-    },
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
     'humidity': {'range': '', 'res': '', 'acc': ''},
     'pressure': {
       'metric': {'range': '540-1100 mbar', 'res': '0.34 mbar', 'acc': '1 mbar'},
-      'imperial': {'range': '16-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}
-    },
+      'imperial': {'range': '16-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.03 inHg'}},
     'wind_speed': {
       'metric': {'range': '', 'res': '', 'acc': ''},
-      'imperial': {'range': '', 'res': '', 'acc': ''}
-    },
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
     'wind_dir': {'range': '', 'res': '', 'acc': ''},
     'rain': {
       'metric': {'range': '', 'res': '', 'acc': ''},
-      'imperial': {'range': '', 'res': '', 'acc': ''}
-    },
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
     'uv': {'range': '', 'res': '', 'acc': ''},
     'solar_radiation': {'range': '', 'res': '', 'acc': ''},
     'luminosity': {'range':'', 'res':'', 'acc':''},
@@ -215,8 +194,7 @@ var stations = {
       'Soil Moisture/Temperature',
       'Leaf Wetness',
       'Water Temperature',
-      'Temperature/Humidity'
-    ],
+      'Temperature/Humidity'],
     'sensor_updates': [ '2.5s' ],
     'wireless_range': {'metric': '330 m', 'imperial': '1000 ft'},
     'power': ['Receiver: AC'],
@@ -225,8 +203,7 @@ var stations = {
     'calibration': ['altitude', 'latitude', 'longitude', 'time zone'],
     'calculated': ['sunrise', 'sunset', 'barometer'],
     'features': [
-      'separate data logger required to connect receiver to computer'
-    ],
+      'separate data logger required to connect receiver to computer'],
     'driver': 'Vantage'
   },
 
@@ -240,7 +217,7 @@ var stations = {
       ['ws1090.png', '1090/1091'],
       ['ws2080.png', '2080/2081'],
       ['ws2090.png', '2090'],
-      ['wh3080.png', '3080/3081'] ],
+      ['wh3080.png', '3080/3081']],
     'models': [
       'Aercus WS2083',
       'Aercus WS3083',
@@ -258,34 +235,28 @@ var stations = {
       'Tycon TP1080WC',
       'Watson W-8681',
       'Watson WX-2008',
-      'Velleman WS3080'
-    ],
+      'Velleman WS3080'],
     'computer_interface': ['USB'],
     'components': ['Console', 'TH', 'Rain', 'Anemometer', 'UV (30xx)'],
     'configuration': [['fousb.png', 'WH/WS 10xx/20xx/30xx']],
     'console_temperature': {
       'metric': {'range': '0-60 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
-      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}
-    },
+      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
     'console_humidity': {'range': '10-99%', 'res': '1%', 'acc': '5%'},
     'temperature': {
       'metric': {'range': '-40-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
-      'imperial': {'range': '-40-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}
-    },
+      'imperial': {'range': '-40-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
     'humidity': {'range': '10-99%', 'res': '1%', 'acc': '5%'},
     'pressure': {
       'metric': {'range': '300-1100 mbar', 'res': '0.34 mbar', 'acc': '2.7 mbar'},
-      'imperial': {'range': '8.85-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.08 inHg'}
-    },
+      'imperial': {'range': '8.85-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.08 inHg'}},
     'wind_speed': {
       'metric': {'range': '0-164 kph', 'res': '0.15 kph', 'acc': '3.2% or 10%'},
-      'imperial': {'range': '0-112 mph', 'res': '0.1 mph', 'acc': '2.2 mph or 10%'}
-    },
+      'imperial': {'range': '0-112 mph', 'res': '0.1 mph', 'acc': '2.2 mph or 10%'}},
     'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '22.5&deg;'},
     'rain': {
       'metric': {'range': '0-9999 mm', 'res': '0.3 mm', 'acc': '10%'},
-      'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': '10%'}
-    },
+      'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': '10%'}},
     'uv': {'range': '0-16', 'res': '', 'acc': ''},
     'solar_radiation': {'range': '', 'res': '', 'acc': ''},
     'luminosity': {'range':'0-400k Lux', 'res':'', 'acc':''},
@@ -299,9 +270,7 @@ var stations = {
     'memory': ['4080 records', '3264 records (30xx)'],
     'calibration': ['time zone', 'pressure offset', 'temperature (2080A)', 'humidity (2080A)'],
     'calculated': [],
-    'features': [
-      'WWVB', 'touch screen (10xx)', 'multiple consoles'
-    ],
+    'features': ['WWVB', 'touch screen (10xx)', 'multiple consoles'],
     'driver': 'FineOffsetUSB'
   },
 
@@ -312,15 +281,14 @@ var stations = {
     'introduced': '2014',
     'pictures': [
       ['hp1000.png', '1000/1003'],
-      ['ws1400ip.png', '1000/1003'] ],
+      ['ws1400ip.png', '1000/1003']],
     'models': [
       'HP1000',
       'HP1003',
       'Ambient Weather WS-1001-WiFi',
       'Ambient Weather WS-1200',
       'Ambient Weather WS-1200-IP',
-      'Ambient Weather WS-1400-IP'
-    ],
+      'Ambient Weather WS-1400-IP'],
     'computer_interface': ['WiFi'],
     'components': ['Console', 'Cluster (TH, Rain, Anemometer)', 'Indoor Sensor'],
     'configuration': [
@@ -328,27 +296,22 @@ var stations = {
       ['fohp-bridge.png', 'HP 100x']],
     'console_temperature': {
       'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
-      'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}
-    },
+      'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
     'console_humidity': {'range': '1-99%', 'res': '1%', 'acc': '5%'},
     'temperature': {
       'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
-      'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}
-    },
+      'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
     'humidity': {'range': '1-99%', 'res': '1', 'acc': '5%'},
     'pressure': {
       'metric': {'range': '300-1100 mbar', 'res': '0.34 mbar', 'acc': '2.7 mbar'},
-      'imperial': {'range': '8.85-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.08 inHg'}
-    },
+      'imperial': {'range': '8.85-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.08 inHg'}},
     'wind_speed': {
       'metric': {'range': '0-160 kph', 'res': '0.15 kph', 'acc': '3.2 kph or 10%'},
-      'imperial': {'range': '0-100 mph', 'res': '0.1 mph', 'acc': '2.2 mph or 10%'}
-    },
+      'imperial': {'range': '0-100 mph', 'res': '0.1 mph', 'acc': '2.2 mph or 10%'}},
     'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '22.5&deg;'},
     'rain': {
       'metric': {'range': '0-9999 mm', 'res': '0.3 mm', 'acc': '10%'},
-      'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': '10%'}
-    },
+      'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': '10%'}},
     'uv': {'range': '', 'res': '', 'acc': ''},
     'solar_radiation': {'range': '', 'res': '', 'acc': ''},
     'luminosity': {'range':'0-400k Lux', 'res':'', 'acc':''},
@@ -374,40 +337,34 @@ var stations = {
     'pictures': [
       ['wmr918.png', 'WMR918'],
       ['wmr928n.png', 'WMR928N'],
-      ['wmr968.png', 'WMR968'] ],
+      ['wmr968.png', 'WMR968']],
     'models': [
       'WMR918',
       'WMR928N',
       'WMR968',
       'Huger WM918',
-      'Radio Shack 63-1016'
-    ],
+      'Radio Shack 63-1016'],
     'computer_interface': ['Serial'],
     'components': ['Console', 'TH', 'Rain', 'Anemometer'],
     'configuration': [['wmr9x8.png', 'WMR9x8']],
     'console_temperature': {
       'metric': {'range': '-5-50 &deg;C', 'res': '0.1 &deg;C', 'acc': ''},
-      'imperial': {'range': '23-122 &deg;F', 'res': '0.2 &deg;F', 'acc': ''}
-    },
+      'imperial': {'range': '23-122 &deg;F', 'res': '0.2 &deg;F', 'acc': ''}},
     'console_humidity': {'range': '2-98%', 'res': '1%', 'acc': ''},
     'temperature': {
       'metric': {'range': '-20-60 &deg;C', 'res': '0.1 &deg;C', 'acc': ''},
-      'imperial': {'range': '-4-140 &deg;F', 'res': '0.2 &deg;F', 'acc': ''}
-    },
+      'imperial': {'range': '-4-140 &deg;F', 'res': '0.2 &deg;F', 'acc': ''}},
     'humidity': {'range': '2-98%', 'res': '1%', 'acc': ''},
     'pressure': {
       'metric': {'range': '795-1050 mbar', 'res': '1 mbar', 'acc': ''},
-      'imperial': {'range': '23.48-31.01 inHg', 'res': '0.03 inHg', 'acc': ''}
-    },
+      'imperial': {'range': '23.48-31.01 inHg', 'res': '0.03 inHg', 'acc': ''}},
     'wind_speed': {
       'metric': {'range': '0-184 kph', 'res': '0.59 kph', 'acc': ''},
-      'imperial': {'range': '0-125.3 mph', 'res': '0.4 mph', 'acc': ''}
-    },
+      'imperial': {'range': '0-125.3 mph', 'res': '0.4 mph', 'acc': ''}},
     'wind_dir': {'range': '0-359&deg;', 'res': '1&deg;', 'acc': ''},
     'rain': {
       'metric': {'range': '0-9999 mm', 'res': '1 mm', 'acc': ''},
-      'imperial': {'range': '0-394 in', 'res': '0.04 in', 'acc': ''}
-    },
+      'imperial': {'range': '0-394 in', 'res': '0.04 in', 'acc': ''}},
     'uv': {'range': '', 'res': '', 'acc': ''},
     'solar_radiation': {'range': '', 'res': '', 'acc': ''},
     'luminosity': {'range':'', 'res':'', 'acc':''},
@@ -434,40 +391,34 @@ var stations = {
       ['wmr88a.png', 'WMR88'],
       ['wmr100.png', 'WMR100'],
       ['wmr180.png', 'WMR180'],
-      ['wmrs200.png', 'WMRS200'] ],
+      ['wmrs200.png', 'WMRS200']],
     'models': [
       'WMR88',
       'WMR100',
       'WMR100N',
       'WMR180',
-      'WMRS200'
-    ],
+      'WMRS200'],
     'computer_interface': ['USB'],
     'components': ['Console', 'TH', 'Rain', 'Anemometer'],
     'configuration': [['wmr100.png', 'WMR100']],
     'console_temperature': {
       'metric': {'range': '-20-53 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
-      'imperial': {'range': '-4-148 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}
-    },
+      'imperial': {'range': '-4-148 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}},
     'console_humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
     'temperature': {
       'metric': {'range': '-46-79 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
-      'imperial': {'range': '-50-158 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}
-    },
+      'imperial': {'range': '-50-158 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}},
     'humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
     'pressure': {
       'metric': {'range': '700-1050 mbar', 'res': '0.34 mbar', 'acc': '9.82 mbar'},
-      'imperial': {'range': '20.67-31.01 inHg', 'res': '0.01 inHg', 'acc': '0.29 inHg'}
-    },
+      'imperial': {'range': '20.67-31.01 inHg', 'res': '0.01 inHg', 'acc': '0.29 inHg'}},
     'wind_speed': {
       'metric': {'range': '3-183 kph', 'res': '1.5 kph', 'acc': '10%'},
-      'imperial': {'range': '2-125 mph', 'res': '1 mph', 'acc': '10%'}
-    },
+      'imperial': {'range': '2-125 mph', 'res': '1 mph', 'acc': '10%'}},
     'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '10%'},
     'rain': {
       'metric': {'range': '0-9999.99 mm', 'res': '1 mm', 'acc': '5%'},
-      'imperial': {'range': '0-393.7 in', 'res': '0.04 in', 'acc': '5%'}
-    },
+      'imperial': {'range': '0-393.7 in', 'res': '0.04 in', 'acc': '5%'}},
     'uv': {'range': '', 'res': '', 'acc': ''},
     'solar_radiation': {'range': '', 'res': '', 'acc': ''},
     'luminosity': {'range':'', 'res':'', 'acc':''},
@@ -492,37 +443,31 @@ var stations = {
     'introduced': '?',
     'pictures': [
       ['wmr200.png', 'WMR200'],
-      ['wmr200a.png', 'WMR200A'] ],
+      ['wmr200a.png', 'WMR200A']],
     'models': [
       'WMR200',
-      'WMR200A'
-    ],
+      'WMR200A'],
     'computer_interface': ['USB'],
     'components': ['Console', 'TH', 'Rain', 'Anemometer'],
     'configuration': [['wmr100.png', 'WMR100']],
     'console_temperature': {
       'metric': {'range': '-20-53 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
-      'imperial': {'range': '-4-148 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}
-    },
+      'imperial': {'range': '-4-148 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}},
     'console_humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
     'temperature': {
       'metric': {'range': '-46-79 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
-      'imperial': {'range': '-50-158 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}
-    },
+      'imperial': {'range': '-50-158 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}},
     'humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
     'pressure': {
       'metric': {'range': '700-1050 mbar', 'res': '0.01 mbar', 'acc': '9.82 mbar'},
-      'imperial': {'range': '20.67-31.01 inHg', 'res': '0.01 inHg', 'acc': '0.29 inHg'}
-    },
+      'imperial': {'range': '20.67-31.01 inHg', 'res': '0.01 inHg', 'acc': '0.29 inHg'}},
     'wind_speed': {
       'metric': {'range': '3-183 kph', 'res': '1.5 kph', 'acc': '10%'},
-      'imperial': {'range': '2-125 mph', 'res': '1 mph', 'acc': '10%'}
-    },
+      'imperial': {'range': '2-125 mph', 'res': '1 mph', 'acc': '10%'}},
     'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '10%'},
     'rain': {
       'metric': {'range': '0-9999.99 mm', 'res': '1 mm', 'acc': '5%'},
-      'imperial': {'range': '0-393.7 in', 'res': '0.04 in', 'acc': '5%'}
-    },
+      'imperial': {'range': '0-393.7 in', 'res': '0.04 in', 'acc': '5%'}},
     'uv': {'range': '', 'res': '', 'acc': ''},
     'solar_radiation': {'range': '', 'res': '', 'acc': ''},
     'luminosity': {'range':'', 'res':'', 'acc':''},
@@ -548,34 +493,28 @@ var stations = {
     'pictures': [ ['wmr300.png', 'WMR300'] ],
     'models': [
       'WMR300',
-      'WMR300A'
-    ],
+      'WMR300A'],
     'computer_interface': ['USB'],
     'components': ['Console', 'Cluster (TH, Rain, UV)', 'Anemometer'],
     'configuration': [['wmr300.png', 'WMR300']],
     'console_temperature': {
       'metric': {'range': '0-60 &deg;C', 'res': '0.1 &deg;C', 'acc': '0.5 &deg;C'},
-      'imperial': {'range': '0-140 &deg;F', 'res': '0.2 &deg;F', 'acc': '1 &deg;F'}
-    },
+      'imperial': {'range': '0-140 &deg;F', 'res': '0.2 &deg;F', 'acc': '1 &deg;F'}},
     'console_humidity': {'range': '0-99%', 'res': '1%', 'acc': '3%'},
     'temperature': {
       'metric': {'range': '-40-65 &deg;C', 'res': '0.1 &deg;C', 'acc': '0.5 &deg;C'},
-      'imperial': {'range': '-40-149 &deg;F', 'res': '0.2 &deg;F', 'acc': '1 &deg;F'}
-    },
+      'imperial': {'range': '-40-149 &deg;F', 'res': '0.2 &deg;F', 'acc': '1 &deg;F'}},
     'humidity': {'range': '0-99%', 'res': '1%', 'acc': '3%'},
     'pressure': {
       'metric': {'range': '540-1100 mbar', 'res': '0.1 mbar', 'acc': '1 mbar'},
-      'imperial': {'range': '16-32.5 inHg', 'res': '0.003 inHg', 'acc': '0.03 inHg'}
-    },
+      'imperial': {'range': '16-32.5 inHg', 'res': '0.003 inHg', 'acc': '0.03 inHg'}},
     'wind_speed': {
       'metric': {'range': '0-80 m/s', 'res': '0.1 m/s', 'acc': '0.9 m/s to 5% (over 18 m/s)'},
-      'imperial': {'range': '0-179 mph', 'res': '0.2 mph', 'acc': '1 mph to 5% (over 40 mph)'}
-    },
+      'imperial': {'range': '0-179 mph', 'res': '0.2 mph', 'acc': '1 mph to 5% (over 40 mph)'}},
     'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
     'rain': {
       'metric': {'range': '0-5080 mm', 'res': '0.254 mm', 'acc': '4%'},
-      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}
-    },
+      'imperial': {'range': '0-199.99 in', 'res': '0.01 in', 'acc': '4%'}},
     'uv': {'range': '', 'res': '', 'acc': ''},
     'solar_radiation': {'range': '', 'res': '', 'acc': ''},
     'luminosity': {'range':'', 'res':'', 'acc':''},
@@ -600,37 +539,31 @@ var stations = {
     'introduced': '?',
     'pictures': [
       ['lw301.png', 'LW301'],
-      ['lw302.png', 'LW302'] ],
+      ['lw302.png', 'LW302']],
     'models': [
       'LW301',
-      'LW302'
-    ],
+      'LW302'],
     'computer_interface': ['WiFi'],
     'components': ['Bridge', 'Receiver', 'TH', 'Rain', 'Anemometer'],
     'configuration': [['lw301.png', 'LW301']],
     'console_temperature': {
       'metric': {'range': '-50-70 &deg;C', 'res': '0.1 &deg;C', 'acc': '1-3 &deg;C'},
-      'imperial': {'range': '-58-158 &deg;F', 'res': '0.1 &deg;F', 'acc': '2-6 &deg;F'}
-    },
+      'imperial': {'range': '-58-158 &deg;F', 'res': '0.1 &deg;F', 'acc': '2-6 &deg;F'}},
     'console_humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
     'temperature': {
       'metric': {'range': '-50-70 &deg;C', 'res': '0.1 &deg;C', 'acc': '1-3 &deg;C'},
-      'imperial': {'range': '-58-158 &deg;F', 'res': '0.1 &deg;F', 'acc': '2-6 &deg;F'}
-    },
+      'imperial': {'range': '-58-158 &deg;F', 'res': '0.1 &deg;F', 'acc': '2-6 &deg;F'}},
     'humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
     'pressure': {
       'metric': {'range': '700-1050 mbar', 'res': '1.0 mbar', 'acc': '10 mbar'},
-      'imperial': {'range': '20.67-31 inHg', 'res': '0.029 inHg', 'acc': '0.3 inHg'}
-    },
+      'imperial': {'range': '20.67-31 inHg', 'res': '0.029 inHg', 'acc': '0.3 inHg'}},
     'wind_speed': {
       'metric': {'range': '0-56 m/s', 'res': '1 m/s', 'acc': '3 m/s or 10%'},
-      'imperial': {'range': '0-125 mph', 'res': '2 mph', 'acc': '6 mph or 10%'}
-    },
+      'imperial': {'range': '0-125 mph', 'res': '2 mph', 'acc': '6 mph or 10%'}},
     'wind_dir': {'range': '0-360', 'res': '22.5%', 'acc': '22.5%'},
     'rain': {
       'metric': {'range': '0-999 mm/hr', 'res': '1 mm/hr', 'acc': '1 mm to 7%'},
-      'imperial': {'range': '0-40 in', 'res': '0.04 in', 'acc': '0.04 in to 7%'}
-    },
+      'imperial': {'range': '0-40 in', 'res': '0.04 in', 'acc': '0.04 in to 7%'}},
     'uv': {'range': '0-16', 'res': '0.0', 'acc': '1%'},
     'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '1%'},
     'luminosity': {'range':'', 'res':'', 'acc':''},
@@ -649,43 +582,525 @@ var stations = {
   },
 
 
+  'acurite_5in1': {
+    'manufacturer': {'name': 'Acurite', 'url': 'http://www.acurite.com/'},
+    'family': '5-in-1',
+    'introduced': '2011',
+    'pictures': [
+      ['01035.png', '01035'],
+      ['01036.png', '01036'],
+      ['01525.png', '05125'],
+      ['02032c.png', '02032C'],
+      ['02064c.png', '02064C']],
+    'models': [
+      '01025',
+      '01025RX',
+      '01035',
+      '01036',
+      '01036CA1',
+      '01050',
+      '01057',
+      '01525',
+      '02032',
+      '02032C',
+      '02064C' ],
+    'computer_interface': ['USB'],
+    'components': ['Console', '5-in-1 (TH, Rain, Anemoeter)'],
+    'configuration': [['acurite.png', 'Acurite 5-in-1']],
+    'console_temperature': {
+      'metric': {'range': '0-50 &deg;C', 'res': '8 &deg;C', 'acc': ''},
+      'imperial': {'range': '32-122 &deg;F', 'res': '4 &deg;F', 'acc': ''}},
+    'console_humidity': {'range': '16-98%', 'res': '5%', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-40-158 &deg;C', 'res': '8 &deg;C', 'acc': ''},
+      'imperial': {'range': '-40-122 &deg;F', 'res': '4 &deg;F', 'acc': ''}},
+    'humidity': {'range': '0-99%', 'res': '5%', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '0-0 mbar', 'res': '0.0 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '0-0 inHg', 'res': '0.0 inHg', 'acc': '1 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0-159 kph', 'res': '9 kph', 'acc': ''},
+      'imperial': {'range': '0-99 mph', 'res': '5 mph', 'acc': ''}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': '0-2539.75 mm', 'res': '0.254 mm', 'acc': '1.27 mm'},
+      'imperial': {'range': '0-99.99 in', 'res': '0.01 in', 'acc': '0.05 in'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [
+      'Wind: 18s', 'Wind direction: 30s',
+      'Temperature: 36s', 'Humidity: 36s',
+      'Indoor Temperature: 60s', 'Indoor Humidity: 60s' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
+    'power': ['Console: 5V  DC or 6 AA', '5-in-1: 4 AA'],
+    'battery_life': ['18 mo'],
+    'memory': ['512KB', 'about two weeks'],
+    'calibration': ['temperature', 'humidity', 'rain'],
+    'calculated': [''],
+    'features': ['multiple consoles'],
+    'driver': 'AcuRite'
+  },
+
+
+  'acurite_bridge': {
+    'manufacturer': {'name': 'Acurite', 'url': 'http://www.acurite.com/'},
+    'family': 'Bridge',
+    'introduced': '2011',
+    'pictures': [
+      ['09150trx.png', 'bridge']],
+    'models': [ '09150' ],
+    'computer_interface': ['USB'],
+    'components': ['Bridge', '5-in-1', '3-in-1', 'TH'],
+    'configuration': [['acurite-bridge.png', 'Acurite Bridge']],
+    'console_temperature': {
+      'metric': {'range': '0-50 &deg;C', 'res': '8 &deg;C', 'acc': ''},
+      'imperial': {'range': '32-122 &deg;F', 'res': '4 &deg;F', 'acc': ''}},
+    'console_humidity': {'range': '16-98%', 'res': '5%', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'humidity': {'range': '', 'res': '', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '0-0 mbar', 'res': '0.0 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '0-0 inHg', 'res': '0.0 inHg', 'acc': '1 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'wind_dir': {'range': '', 'res': '', 'acc': ''},
+    'rain': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['5-in-1','3-in-1','TH'],
+    'sensor_updates': [ ],
+    'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
+    'power': ['Bridge: 5V  DC'],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': [],
+    'driver': ''
+  },
+
+
+  'ws23xx': {
+    'manufacturer': {'name': 'LaCrosse', 'url': 'http://www.lacrossetechnology.com/'},
+    'family': 'WS-23XX',
+    'introduced': '2000?',
+    'pictures': [
+      ['ws2308.png', 'WS-2308'],
+      ['ws2310.png', 'WS-2310'],
+      ['ws2317.png', 'WS-2317']],
+    'models': [
+      'WS2308',
+      'WS2310',
+      'WS2315',
+      'WS2317',
+      'TFA Matrix',
+      'TechnoLine 2350'],
+    'computer_interface': ['Serial'],
+    'components': ['Console', 'TH', 'Rain', 'Anemometer'],
+    'configuration': [
+      ['ws23xx-wired.png', 'WS23xx Wired'],
+      ['ws23xx-wireless.png', 'WS23xx Wireless']],
+    'console_temperature': {
+      'metric': {'range': '-9-60 &deg;C', 'res': '0.1 &deg;C', 'acc': ''},
+      'imperial': {'range': '14.2-139.8 &deg;F', 'res': '0.2 &deg;F', 'acc': ''}},
+    'console_humidity': {'range': '1-99%', 'res': '1%', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-30-70 &deg;C', 'res': '0.1 &deg;C', 'acc': ''},
+      'imperial': {'range': '-21.8-157.8 &deg;F', 'res': '0.2 &deg;F', 'acc': ''}},
+    'humidity': {'range': '1-99%', 'res': '', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '300-1099 mbar', 'res': '', 'acc': ''},
+      'imperial': {'range': '8.86-32.45 inHg', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-164 kph', 'res': '0.15 kph', 'acc': ''},
+      'imperial': {'range': '0-111.8 mph', 'res': '0.1 mph', 'acc': ''}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': '0-2500 mm', 'res': '0.518 mm', 'acc': ''},
+      'imperial': {'range': '0-98.42 in', 'res': '0.02 in', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [
+      'Wind (wireless):',
+      '32s when &gt; 22.36 mph',
+      '128s when &lt; 22.36 mph',
+      '10 minutes after 5 failed attempts',
+      'Wind (wired): 8s',
+      'Pressure: 15s',
+      'Temperature: 15s',
+      'Humidity: 20s' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '330 ft'},
+    'power': ['Console: 3 AA or AC', 'TH: 2 AA or AC'],
+    'battery_life': ['12 mo (wireless)', '6 mo (wired)'],
+    'memory': ['175 records'],
+    'calibration': [''],
+    'calculated': ['windchill', 'dewpoint'],
+    'features': ['WWVB'],
+    'driver': '23xx'
+  },
+
+
+  'ws28xx': {
+    'manufacturer': {'name': 'LaCrosse', 'url': 'http://www.lacrossetechnology.com/'},
+    'family': 'WS-28XX',
+    'introduced': '2007',
+    'pictures': [
+      ['ws2810.png', 'WS-2810'],
+      ['ws2812.png', 'WS-2812'],
+      ['c86234.png', 'WS-2814/C86234']],
+    'models': [
+      'WS2810', 'WS2811', 'WS2812', 'WS2814',
+      'C86234', 'TFA Primus', 'TFA Opus'],
+    'computer_interface': ['USB'],
+    'components': ['Transceiver', 'Console', 'TH', 'Rain', 'Anemometer'],
+    'configuration': [['ws28xx.png', 'WS28xx']],
+    'console_temperature': {
+      'metric': {'range': '5-40 &deg;C', 'res': '', 'acc': ''},
+      'imperial': {'range': '41-104 &deg;F', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '3-99%', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-40-60 &deg;C', 'res': '', 'acc': ''},
+      'imperial': {'range': '-40-139.8 &deg;F', 'res': '', 'acc': ''}},
+    'humidity': {'range': '3-99%', 'res': '', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '918-1080 mbar', 'res': '', 'acc': ''},
+      'imperial': {'range': '27.10-31.90 inHg', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-164 kph', 'res': '0.32 kph', 'acc': ''},
+      'imperial': {'range': '0-111.8 mph', 'res': '0.22 mph', 'acc': ''}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': '0-9999 mm', 'res': '0.26 mm', 'acc': ''},
+      'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [ 'Temperature: 13s', 'Humidity: 13s',
+      'Pressure: 15s', 'Wind: 17s', 'Rain: 19s' ],
+    'wireless_range': {
+      'metric': 'Console: 15m<br/>TH: 60m<br/>Wind: 60m<br/>Rain: 60m',
+      'imperial': 'Console: 50 ft<br/>TH: 200 ft<br/>Wind: 200 ft<br/>Rain: 200 ft'},
+    'power': ['Console: 2 C', 'TH: 2 C', 'Rain: 2 AA', 'Wind: solar'],
+    'battery_life': ['Console: 9 mo', 'TH: 1 yr', 'Rain: 1 yr'],
+    'memory': ['1797 records'],
+    'calibration': [''],
+    'calculated': [''],
+    'features': [''],
+    'driver': 'WS28xx'
+  },
+
+
+  'hideki': {
+    'manufacturer': {'name': 'Hideki', 'url': 'http://www.hidekielectronics.com/'},
+    'family': 'TE923',
+    'introduced': '2006',
+    'pictures': [
+      ['dv928.png', 'DV928'],
+      ['te923.png', 'TE923'],
+      ['te831.png', 'TE831'],
+      ['ws1640.png', 'TE838']],
+    'models': [
+      'Cresta WRX815',
+      'Cresta PWS720',
+      'Honeywell TE831W-2',
+      'Honeywell TE821W',
+      'Honeywell TE923W',
+      'Honeywell TN924W',
+      'IROX Pro X',
+      'Lacrosse WS1640',
+      'Meade TE923W',
+      'Meade TE923W-M',
+      'Meade TE924W',
+      'Mebus TE923',
+      'TFA Nexus',
+      'TFA Siinus',
+      'Ventus W831',
+      'Ventus W928'],
+    'computer_interface': ['USB'],
+    'components': ['Console', 'TH', 'Rain', 'Anemometer', 'UV'],
+    'configuration': [['hideki.png', 'TE923/TE924']],
+    'console_temperature': {
+      'metric': {'range': '0-0 &deg;C', 'res': '0.0 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '0-0 &deg;F', 'res': '0.0 &deg;F', 'acc': '1 &deg;F'}},
+    'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'temperature': {
+      'metric': {'range': '-0-0 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-0-0 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
+    'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
+    'pressure': {
+      'metric': {'range': '0-0 mbar', 'res': '0.0 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '0-0 inHg', 'res': '0.0 inHg', 'acc': '1 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0-0 kph', 'res': '1 kph', 'acc': '1%'},
+      'imperial': {'range': '0-0 mph', 'res': '1 mph', 'acc': '1%'}},
+    'wind_dir': {'range': '0-0&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
+    'rain': {
+      'metric': {'range': '0-0 mm', 'res': '0.0 mm', 'acc': '1%'},
+      'imperial': {'range': '0-0 in', 'res': '0.0 in', 'acc': '1%'}},
+    'uv': {'range': '0-16', 'res': '0.0', 'acc': '1%'},
+    'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '1%'},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Up to 5 remote TH sensors'],
+    'sensor_updates': [ 'Console', 'Pressure: 20m', 'Temperature: 10s',
+      'Remote', 'Temperature: 47s', 'Humidity: 47s', 'Rain: 183s',
+      'Wind Speed Display: 33s', 'Wind Speed Sampling: 11s', 'Wind Direction: 33s' ],
+    'wireless_range': {
+      'metric': 'TH: 100m<br/>Rain: 30m<br/>Wind: 30m<br/>UV: 100m',
+      'imperial': 'TH: 330ft<br/>Rain: 100ft<br/>Wind: 100ft<br/>UV: 330ft'},
+    'power': ['Console: 2 AA or AC', 'TH: 2 AA', 'Rain: 2 AA', 'Wind: 2 AA', 'UV: 2 AA'],
+    'battery_life': ['Console: 2 mo', 'TH: 2 12 mo', 'Rain: 2 yr', 'Wind: 2 yr', 'UV: 2 yr'],
+    'memory': ['200 records', '3000 records (TE831)'],
+    'calibration': ['altitude', 'latitude', 'longitude'],
+    'calculated': ['windchill', 'sunrise', 'sunset', 'barometer'],
+    'features': ['WWVB', 'remote control'],
+    'driver': 'TE923'
+  },
+
+
+  'kl': {
+    'manufacturer': {'name': 'TFA', 'url': 'http://www.tfa-dostmann.de/'},
+    'family': 'KlimaLogg',
+    'introduced': '2008',
+    'pictures': [['klpro.png', 'KlimaLogg Pro']],
+    'models': ['KlimaLogg Pro'],
+    'computer_interface': ['USB'],
+    'components': ['Transceiver', 'Console', 'TH'],
+    'configuration': [['kl.png', 'KlimaLogg']],
+    'console_temperature': {
+      'metric': {'range': '0-50 &deg;C', 'res': '1 &deg;C', 'acc': ''},
+      'imperial': {'range': '32-112 &deg;F', 'res': '2 &deg;F', 'acc': ''}},
+    'console_humidity': {'range': '1-99%', 'res': '3%', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '0-50 &deg;C', 'res': '1 &deg;C', 'acc': ''},
+      'imperial': {'range': '32-112 &deg;F', 'res': '2 &deg;F', 'acc': ''}},
+    'humidity': {'range': '1-99%', 'res': '3%', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'wind_dir': {'range': '', 'res': '', 'acc': ''},
+    'rain': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Up to 8 TH modules'],
+    'sensor_updates': [ '5 minutes' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '330 ft'},
+    'power': ['Base: 3 AA', 'TH: 2 AA'],
+    'battery_life': ['1 yr'],
+    'memory': ['50,000 records'],
+    'calibration': [''],
+    'calculated': [''],
+    'features': [''],
+    'driver': 'KlimaLogg'
+  },
+
+
+  'netatmo': {
+    'manufacturer': {'name': 'netatmo', 'url': 'http://www.netatmo.com/'},
+    'family': 'netatmo',
+    'introduced': '2012',
+    'pictures': [
+      ['netatmo.png', 'netatmo'],
+      ['netatmo-rain-bucket.png', 'netatmo rain bucket'],
+      ['netatmo-wind-gauge.png', 'netatmo anemometer']],
+    'models': ['netatmo'],
+    'computer_interface': ['WiFi'],
+    'components': ['Base Station', 'TH', 'Rain Bucket', 'Anemometer'],
+    'configuration': [['netatmo.png', 'netatmo']],
+    'console_temperature': {
+      'metric': {'range': '0-50 &deg;C', 'res': '0.3 &deg;C', 'acc': ''},
+      'imperial': {'range': '32-112 &deg;F', 'res': '0.54 &deg;F', 'acc': ''}},
+    'console_humidity': {'range': '0-100%', 'res': '3%', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-40-65 &deg;C', 'res': '0.3 &deg;C', 'acc': ''},
+      'imperial': {'range': '-40-150 &deg;F', 'res': '0.54 &deg;F', 'acc': ''}},
+    'humidity': {'range': '0-100%', 'res': '3%', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '260-1160 mbar', 'res': '1 mbar', 'acc': ''},
+      'imperial': {'range': '7.7-37.2 inHg', 'res': '0.03 inHg', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-180 kph', 'res': '', 'acc': '1.8 kph'},
+      'imperial': {'range': '0-112 mph', 'res': '', 'acc': '1 mph'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '', 'acc': '5&deg;'},
+    'rain': {
+      'metric': {'range': '0-150 mm/hr', 'res': '0.2 mm/hr', 'acc': '1 mm/hr'},
+      'imperial': {'range': '0-6 in/hr', 'res': '0.01 in/hr', 'acc': '0.04 in/hr'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'0-5000 ppm', 'res':'50 ppm or 5%', 'acc':''},
+    'sound': {'range':'35-110 dB', 'res':'', 'acc':''},
+    'optional_sensors': ['Up to 3 TH modules', 'Rain bucket', 'Anemometer'],
+    'sensor_updates': [ '5 minutes' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '330 ft'},
+    'power': ['Base: USB', 'TH: 2 AAA', 'Rain: 2 AAA', 'Wind: 4 AA'],
+    'battery_life': ['1 yr'],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': [''],
+    'driver': ''
+  },
+
+
+  'ws1': {
+    'manufacturer': {'name': 'Argent Data Systems', 'url': 'http://argentdata.com/'},
+    'family': 'WS1',
+    'introduced': '?',
+    'pictures': [['ws1.png', 'WS1']],
+    'models': ['WS1'],
+    'computer_interface': ['RS232'],
+    'components': ['Base Unit', 'Anemometer', 'Rain', 'Temperature', 'Humidity'],
+    'configuration': [['ws1.png', 'WS1']],
+    'console_temperature': {
+      'metric': {'range': '0-0 &deg;C', 'res': '', 'acc': ''},
+      'imperial': {'range': '0-0 &deg;F', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '0-100%', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-0-0 &deg;C', 'res': '', 'acc': ''},
+      'imperial': {'range': '-0-0 &deg;F', 'res': '', 'acc': ''}},
+    'humidity': {'range': '0-100%', 'res': '', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '0-0 mbar', 'res': '', 'acc': ''},
+      'imperial': {'range': '0-0 inHg', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-0 kph', 'res': '2.4 kph', 'acc': ''},
+      'imperial': {'range': '0-0 mph', 'res': '1.5 mph', 'acc': '1%'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': '0-0 mm', 'res': '0.254 mm', 'acc': '1%'},
+      'imperial': {'range': '0-0 in', 'res': '0.01 in', 'acc': '1%'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Anemometer', 'Bucket-Tipping Rain Gauge',
+      'Outdoor Humidity/Temperature', 'Indoor Humidity/Temperature'],
+    'sensor_updates': [ '0.5s' ],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': ['12V DC', '3.6V Lithium Backup'],
+    'battery_life': [''],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': [''],
+    'driver': 'WS1'
+  },
+
+
+  'ultimeter': {
+    'manufacturer': {'name': 'Peet Bros', 'url': 'http://www.peetbros.com/'},
+    'family': 'Ultimeter',
+    'introduced': '1992',
+    'pictures': [
+      ['ult100.png', 'Ultimeter 100'],
+      ['ult800.png', 'Ultimeter 800'],
+      ['ult2100.png', 'Ultimeter 2100']],
+    'models': [
+      'Ultimeter 100',
+      'Ultimeter 800',
+      'Ultimeter 2000',
+      'Ultimeter 2100'],
+    'computer_interface': ['RS232'],
+    'components': ['Console', 'TH', 'Anemometer', 'Rain'],
+    'configuration': [['ultimeter.png', 'Ultimeter']],
+    'console_temperature': {
+      'metric': {'range': '0-43 &deg;C', 'res': '0.1 &deg;C', 'acc': '0.5 &deg;C'},
+      'imperial': {'range': '32-110 &deg;F', 'res': '1 &deg;F', 'acc': '1 &deg;F'}},
+    'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': 'optional on 800/2100'},
+    'temperature': {
+      'metric': {'range': '-48-66 &deg;C', 'res': '0.1 &deg;C', 'acc': '0.5 &deg;C'},
+      'imperial': {'range': '-55-150 &deg;F', 'res': '1 &deg;F', 'acc': '1 &deg;F'}},
+    'humidity': {'range': '0-100%', 'res': '1%', 'acc': '4%'},
+    'pressure': {
+      'metric': {'range': '931.3-1067.0 mbar', 'res': '0.1 mbar', 'acc': '1.7 mbar'},
+      'imperial': {'range': '27.5-31.5 inHg', 'res': '0.1 inHg', 'acc': '0.05 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0.3-257.0 kph', 'res': '0.1 kph', 'acc': '3.2 kph<br/>Threshold: 2.4 kph'},
+      'imperial': {'range': '0.2-160 mph', 'res': '0.1 mph', 'acc': '2 mph<br/>Threshold: 1.5 mph'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '1&deg;', 'acc': '5%'},
+    'rain': {
+      'metric': {'range': '0-0 mm', 'res': '0.0 mm', 'acc': '1%'},
+      'imperial': {'range': '0-0 in', 'res': '0.0 in', 'acc': '1%'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Electronic Rain Gauge', 'Bucket-Tipping Rain Gauge',
+      '800/2100 Only:', 'Outdoor Humidity/Temperature', 'Indoor Humidity'],
+    'sensor_updates': [ 'Wind: 1s or less' ],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': ['12V DC', '9V battery backup'],
+    'battery_life': [''],
+    'memory': ['7-8 days of high/low'],
+    'calibration': [''],
+    'calculated': ['windchill'],
+    'features': ['rain gauge heater'],
+    'driver': 'Ultimeter'
+  },
+
+
   'template': {
     'manufacturer': {'name': '', 'url': 'http://.com/'},
     'family': '',
     'introduced': '?',
     'pictures': [
       ['.png', ''],
-      ['.png', ''] ],
+      ['.png', '']],
     'models': [
       '',
-      ''
-    ],
+      ''],
     'computer_interface': [''],
     'components': ['Console', 'TH'],
     'configuration': [['.png', '']],
     'console_temperature': {
       'metric': {'range': '0-0 &deg;C', 'res': '0.0 &deg;C', 'acc': '1 &deg;C'},
-      'imperial': {'range': '0-0 &deg;F', 'res': '0.0 &deg;F', 'acc': '1 &deg;F'}
-    },
+      'imperial': {'range': '0-0 &deg;F', 'res': '0.0 &deg;F', 'acc': '1 &deg;F'}},
     'console_humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
     'temperature': {
       'metric': {'range': '-0-0 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
-      'imperial': {'range': '-0-0 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}
-    },
+      'imperial': {'range': '-0-0 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
     'humidity': {'range': '0-100%', 'res': '1%', 'acc': '3%'},
     'pressure': {
       'metric': {'range': '0-0 mbar', 'res': '0.0 mbar', 'acc': '1 mbar'},
-      'imperial': {'range': '0-0 inHg', 'res': '0.0 inHg', 'acc': '1 inHg'}
-    },
+      'imperial': {'range': '0-0 inHg', 'res': '0.0 inHg', 'acc': '1 inHg'}},
     'wind_speed': {
       'metric': {'range': '0-0 kph', 'res': '1 kph', 'acc': '1%'},
-      'imperial': {'range': '0-0 mph', 'res': '1 mph', 'acc': '1%'}
-    },
+      'imperial': {'range': '0-0 mph', 'res': '1 mph', 'acc': '1%'}},
     'wind_dir': {'range': '0-0&deg;', 'res': '1&deg;', 'acc': '3&deg;'},
     'rain': {
       'metric': {'range': '0-0 mm', 'res': '0.0 mm', 'acc': '1%'},
-      'imperial': {'range': '0-0 in', 'res': '0.0 in', 'acc': '1%'}
-    },
+      'imperial': {'range': '0-0 in', 'res': '0.0 in', 'acc': '1%'}},
     'uv': {'range': '0-16', 'res': '0.0', 'acc': '1%'},
     'solar_radiation': {'range': '0-1800 W/m<sup>2</sup>', 'res': '1 W/m<sup>2</sup>', 'acc': '1%'},
     'luminosity': {'range':'', 'res':'', 'acc':''},
@@ -719,14 +1134,10 @@ function setup() {
 
   // show/hide the station sections based on cookie state
   for(var id in stations) {
-    var ctrl = document.getElementById('control.'+id);
-    if(ctrl) {
-      var v = get_cookie('compare_'+id);
-      var flag = (v == "") ? false : ((v.toLowerCase() == "true") ? true : false)
-      set_cookie('compare_'+id, flag);
-      showhide_station(id, flag);
-      ctrl.checked = flag;
-    }
+    var v = get_cookie('compare_'+id);
+    var flag = (v == "") ? false : ((v.toLowerCase() == "true") ? true : false)
+    showhide_station(id, flag);
+    cfg_station_control(id, flag);
   }
 
   // display units and unit controls based on cookie state
@@ -743,9 +1154,6 @@ function setup() {
 // create a div that contains all of the station information.
 // attach it to the station listing div.
 function setup_station(divid, sid, sd) {
-  var div = document.createElement('div');
-  div.className = 'hardware';
-  div.id = sid;
   var html = "\
 <div class='hardware_mfr'>\
   <a href='" + sd['manufacturer']['url'] + "'>" + sd['manufacturer']['name'] + "</a>\
@@ -944,6 +1352,9 @@ for(var i=0; i<sd['models'].length; i++) {
 
   html += "</div>";
 
+  var div = document.createElement('div');
+  div.className = 'hardware';
+  div.id = sid;
   div.innerHTML = html;  
   var parent = document.getElementById(divid);
   parent.appendChild(div);
@@ -993,6 +1404,13 @@ function toggle(ctrl, id) {
   if(e) {
     set_cookie('compare_'+id, ctrl.checked);
     showhide_station(id, ctrl.checked);
+  }
+}
+
+function cfg_station_control(id, flag) {
+  var ctrl = document.getElementById('control.'+id);
+  if(ctrl) {
+    ctrl.checked = flag;
   }
 }
 
