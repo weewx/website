@@ -15,11 +15,15 @@
 
 <!-- TODO:
   mea weather station
-  mea plexus
-  dycon
+  dyacon
+  weathermate/maestro/master
   foobot
   air-mentor
   wmr89
+  ventus w820
+  fix configurations: envoy, lw301, lw302, acuritebridge, c84612, netatmo
+     wh5/6, whsig, twi, nm, cap, orion, magellan, pulsar, hobo,
+     mea, maestro, mate, master, dyacon, w820
 -->
 
   <script type="text/javascript">
@@ -1614,6 +1618,195 @@ var stations = {
   },
 
 
+  'dyacon': {
+    'manufacturer': {'name': 'Dyacon', 'url': 'http://dyacon.com/'},
+    'family': 'dyacon',
+    'introduced': '?',
+    'pictures': [['dyacon.png', 'Dyacon Weather Station']],
+    'models': ['dyacon'],
+    'computer_interface': ['ModBus'],
+    'components': ['PTH', 'Rain', 'Anemometer'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-40-80 &deg;C', 'res': '0.05 &deg;C', 'acc': '0.2 K'},
+      'imperial': {'range': '-0-0 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
+    'humidity': {'range': '0-100%', 'res': '0.1%', 'acc': '1.8%'},
+    'pressure': {
+      'metric': {'range': '10-1300 mbar', 'res': '0.065 mbar', 'acc': '1.5 mbar'},
+      'imperial': {'range': '0-0 inHg', 'res': '0.0 inHg', 'acc': '1 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0-50 m/s', 'res': '0.1 m/s', 'acc': '3%<br/>Threshold: 1 m/s'},
+      'imperial': {'range': '0-112 mph', 'res': '0.2 mph', 'acc': '3%<br/>Threshold: 2.2 mph'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '0.5&deg;', 'acc': '1&deg;'},
+    'rain': {
+      'metric': {'range': 'unlimited', 'res': '0.1 mm', 'acc': '2-3%'},
+      'imperial': {'range': 'unlimited', 'res': '0.01 in', 'acc': '2-3%'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Soil Moisture', 'Lightning', 'Solar Radiation'],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': ['PTH: 5-24V DC', 'Wind: 5-24V DC'],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': ['GPS', 'Cell network uploads', 'Data logging'],
+    'driver': ''
+  },
+
+
+  'mea': {
+    'manufacturer': {'name': 'MEA', 'url': 'http://mea.com.au/'},
+    'family': 'MEA',
+    'introduced': '?',
+    'pictures': [
+      ['mea-premium.png', 'MEA Premium Weather Station'],
+      ['mea-junior.png', 'MEA Junior Weather Station']],
+    'models': ['MEA Premium', 'MEA Junior'],
+    'computer_interface': [],
+    'components': ['PTH', 'Rain', 'Anemometer'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'humidity': {'range': '', 'res': '', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'wind_dir': {'range': '', 'res': '', 'acc': ''},
+    'rain': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Soil Moisture', 'Solar Radiation', 'Heat Load'],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': [],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': [],
+    'driver': ''
+  },
+
+
+  'wm': {
+    'manufacturer': {'name': 'EnvironData', 'url': 'http://environdata.com.au/'},
+    'family': 'Weather Maestro',
+    'introduced': '?',
+    'pictures': [
+      ['wmaestro.png', 'Weather Maestro'],
+      ['wmate3000.png', 'Weather Mate'],
+      ['wmaster3000.png', 'Weather Master 3000'],
+      ['wmaster2000.png', 'Weather Master 2000']],
+    'models': [
+      'Weather Maestro',
+      'Weather Mate 3000',
+      'Weather Master 3000'],
+    'computer_interface': [],
+    'components': ['PTH', 'Rain', 'Anemometer'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'humidity': {'range': '', 'res': '', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'wind_dir': {'range': '', 'res': '', 'acc': ''},
+    'rain': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': ['Soil Moisture', 'Solar Radiation', 'Heat Load'],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': [],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': [],
+    'driver': ''
+  },
+
+
+  'w820': {
+    'manufacturer': {'name': 'Ventus', 'url': 'http://www.nshnordic.com/'},
+    'family': 'W820',
+    'introduced': '?',
+    'pictures': [['w820.png', 'W820']],
+    'models': ['W820'],
+    'computer_interface': ['Bluetooth'],
+    'components': ['Console', 'Instrument Cluster'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '0-50 &deg;C', 'res': '', 'acc': ''},
+      'imperial': {'range': '0-0 &deg;F', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '0-100%', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-20-60 &deg;C', 'res': '', 'acc': ''},
+      'imperial': {'range': '-0-0 &deg;F', 'res': '', 'acc': ''}},
+    'humidity': {'range': '0-100%', 'res': '', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '0-0 mbar', 'res': '', 'acc': ''},
+      'imperial': {'range': '0-0 inHg', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-256 kph', 'res': '', 'acc': ''},
+      'imperial': {'range': '0-160 mph', 'res': '', 'acc': ''}},
+    'wind_dir': {'range': '0-0&deg;', 'res': '1&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': '0-0 mm', 'res': '0.0 mm', 'acc': ''},
+      'imperial': {'range': '0-0 in', 'res': '0.0 in', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [],
+    'sensor_updates': [],
+    'wireless_range': {'metric': '', 'imperial': ''},
+    'power': ['Console: 3AA', 'Cluster: 4AA'],
+    'battery_life': [],
+    'memory': [],
+    'calibration': [],
+    'calculated': [],
+    'features': [],
+    'driver': ''
+  },
+
+
   'template': {
     'manufacturer': {'name': '', 'url': 'http://.com/'},
     'family': '',
@@ -2218,11 +2411,17 @@ function get_cookie(name) {
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station'
+                 value='dyacon' id='control.dyacon'
+                 onclick='toggle(this)'>Dyacon</input><br/>
+          <input type='checkbox' name='station'
                  value='mea' id='control.mea'
                  onclick='toggle(this)'>MEA</input><br/>
           <input type='checkbox' name='station'
-                 value='plexus' id='control.plexus'
-                 onclick='toggle(this)'>Plexus</input><br/>
+                 value='wm' id='control.wm'
+                 onclick='toggle(this)'>EnvironData</input><br/>
+          <input type='checkbox' name='station'
+                 value='w820' id='control.w820'
+                 onclick='toggle(this)'>W820</input><br/>
         </div>
 
         <div class='control_block' style='padding-left: 40px'>
