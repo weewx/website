@@ -167,7 +167,7 @@ var stations = {
     'pictures': [['envoy.png', 'Envoy']],
     'computer_interface': ['USB', 'Ethernet'],
     'components': ['Receiver', 'ISS (TH, Rain, UV)', 'Anemometer'],
-    'configuration': [ ['envoy.png', 'Envoy']],
+    'configuration': [],
     'console_temperature': {
       'metric': {'range': '0-60 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
       'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
@@ -548,7 +548,7 @@ var stations = {
       'LW302'],
     'computer_interface': ['WiFi'],
     'components': ['Bridge', 'Receiver', 'TH', 'Rain', 'Anemometer'],
-    'configuration': [['lw301.png', 'LW301']],
+    'configuration': [],
     'console_temperature': {
       'metric': {'range': '-50-70 &deg;C', 'res': '0.1 &deg;C', 'acc': '1-3 &deg;C'},
       'imperial': {'range': '-58-158 &deg;F', 'res': '0.1 &deg;F', 'acc': '2-6 &deg;F'}},
@@ -658,7 +658,7 @@ var stations = {
     'models': [ '09150' ],
     'computer_interface': ['USB'],
     'components': ['Bridge', '5-in-1', '3-in-1', 'TH'],
-    'configuration': [['acurite-bridge.png', 'Acurite Bridge']],
+    'configuration': [],
     'console_temperature': {
       'metric': {'range': '0-50 &deg;C', 'res': '8 &deg;C', 'acc': ''},
       'imperial': {'range': '32-122 &deg;F', 'res': '4 &deg;F', 'acc': ''}},
@@ -703,7 +703,7 @@ var stations = {
     'models': ['C84612'],
     'computer_interface': ['WiFi'],
     'components': ['Gateway', 'Console', 'TH', 'Rain', 'Anemometer'],
-    'configuration': [['c84612.png', 'C84612']],
+    'configuration': [],
     'console_temperature': {
       'metric': {'range': '4-40 &deg;C', 'res': '0.0 &deg;C', 'acc': '1 &deg;C'},
       'imperial': {'range': '41-104 &deg;F', 'res': '0.0 &deg;F', 'acc': '1 &deg;F'}},
@@ -1129,7 +1129,8 @@ var stations = {
       ['mk3rtr.png', 'RainWise MK-III RTR'],
       ['mk3rtn.png', 'RainWise MK-III RTN'],
       ['mk3pl.png', 'RainWise PortLog'],
-      ['cc3000.png', 'RainWise CC3000']],
+      ['cc3000.png', 'RainWise CC3000'],
+      ['ip100.png', 'RainWise IP100']],
     'models': [
       'MK-III RTI',
       'MK-III RTN',
@@ -1139,8 +1140,9 @@ var stations = {
       'PortLog',
       'WindLog',
       'CC-3000',
-      'CC-3000R'],
-    'computer_interface': ['USB', 'RS-232', 'RS-485'],
+      'CC-3000R',
+      'IP-100'],
+    'computer_interface': ['USB', 'RS-232', 'RS-485', 'Modbus'],
     'components': ['Cluster (TH, Rain, Anemometer)', 'RTR: separate Rain'],
     'configuration': [['cc3000.png', 'CC3000']],
     'console_temperature': {
@@ -1168,7 +1170,9 @@ var stations = {
     'sound': {'range':'', 'res':'', 'acc':''},
     'optional_sensors': [ ],
     'sensor_updates': [ 'Sensors: 2s', 'Logger: 1 minute - 1 hour' ],
-    'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
+    'wireless_range': {
+      'metric': '100 m<br/>1.6 km (LR)',
+      'imperial': '300 ft<br/>1 mile (LR)'},
     'power': ['Integrated: Solar', 'Rain: 2 AA'],
     'battery_life': ['60 days without sun'],
     'memory': ['2 MB (CC-3000)', '128KB (PortLog)'],
@@ -1624,7 +1628,7 @@ var stations = {
     'introduced': '?',
     'pictures': [['dyacon.png', 'Dyacon Weather Station']],
     'models': ['dyacon'],
-    'computer_interface': ['ModBus'],
+    'computer_interface': ['Modbus'],
     'components': ['PTH', 'Rain', 'Anemometer'],
     'configuration': [],
     'console_temperature': {
