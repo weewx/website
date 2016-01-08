@@ -1,1 +1,14 @@
 *~
+.idea
+.project
+.pydevproject
+.settings
+*.pyc
+*.pyo
+junk*
+out
+build
+MANIFEST
+node_modules
+bower_components
+test-results
