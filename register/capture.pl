@@ -89,7 +89,7 @@ my $logargs = q();
 #}
 my $now = time;
 my %stations;
-if ($url eq q()) {
+if ($url ne q()) {
     $stations{$url} = 1; # placeholder - all we need is the url as key
 } else {
     %stations = get_stations($db, $now);
