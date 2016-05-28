@@ -15,7 +15,6 @@
 
 <!-- TODO:
   mea weather station
-  dyacon
   weathermate/maestro/master
   foobot
   air-mentor
@@ -1624,45 +1623,45 @@ var stations = {
 
   'dyacon': {
     'manufacturer': {'name': 'Dyacon', 'url': 'http://dyacon.com/'},
-    'family': 'dyacon',
-    'introduced': '?',
+    'family': 'MS-100',
+    'introduced': '2013',
     'pictures': [['dyacon.png', 'Dyacon Weather Station']],
-    'models': ['dyacon'],
+    'models': ['MS-120', 'MS-130', 'MS-140', 'MS-150'],
     'computer_interface': ['Modbus'],
-    'components': ['PTH', 'Rain', 'Anemometer'],
-    'configuration': [],
+    'components': ['Anemometer', 'PTH', 'Lightning', 'Rain', 'Soil Moisture', 'Soil/Submersible Temperature', 'Solar Sensor'],
+    'configuration': [['dyacon.png', 'Central controller/logger with integrated LCD for configuration and operation, independent sensors, autonomous operation']],
     'console_temperature': {
       'metric': {'range': '', 'res': '', 'acc': ''},
       'imperial': {'range': '', 'res': '', 'acc': ''}},
     'console_humidity': {'range': '', 'res': '', 'acc': ''},
     'temperature': {
-      'metric': {'range': '-40-80 &deg;C', 'res': '0.05 &deg;C', 'acc': '0.2 K'},
-      'imperial': {'range': '-0-0 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
-    'humidity': {'range': '0-100%', 'res': '0.1%', 'acc': '1.8%'},
+      'metric': {'range': '-40-80 &deg;C', 'res': '&plusmn;0.1 &deg;C', 'acc': '&plusmn;0.2&deg;C'},
+      'imperial': {'range': '-40-176 &deg;F', 'res': '&plusmn;0.2 &deg;F', 'acc': '&plusmn;0.4 &deg;F'}},
+    'humidity': {'range': '0-100%', 'res': '&plusmn;1.8%', 'acc': ''},
     'pressure': {
-      'metric': {'range': '10-1300 mbar', 'res': '0.065 mbar', 'acc': '1.5 mbar'},
-      'imperial': {'range': '0-0 inHg', 'res': '0.0 inHg', 'acc': '1 inHg'}},
+      'metric': {'range': '10-1300 mbar', 'res': '0.1 mbar', 'acc': ''},
+      'imperial': {'range': '0.295-38.388 inHg', 'res': '0.00295 inHg', 'acc': ''}},
     'wind_speed': {
-      'metric': {'range': '0-50 m/s', 'res': '0.1 m/s', 'acc': '3%<br/>Threshold: 1 m/s'},
+      'metric': {'range': '0-180 kph', 'res': '0.32', 'acc': '3%<br/>Threshold: 1 m/s'},
       'imperial': {'range': '0-112 mph', 'res': '0.2 mph', 'acc': '3%<br/>Threshold: 2.2 mph'}},
-    'wind_dir': {'range': '0-360&deg;', 'res': '0.5&deg;', 'acc': '1&deg;'},
+    'wind_dir': {'range': '0-359&deg;', 'res': '&plusmn;1&deg;', 'acc': 'no dead spots'},
     'rain': {
-      'metric': {'range': 'unlimited', 'res': '0.1 mm', 'acc': '2-3%'},
-      'imperial': {'range': 'unlimited', 'res': '0.01 in', 'acc': '2-3%'}},
-    'uv': {'range': '', 'res': '', 'acc': ''},
-    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+      'metric': {'range': 'unlimited', 'res': '0.1 mm', 'acc': '&plusmn;1% up to 50 mm/hr%'},
+      'imperial': {'range': 'unlimited', 'res': '0.01 in', 'acc': '&plusmn;1% up to 2 in/hr'}},
+    'uv': {'range': 'analog', 'res': '', 'acc': 'Apogee SU-100'},
+    'solar_radiation': {'range': '0-1705 W/m<sup>2</sup>', 'res': '360-1100 nm', 'acc': 'Apogee SP-110'},
     'luminosity': {'range':'', 'res':'', 'acc':''},
     'co2': {'range':'', 'res':'', 'acc':''},
     'sound': {'range':'', 'res':'', 'acc':''},
-    'optional_sensors': ['Soil Moisture', 'Lightning', 'Solar Radiation'],
-    'sensor_updates': [],
-    'wireless_range': {'metric': '', 'imperial': ''},
-    'power': ['PTH: 5-24V DC', 'Wind: 5-24V DC'],
-    'battery_life': [],
-    'memory': [],
-    'calibration': [],
-    'calculated': [],
-    'features': ['GPS', 'Cell network uploads', 'Data logging'],
+    'optional_sensors': ['Rain gauge', 'Solar', 'Soil moisture', 'Soil/submersible thermistor', 'Globe temperature', 'other analog sensors'],
+    'sensor_updates': ['based on request rate of equipment'],
+    'wireless_range': {'metric': 'cell phone network', 'imperial': 'cell phone network'},
+    'power': ['Controller: 7-24V DC (<30 mA, including cell)', 'Modbus: 5-24V DC'],
+    'battery_life': ['Solar recharged', 'Two weeks typical autonomous', 'VRSLA battery replace 3yr'],
+    'memory': ['1mo to 4yr, depending on log interval'],
+    'calibration': ['NIST-traceable calibration', '3-5 year recommended'],
+    'calculated': ['wind chill', 'heat index', 'cloud base', 'density altitude', 'wet bulb'],
+    'features': ['Integrated LCD', 'solar charge controller', 'cell phone', 'lightning detection', 'data logger', 'SMS text message reports', 'System configuration via SMS', 'GPS option', 'Direct WUnderground upload', 'Email/FTP of data log', 'Over-the-air firmware updates', 'Customizable analog port inputs', 'Heated rain gauge', 'Field tripod', 'Free configuration software'],
     'driver': ''
   },
 
@@ -1941,6 +1940,7 @@ for(var i=0; i<sd['computer_interface'].length; i++) {
 }
 
   html += "  </div>\
+  <div class='driver'>" + sd['driver'] + "</div>\
   <div class='console_temperature'>\
     <span class='F'>" +
 sd['console_temperature']['imperial']['range'] + "<br/>" +
@@ -2069,21 +2069,20 @@ for(var i=0; i<sd['calibration'].length; i++) {
 }
 
   html += "  </div>\
-  <div>";
+  <div class='calculated'>";
 
 for(var i=0; i<sd['calculated'].length; i++) {
   html += sd['calculated'][i] + "<br/>";
 }
 
   html += "  </div>\
-  <div>";
+  <div class='features'>";
 
 for(var i=0; i<sd['features'].length; i++) {
   html += sd['features'][i] + "<br/>";
 }
 
   html += "  </div>\
-  <div>" + sd['driver'] + "</div>\
 </div>\
 <div class='hardware_models'>";
 
@@ -2207,8 +2206,11 @@ function get_cookie(name) {
   border-top: 1px solid #dddddd;
   font-size: 80%;
 }
+.hardware_specs .driver {
+  height: 30px;
+}
 .hardware_specs .components {
-  height: 80px;
+  height: 100px;
 }
 .hardware_specs .configuration {
   height: 80px;
@@ -2224,6 +2226,12 @@ function get_cookie(name) {
 }
 .hardware_specs .battery_life {
   height: 80px;
+}
+.hardware_specs .calculated {
+  height: 100px;
+}
+.hardware_specs .features {
+  height: 210px;
 }
 .hardware_pictures {
   height: 220px;
@@ -2486,6 +2494,7 @@ function get_cookie(name) {
           <div class='configuration'>Configuration</div>
           <div class='components'>Components</div>
           <div> Computer Interface</div>
+          <div class='driver'>WeeWX Driver</div>
           <div>Console<br/>Temperature<br/>
             <span class='F'>&deg;F</span>
             <span class='C'>&deg;C</span>
@@ -2524,9 +2533,8 @@ function get_cookie(name) {
           <div class='battery_life'>Battery Life</div>
           <div>Memory</div>
           <div>Calibration</div>
-          <div>Calculated</div>
-          <div>Features</div>
-          <div>WeeWX Driver</div>
+          <div class='calculated'>Calculated</div>
+          <div class='features'>Features</div>
         </div>
         <div class='hardware_models' style='font-style:normal'>Models</div>
       </div>
