@@ -96,7 +96,13 @@ var sites = [
     screenshot: 'bacchusmarsh.png' },
   { description: 'Conlig Co. Down, N. Ireland',
     url: 'http://www.darkmoon.org.uk/weather',
-    screenshot: 'conlig.png'}
+    screenshot: 'conlig.png'},
+  { description: 'Мичуринское',
+    url: 'http://meteo.slaval.ru/',
+    screenshot: 'slavalru.png'},
+  { description: 'Belchertown, MA',
+    url: 'http://belchertownweather.com/',
+    screenshot: 'belchertown.png'},
              ];
 
 /* inject navigation links into the navigation div */
