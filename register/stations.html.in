@@ -113,6 +113,7 @@ var showThumbs = 1;
 var oldZoomLevel = 0;
 var zoomThreshold = 7; /* when to switch from dots to pins */
 var pingdays = 30; /* number of days in ping histogram */
+var staledays = 7; /* number of days before considered stale */
 var backgroundColor = '#ffffff';
 var highlightColor = '#9fcef9';
 var maxTitleLen = 70;
@@ -174,6 +175,7 @@ function initialize() {
   var pings = new Array(pingdays); /* histogram of daily pings */
   for(var i=0; i<pings.length; i++) { pings[i] = 0; }
   var stale = 0;
+  var dead = 0;
 
   /* loop through all sites to get the data we need */
   for (var i=0; i<sites.length; i++) {
@@ -202,8 +204,11 @@ function initialize() {
     var idx = Math.round(tdiff / 86400);
     if(idx < pingdays) {
       pings[idx] += 1;
+      if (idx > staledays) {
+        stale += 1;
+      }
     } else {
-      stale += 1;
+      dead += 1;
     }
     if(pings[idx] > maxpings) {
       maxpings = pings[idx];
@@ -212,7 +217,7 @@ function initialize() {
 
   populate_station_list('description', 'up');
   populate_station_table(counts);
-  draw_ping_histogram(pings, maxpings, counts['total']);
+  draw_ping_histogram(pings, maxpings, counts['total'], stale, dead);
 }
 
 function set_marker_image(map) {
@@ -392,7 +397,7 @@ function populate_station_table(counts) {
   s.appendChild(tbl);
 }
 
-function draw_ping_histogram(pings, maxpings, total) {
+function draw_ping_histogram(pings, maxpings, total, stale, dead) {
   canvas = document.getElementById('ping_details');
   if(canvas) {
     canvas.width = 180;
@@ -403,7 +408,7 @@ function draw_ping_histogram(pings, maxpings, total) {
     var barwidth = w / pings.length;
     var unitheight = h / maxpings;
     c.strokeStyle = "#dddddd";
-    for(var i=h; i>=0; i-=10*unitheight) {
+    for(var i=h; i>=0; i-=20*unitheight) {
       c.beginPath();
       c.moveTo(1, i);
       c.lineTo(w, i); 
@@ -419,7 +424,9 @@ function draw_ping_histogram(pings, maxpings, total) {
       c.lineTo(i*barwidth, h);
       c.stroke();
     }
-    c.fillText(total, 10, 20);
+    c.fillText('total: '+total, 10, 20);
+    c.fillText('stale: '+stale, 10, 32);
+    c.fillText('dead: '+dead, 10, 44);
   }
 }
 
