@@ -19,8 +19,8 @@
 # FIXME: should we have a field for first_seen?
 # FIXME: add checks to prevent update too frequently
 
-use strict;
 use POSIX;
+use strict;
 
 my $version = '$Id: register.cgi 2051 2015-03-21 16:24:03Z mwall $';
 
@@ -95,9 +95,9 @@ if($RMETHOD eq 'GET' || $RMETHOD eq 'POST') {
         &handleregistration(%rqpairs);
     }
 } else {
-#    my %rqpairs;
-#    &history(%rqpairs);
-    &writereply('Bad Request','FAIL',"Unsupported request method '$RMETHOD'.");
+   my %rqpairs;
+    &history(%rqpairs);
+#    &writereply('Bad Request','FAIL',"Unsupported request method '$RMETHOD'.");
 }
 
 exit 0;
@@ -562,14 +562,20 @@ sub get_history_data {
     my @counts;
     my @stypes;
 
+    logmsg("connect to $histdb");
     my $dbh = DBI->connect("dbi:SQLite:$histdb", q(), q(), {RaiseError => 0});
     if (!$dbh) {
-        return "cannot connect to database: $DBI::errstr";
+        my $msg = "cannot connect to database: $DBI::errstr";
+	logmsg($msg);
+	return $msg;
     }
 
+    logmsg("prepare select");
     my $sth = $dbh->prepare("select station_type from history group by station_type");
     if (!$sth) {
-        return "cannot prepare select statement: $DBI::errstr";
+        my $msg = "cannot prepare select statement: $DBI::errstr";
+	logmsg($msg);
+	return $msg;
     }
     $sth->execute();
     $sth->bind_columns(\my($st));
@@ -998,4 +1004,17 @@ sub getrequest {
         }
     }
     return($ENV{'QUERY_STRING'},%pairs);
+}
+
+sub logmsg {
+    my ($msg) = @_;
+    my $logfile = "/home/content/t/o/m/tomkeffer/html/register/cgilog.log";
+    my $DATE_FORMAT = "%Y.%m.%d %H:%M:%S";
+    my $tstr = strftime $DATE_FORMAT, localtime time;
+    if (open(FILE, ">>$logfile")) {
+	print FILE "$tstr $msg\n";
+	close(FILE);
+    } else {
+	# nowhere to send the message...
+    }
 }
