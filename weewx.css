@@ -200,4 +200,7 @@ dd {
   #screenshot_caption {
     display: none;
   }
+  #masthead {
+    height: 72px;
+  }
 }
