@@ -28,6 +28,17 @@
 
         <h2>News</h2>
         <dl>
+            <dt>10/13/16 Version 3.6.1 released</dt>
+            <dd>Fixed bug in wunderfixer.  Fixed handling of
+                StdWXCalculate.Calculations in modify_config in the wmr100,
+                wmr200, wmr300, and wmr9x8 drivers. Eliminated the apache2,
+                ftp, and rsync forced dependencies from the deb package.
+                This keeps the weewx dependencies to a bare minimum.  Added
+                retries to usb read in wmr300 driver. Remapped sensor
+                identifiers in wmr200 driver so that extraTemp1 and
+                extraHumid1 are usable.
+            </dd>
+
             <dt>10/07/16 Version 3.6.0 released</dt>
             <dd>Added a cron-like mechanism for controlling report timing.
                 Added wee_import utility to import data from Weather
