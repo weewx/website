@@ -38,9 +38,7 @@ body {
   background-color: #ffffff;
 }
 #container {
-  margin: 10px auto;
-  padding-left: 30px;
-  padding-right: 20px;
+  margin: 4px;
 }
 #masthead {
   color: #fff;
@@ -51,9 +49,8 @@ body {
 }
 #navigation {
   position: absolute;
-  top: 10px;
-  right: 30px;
-  width: 80%;
+  top: 4px;
+  right: 5px;
 }
 .navitem {
   text-align: center;
@@ -67,6 +64,7 @@ body {
 }
 #content {
   width: 70%;
+  padding-left: 10px;
 }
 #footer {
   margin-top: 30px;
@@ -200,6 +198,9 @@ dd {
   #screenshot_caption {
     display: none;
   }
+}
+
+@media only screen and (max-width: 25em) {
   #masthead {
     height: 72px;
   }

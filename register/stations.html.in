@@ -19,6 +19,7 @@
 }
 #map_canvas {
   border: 1px solid #5f8ea9;
+  height: 500px;
 }
 .location {
   font-family: Helvetic, Arial, sans-serif;
@@ -44,7 +45,7 @@
   font-size: 80%;
 }
 #content {
-  width: 100%;
+  width: auto;
 }
 #instructions {
   padding-right: 20px;
@@ -81,6 +82,7 @@
   float: left;
   padding-left: 10px;
   padding-right: 10px;
+  font-weight: normal;
 }
 .alignright {
   text-align: right;
@@ -315,7 +317,7 @@ function populate_station_list(sort_metric, sort_order) {
   buttons += create_buttons("Hardware", "station");
   buttons += create_buttons("Version", "weewx_info");
   buttons += create_buttons("Last Seen", "last_seen");
-  buttons += '<div class="button_pair">Show Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()"';
+  buttons += '<div class="button_pair">Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()"';
   if (showThumbs) {
     buttons += ' checked';
   }
@@ -621,7 +623,7 @@ function toggle_thumbnails() {
     </div>
 
     <div id='map_container'>
-      <div id='map_canvas' style='width:100%; height:500px'></div>
+      <div id='map_canvas'></div>
 
       <div class='details'>
         LAST_MODIFIED
@@ -638,13 +640,8 @@ function toggle_thumbnails() {
       </div>
 
       <div id='instructions'>
-        <strong>How to Add Your Station</strong>
-        <div id='instruction_details'>
-          <p>
-	    Enable <a href="docs/usersguide.htm#station_registry"><span class='code'>register_this_station</span></a> in
-            weewx.conf, then restart weewx.
-          </p>
-        </div>
+        <strong>How to Add Your Station</strong><br/>
+	Enable <a href="docs/usersguide.htm#station_registry"><span class='code'>register_this_station</span></a> in weewx.conf, then restart weewx.
       </div>
 
       <div id='sites'>
