@@ -102,7 +102,7 @@
   height: 104px;
 }
   </style>
-  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
   <script type="text/javascript">
 var sites = [];
 var map;
@@ -119,6 +119,7 @@ var staledays = 7; /* number of days before considered stale */
 var backgroundColor = '#ffffff';
 var highlightColor = '#9fcef9';
 var maxTitleLen = 70;
+var maxURLLen = 80;
 var redDotURL = 'http://weewx.com/dot-red.png';
 
 function count_sorter(a,b) {
@@ -182,7 +183,7 @@ function initialize() {
   /* loop through all sites to get the data we need */
   for (var i=0; i<sites.length; i++) {
     /* create the markers */
-    var title = get_title(sites[i]);
+    var title = decode_html(get_title(sites[i]));
     var pos = new google.maps.LatLng(sites[i].latitude, sites[i].longitude);
     var mkr = new google.maps.Marker({
       position: pos,
@@ -580,6 +581,13 @@ function toggle(control, id) {
   }
 }
 
+function trim_string(x, max_len) {
+  if(x.length > max_len) {
+    x = x.substr(0, max_len).concat('...');
+  }
+  return x;
+}
+
 function get_title(x) {
   var title = 'untitled';
   if(x.description.length > 0) {
@@ -587,10 +595,7 @@ function get_title(x) {
   } else {
     title = x.url;
   }
-  if(title.length > maxTitleLen) {
-    title = title.substr(0,maxTitleLen).concat('...');
-  }
-  return title;
+  return trim_string(title, maxTitleLen);
 }
 
 function toggle_thumbnails() {
@@ -608,6 +613,12 @@ function toggle_thumbnails() {
       tn[i].style.display = 'none';
     }
   }
+}
+
+function decode_html(s) {
+  var e = document.createElement('div');
+  e.innerHTML = s;
+  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
   </script>
 </head>
