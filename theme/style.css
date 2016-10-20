@@ -1,8 +1,5 @@
-/*------------------------------------*\
-    Apaxy
-    by @adamwhitcroft
-    adapted for weewx.com by matthew wall
-\*------------------------------------*/
+/* apaxy theme for weewx */
+/* by mwall, based on original by adam whitcroft */
 @import url('//fonts.googleapis.com/css?family=Open+Sans');
 /* Have to use @import for the font, as you can only specify a single stylesheet */
 * {
@@ -24,7 +21,6 @@ html {
   line-height:2em;
 }
 body {
-  padding:20px;
   -webkit-backface-visibility:hidden;
 }
 code {
@@ -37,28 +33,20 @@ a {
 a:hover {
   color:#2a2a2a;
 }
-/*------------------------------------*\
-    Wrapper
-\*------------------------------------*/
 .wrapper {
   margin:0 auto;
-  padding-top:20px;
-  max-width:800px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
-/*------------------------------------*\
-    Demo block
-\*------------------------------------*/
 .block {
   font-size:.875em;
   margin:20px 0;
   padding:20px;
   color:#9099A3;
 }
-/*------------------------------------*\
-    Table (directory listing)
-\*------------------------------------*/
 table {
-  width:100%;
+  margin-left: 10px;
+  margin-right: 10px;
   border-collapse:collapse;
   font-size:.875em;
 }
