@@ -277,6 +277,55 @@ var stations = {
   },
 
 
+  'fowh': {
+    'manufacturer': {'name': 'Fine Offset', 'url': 'http://www.foshk.com/'},
+    'family': 'WH 23xx',
+    'introduced': '2015',
+    'pictures': [
+      ['wh2300.png', 'WH2300'],
+      ['wh2310.png', 'WH2310']],
+    'models': [
+      'WH2300',
+      'Tycon TP2700'],
+    'computer_interface': ['USB'],
+    'components': ['Console', 'TH', 'Rain', 'Anemometer', 'UV'],
+    'configuration': [['fowh.png', 'WH23xx']],
+    'console_temperature': {
+      'metric': {'range': '0-60 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
+    'console_humidity': {'range': '10-99%', 'res': '1%', 'acc': '5%'},
+    'temperature': {
+      'metric': {'range': '-40-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-40-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
+    'humidity': {'range': '10-99%', 'res': '1%', 'acc': '5%'},
+    'pressure': {
+      'metric': {'range': '300-1100 mbar', 'res': '0.34 mbar', 'acc': '2.7 mbar'},
+      'imperial': {'range': '8.85-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.08 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0-164 kph', 'res': '0.15 kph', 'acc': '3.2% or 10%'},
+      'imperial': {'range': '0-112 mph', 'res': '0.1 mph', 'acc': '2.2 mph or 10%'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '22.5&deg;'},
+    'rain': {
+      'metric': {'range': '0-9999 mm', 'res': '0.3 mm', 'acc': '10%'},
+      'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': '10%'}},
+    'uv': {'range': '0-16', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'0-400k Lux', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [ '30s' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
+    'power': ['Console: 2 AA or USB', 'TH: 2 AA'],
+    'battery_life': ['1 yr'],
+    'memory': ['4080 records', '3264 records (30xx)'],
+    'calibration': ['time zone', 'pressure offset', 'temperature (2080A)', 'humidity (2080A)'],
+    'calculated': [],
+    'features': ['WWVB', 'multiple consoles'],
+    'driver': 'WH23xx'
+  },
+
+
   'fohp': {
     'manufacturer': {'name': 'Fine Offset', 'url': 'http://foshk.com/'},
     'family': 'HP 100x',
@@ -532,6 +581,52 @@ var stations = {
     'calculated': [''],
     'features': ['RCC', 'touch screen'],
     'driver': 'WMR300'
+  },
+
+
+  'wmr89': {
+    'manufacturer': {'name': 'Oregon Scientific', 'url': 'http://oregonscientific.com/'},
+    'family': 'WMR-89',
+    'introduced': '?',
+    'pictures': [
+      ['wmr89.png', 'WMR89']],
+    'models': ['WMR89'],
+    'computer_interface': ['USB'],
+    'components': ['Console', 'TH', 'Rain', 'Anemometer'],
+    'configuration': [['wmr89.png', 'WMR89']],
+    'console_temperature': {
+      'metric': {'range': '-20-53 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-4-148 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}},
+    'console_humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
+    'temperature': {
+      'metric': {'range': '-46-79 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-50-158 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}},
+    'humidity': {'range': '2-98%', 'res': '1%', 'acc': '5-7%'},
+    'pressure': {
+      'metric': {'range': '700-1050 mbar', 'res': '0.34 mbar', 'acc': '9.82 mbar'},
+      'imperial': {'range': '20.67-31.01 inHg', 'res': '0.01 inHg', 'acc': '0.29 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '3-183 kph', 'res': '1.5 kph', 'acc': '10%'},
+      'imperial': {'range': '2-125 mph', 'res': '1 mph', 'acc': '10%'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '10%'},
+    'rain': {
+      'metric': {'range': '0-9999.99 mm', 'res': '1 mm', 'acc': '5%'},
+      'imperial': {'range': '0-393.7 in', 'res': '0.04 in', 'acc': '5%'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ 'Up to 10 remote', 'TH', 'Floating pool/spa' ],
+    'sensor_updates': [ 'Wind: 14s', 'Other sensors: 60s' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
+    'power': ['Console: 4 AA or AC', 'TH: 2 AAA', 'Rain: 2 AA', 'Wind: 2 AA'],
+    'battery_life': [''],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': [''],
+    'driver': ''
   },
 
 
@@ -2331,7 +2426,10 @@ function get_cookie(name) {
                  onclick='toggle(this)'>Envoy</input><br/>
           <input type='checkbox' name='station'
                  value='fo' id='control.fo'
-                 onclick='toggle(this)'>FO WH/WS</input><br/>
+                 onclick='toggle(this)'>FO WS</input><br/>
+          <input type='checkbox' name='station'
+                 value='fowh' id='control.fowh'
+                 onclick='toggle(this)'>FO WH</input><br/>
           <input type='checkbox' name='station'
                  value='fohp' id='control.fohp'
                  onclick='toggle(this)'>FO HP</input><br/>
@@ -2352,6 +2450,9 @@ function get_cookie(name) {
           <input type='checkbox' name='station'
                  value='lw301' id='control.lw301'
                  onclick='toggle(this)'>LW301</input><br/>
+          <input type='checkbox' name='station'
+                 value='wmr89' id='control.wmr89'
+                 onclick='toggle(this)'>WMR-89</input><br/>
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station'
