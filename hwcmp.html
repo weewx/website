@@ -679,6 +679,59 @@ var stations = {
   },
 
 
+  'acurite_atlas': {
+    'manufacturer': {'name': 'Acurite', 'url': 'http://www.acurite.com/'},
+    'family': 'Atlas',
+    'introduced': '2017',
+    'pictures': [
+      ['acurite-atlas.png', 'Atlas 7/8'],
+      ['acurite-atlas-elite.png', 'Atlas Elite']],
+    'models': [
+      'Atlas 7',
+      'Atlas 8',
+      'Atlas Elite' ],
+    'computer_interface': [],
+    'components': ['Console', 'Cluster'],
+    'configuration': [[]],
+    'console_temperature': {
+      'metric': {'range': '0-50 &deg;C', 'res': '8 &deg;C', 'acc': ''},
+      'imperial': {'range': '32-122 &deg;F', 'res': '4 &deg;F', 'acc': ''}},
+    'console_humidity': {'range': '16-98%', 'res': '5%', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-40-158 &deg;C', 'res': '8 &deg;C', 'acc': ''},
+      'imperial': {'range': '-40-122 &deg;F', 'res': '4 &deg;F', 'acc': ''}},
+    'humidity': {'range': '0-99%', 'res': '5%', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '0-0 mbar', 'res': '0.0 mbar', 'acc': '1 mbar'},
+      'imperial': {'range': '0-0 inHg', 'res': '0.0 inHg', 'acc': '1 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0-159 kph', 'res': '9 kph', 'acc': ''},
+      'imperial': {'range': '0-99 mph', 'res': '5 mph', 'acc': ''}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': ''},
+    'rain': {
+      'metric': {'range': '0-2539.75 mm', 'res': '0.254 mm', 'acc': '1.27 mm'},
+      'imperial': {'range': '0-99.99 in', 'res': '0.01 in', 'acc': '0.05 in'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [
+      'Wind: 18s', 'Wind direction: 30s',
+      'Temperature: 36s', 'Humidity: 36s',
+      'Indoor Temperature: 60s', 'Indoor Humidity: 60s' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
+    'power': ['Console: 5V  DC or 6 AA', '5-in-1: 4 AA'],
+    'battery_life': ['18 mo'],
+    'memory': ['512KB', 'about two weeks'],
+    'calibration': ['temperature', 'humidity', 'rain'],
+    'calculated': [''],
+    'features': ['lightning'],
+    'driver': ''
+  },
+
+
   'acurite_5in1': {
     'manufacturer': {'name': 'Acurite', 'url': 'http://www.acurite.com/'},
     'family': '5-in-1',
@@ -2455,6 +2508,9 @@ function get_cookie(name) {
                  onclick='toggle(this)'>WMR-89</input><br/>
         </div>
         <div class='control_block'>
+          <input type='checkbox' name='station'
+                 value='acurite_atlas' id='control.acurite_atlas'
+                 onclick='toggle(this)'>Acurite Atlas</input><br/>
           <input type='checkbox' name='station'
                  value='acurite_5in1' id='control.acurite_5in1'
                  onclick='toggle(this)'>Acurite 5-in-1</input><br/>
