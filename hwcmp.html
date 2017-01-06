@@ -20,6 +20,7 @@
   air-mentor
   wmr89
   ventus w820
+  lacrosse s85807/330-2315
   fix configurations: envoy, lw301, lw302, acuritebridge, c84612, netatmo
      wh5/6, whsig, twi, nm, cap, orion, magellan, pulsar, hobo,
      mea, maestro, mate, master, dyacon, w820
@@ -1006,6 +1007,55 @@ var stations = {
     'calculated': [''],
     'features': [''],
     'driver': 'WS28xx'
+  },
+
+
+  's85807': {
+    'manufacturer': {'name': 'LaCrosse', 'url': 'http://www.lacrossetechnology.com/'},
+    'family': 'S85807',
+    'introduced': '2016',
+    'pictures': [
+      ['330-2315.png', '330-2315']],
+    'models': [
+      'S85807', '330-2315'],
+    'computer_interface': ['Wifi'],
+    'components': ['Console', 'TH', 'Cluster'],
+    'configuration': [],
+    'console_temperature': {
+      'metric': {'range': '0-37 &deg;C', 'res': '', 'acc': ''},
+      'imperial': {'range': '32-99 &deg;F', 'res': '', 'acc': ''}},
+    'console_humidity': {'range': '10-99%', 'res': '', 'acc': ''},
+    'temperature': {
+      'metric': {'range': '-40-60 &deg;C', 'res': '', 'acc': ''},
+      'imperial': {'range': '-40-140 &deg;F', 'res': '', 'acc': ''}},
+    'humidity': {'range': '10-99%', 'res': '', 'acc': ''},
+    'pressure': {
+      'metric': {'range': '', 'res': '', 'acc': ''},
+      'imperial': {'range': '', 'res': '', 'acc': ''}},
+    'wind_speed': {
+      'metric': {'range': '0-180 kph', 'res': '', 'acc': ''},
+      'imperial': {'range': '0-111.8 mph', 'res': '', 'acc': ''}},
+    'wind_dir': {'range': '0-359&deg;', 'res': '', 'acc': ''},
+    'rain': {
+      'metric': {'range': '0-9999.9 mm', 'res': '', 'acc': ''},
+      'imperial': {'range': '0-394 in', 'res': '', 'acc': ''}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [ 'Console: 60s', 'TH: 58s', 'Cluster: 30s' ],
+    'wireless_range': {
+      'metric': 'Wifi: 24 m<br/>Sensors: 100 m',
+      'imperial': 'Wifi: 80 ft<br/>Sensors: 330 ft'},
+    'power': ['Console: 3 AAA or 5V DC', 'TH: 2 AA', 'Cluster: 3 AA'],
+    'battery_life': ['Console: 48-60 mo (with mains)', 'TH: 24 mo', 'Cluster: 24 mo'],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': ['Data visible via Wifi on LAN', 'Wifi only when on mains'],
+    'driver': ''
   },
 
 
@@ -2520,17 +2570,6 @@ function get_cookie(name) {
           <input type='checkbox' name='station'
                  value='acurite_bridge' id='control.acurite_bridge'
                  onclick='toggle(this)'>Acurite Bridge</input><br/>
-          <input type='checkbox' name='station'
-                 value='c84612' id='control.c84612'
-                 onclick='toggle(this)'>C84612</input><br/>
-          <input type='checkbox' name='station'
-                 value='ws23xx' id='control.ws23xx'
-                 onclick='toggle(this)'>WS23xx</input><br/>
-          <input type='checkbox' name='station'
-                 value='ws28xx' id='control.ws28xx'
-                 onclick='toggle(this)'>WS28xx</input><br/>
-        </div>
-        <div class='control_block'>
           <input type='checkbox' name='station' 
                  value='hideki' id='control.hideki'
                  onclick='toggle(this)'>Hideki</input><br/>
@@ -2540,6 +2579,20 @@ function get_cookie(name) {
           <input type='checkbox' name='station'
                  value='netatmo' id='control.netatmo'
                  onclick='toggle(this)'>Netatmo</input><br/>
+        </div>
+        <div class='control_block'>
+          <input type='checkbox' name='station'
+                 value='c84612' id='control.c84612'
+                 onclick='toggle(this)'>C84612</input><br/>
+          <input type='checkbox' name='station'
+                 value='ws23xx' id='control.ws23xx'
+                 onclick='toggle(this)'>WS23xx</input><br/>
+          <input type='checkbox' name='station'
+                 value='ws28xx' id='control.ws28xx'
+                 onclick='toggle(this)'>WS28xx</input><br/>
+          <input type='checkbox' name='station'
+                 value='s85807' id='control.s85807'
+                 onclick='toggle(this)'>S85807</input><br/>
           <input type='checkbox' name='station'
                  value='ws1' id='control.ws1'
                  onclick='toggle(this)'>WS1</input><br/>
