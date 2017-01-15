@@ -167,7 +167,7 @@ var stations = {
     'pictures': [['envoy.png', 'Envoy']],
     'computer_interface': ['USB', 'Ethernet'],
     'components': ['Receiver', 'ISS (TH, Rain, UV)', 'Anemometer'],
-    'configuration': [],
+    'configuration': [['envoy.png', 'Envoy']],
     'console_temperature': {
       'metric': {'range': '0-60 &deg;C', 'res': '0.06 &deg;C', 'acc': '0.6 &deg;C'},
       'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '1 &deg;F'}},
@@ -290,7 +290,7 @@ var stations = {
       'Tycon TP2700'],
     'computer_interface': ['USB'],
     'components': ['Console', 'TH', 'Rain', 'Anemometer', 'UV'],
-    'configuration': [],
+    'configuration': [['wh23xx.png', 'WH23xx']],
     'console_temperature': {
       'metric': {'range': '0-60 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
       'imperial': {'range': '32-140 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
@@ -344,8 +344,10 @@ var stations = {
     'computer_interface': ['WiFi'],
     'components': ['Console', 'Cluster (TH, Rain, Anemometer)', 'Indoor Sensor'],
     'configuration': [
-      ['fohp-console.png', 'HP 100x with Console'],
-      ['fohp-bridge.png', 'HP 100x']],
+      ['hp1001a.png', 'HP100x'],
+      ['hp1001b.png', 'HP100x with All-in-One'],
+      ['wh2600a.png', 'WH2600'],
+      ['wh2600b.png', 'WH2600 with All-in-One']],
     'console_temperature': {
       'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
       'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
@@ -501,7 +503,7 @@ var stations = {
       'WMR200A'],
     'computer_interface': ['USB'],
     'components': ['Console', 'TH', 'Rain', 'Anemometer'],
-    'configuration': [['wmr100.png', 'WMR100']],
+    'configuration': [['wmr200.png', 'WMR200']],
     'console_temperature': {
       'metric': {'range': '-20-53 &deg;C', 'res': '0.1 &deg;C', 'acc': '1 &deg;C'},
       'imperial': {'range': '-4-148 &deg;F', 'res': '0.2 &deg;F', 'acc': '2 &deg;F'}},
@@ -643,7 +645,7 @@ var stations = {
       'LW302'],
     'computer_interface': ['WiFi'],
     'components': ['Bridge', 'Receiver', 'TH', 'Rain', 'Anemometer'],
-    'configuration': [],
+    'configuration': [['lw30x.png', 'LW300/LW301/LW302']],
     'console_temperature': {
       'metric': {'range': '-50-70 &deg;C', 'res': '0.1 &deg;C', 'acc': '1-3 &deg;C'},
       'imperial': {'range': '-58-158 &deg;F', 'res': '0.1 &deg;F', 'acc': '2-6 &deg;F'}},
@@ -759,7 +761,7 @@ var stations = {
       '02064C' ],
     'computer_interface': ['USB'],
     'components': ['Console', '5-in-1 (TH, Rain, Anemoeter)'],
-    'configuration': [['acurite.png', 'Acurite 5-in-1']],
+    'configuration': [['acurite-console.png', 'Acurite 5-in-1']],
     'console_temperature': {
       'metric': {'range': '0-50 &deg;C', 'res': '8 &deg;C', 'acc': '4&deg;C'},
       'imperial': {'range': '32-122 &deg;F', 'res': '4 &deg;F', 'acc': '2&deg;F'}},
@@ -809,7 +811,7 @@ var stations = {
     'models': [ '09150' ],
     'computer_interface': ['USB'],
     'components': ['Bridge', '5-in-1', '3-in-1', 'TH'],
-    'configuration': [],
+    'configuration': [['acurite-bridge.png', 'smartHUB']],
     'console_temperature': {
       'metric': {'range': '0-50 &deg;C', 'res': '8 &deg;C', 'acc': ''},
       'imperial': {'range': '32-122 &deg;F', 'res': '4 &deg;F', 'acc': ''}},
@@ -854,7 +856,7 @@ var stations = {
     'models': ['C84612'],
     'computer_interface': ['WiFi'],
     'components': ['Gateway', 'Console', 'TH', 'Rain', 'Anemometer'],
-    'configuration': [],
+    'configuration': [['gw1000u.png', 'C84612 with GW1000U']],
     'console_temperature': {
       'metric': {'range': '4-40 &deg;C', 'res': '0.0 &deg;C', 'acc': '1 &deg;C'},
       'imperial': {'range': '41-104 &deg;F', 'res': '0.0 &deg;F', 'acc': '1 &deg;F'}},
@@ -1020,7 +1022,7 @@ var stations = {
       'S85807', '330-2315'],
     'computer_interface': ['Wifi'],
     'components': ['Console', 'TH', 'Cluster'],
-    'configuration': [],
+    'configuration': [['s85807.png', 'S85807']],
     'console_temperature': {
       'metric': {'range': '0-37 &deg;C', 'res': '', 'acc': ''},
       'imperial': {'range': '32-99 &deg;F', 'res': '', 'acc': ''}},
@@ -1344,7 +1346,9 @@ var stations = {
       'IP-100'],
     'computer_interface': ['USB', 'RS-232', 'RS-485', 'Modbus'],
     'components': ['Cluster (TH, Rain, Anemometer)', 'RTR: separate Rain'],
-    'configuration': [['cc3000.png', 'CC3000']],
+    'configuration': [
+      ['cc3000.png', 'MKIII with CC3000'],
+      ['ip100.png', 'MKIII with IP100']],
     'console_temperature': {
       'metric': {'range': '0-0 &deg;C', 'res': '', 'acc': ''},
       'imperial': {'range': '0-0 &deg;F', 'res': '', 'acc': ''}},
@@ -1830,7 +1834,11 @@ var stations = {
     'models': ['MS-120', 'MS-130', 'MS-140', 'MS-150'],
     'computer_interface': ['Modbus'],
     'components': ['Anemometer', 'PTH', 'Lightning', 'Rain', 'Soil Moisture', 'Soil/Submersible Temperature', 'Solar Sensor'],
-    'configuration': [['dyacon.png', 'Central controller/logger with integrated LCD for configuration and operation, independent sensors, autonomous operation']],
+    'configuration': [
+      ['dyacon-a.png', 'MS-1xx with Modbus uplink'],
+      ['dyacon-a.png', 'MS-1xx with cellular uplink'],
+      ['dyacon-a.png', 'MS-1xx with ethernet bridge'],
+      ['dyacon-d.png', 'MS-1xx with wifi bridge']],
     'console_temperature': {
       'metric': {'range': '', 'res': '', 'acc': ''},
       'imperial': {'range': '', 'res': '', 'acc': ''}},
@@ -2414,7 +2422,7 @@ function get_cookie(name) {
   height: 100px;
 }
 .hardware_specs .configuration {
-  height: 80px;
+  height: 250px;
 }
 .hardware_specs .optional_sensors {
   height: 100px;
@@ -2468,7 +2476,7 @@ function get_cookie(name) {
   border: 0px;
 }
 .cfg_image {
-  height: 45px;
+  height: 50px;
   border: 1px solid #ddddff;
 }
 #legend {
