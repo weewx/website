@@ -211,7 +211,7 @@ var stations = {
   },
 
 
-  'fo': {
+  'foA': {
     'manufacturer': {'name': 'Fine Offset', 'url': 'http://www.foshk.com/'},
     'family': 'WS/WH 10xx, 20xx, 30xx',
     'introduced': '2008',
@@ -262,7 +262,7 @@ var stations = {
       'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': '10%'}},
     'uv': {'range': '0-16', 'res': '', 'acc': ''},
     'solar_radiation': {'range': '', 'res': '', 'acc': ''},
-    'luminosity': {'range':'0-400k Lux', 'res':'', 'acc':''},
+    'luminosity': {'range':'0-400k Lux (30xx)', 'res':'', 'acc':''},
     'co2': {'range':'', 'res':'', 'acc':''},
     'sound': {'range':'', 'res':'', 'acc':''},
     'optional_sensors': [ ],
@@ -278,7 +278,7 @@ var stations = {
   },
 
 
-  'fowh': {
+  'foD': {
     'manufacturer': {'name': 'Fine Offset', 'url': 'http://www.foshk.com/'},
     'family': 'WH 23xx',
     'introduced': '2015',
@@ -319,35 +319,125 @@ var stations = {
     'wireless_range': {'metric': '100 m', 'imperial': '300 ft'},
     'power': ['Console: 2 AA or USB', 'TH: 2 AA'],
     'battery_life': ['1 yr'],
-    'memory': ['4080 records', '3264 records (30xx)'],
-    'calibration': ['time zone', 'pressure offset', 'temperature (2080A)', 'humidity (2080A)'],
+    'memory': [],
+    'calibration': ['time zone', 'pressure', 'temperature', 'humidity'],
     'calculated': [],
     'features': ['WWVB', 'multiple consoles'],
     'driver': 'WH23xx'
   },
 
 
-  'fohp': {
+  'foB': {
     'manufacturer': {'name': 'Fine Offset', 'url': 'http://foshk.com/'},
     'family': 'HP 100x',
     'introduced': '2014',
-    'pictures': [
-      ['hp1000.png', '1000/1003'],
-      ['ws1400ip.png', '1000/1003']],
+    'pictures': [['hp1000.png', '1000/1003']],
     'models': [
       'HP1000',
       'HP1003',
-      'Ambient Weather WS-1001-WiFi',
-      'Ambient Weather WS-1200',
-      'Ambient Weather WS-1200-IP',
-      'Ambient Weather WS-1400-IP'],
+      'Ambient Weather WS-1001-WiFi'],
     'computer_interface': ['WiFi'],
     'components': ['Console', 'Cluster (TH, Rain, Anemometer)', 'Indoor Sensor'],
     'configuration': [
       ['hp1001a.png', 'HP100x'],
-      ['hp1001b.png', 'HP100x with All-in-One'],
-      ['wh2600a.png', 'WH2600'],
-      ['wh2600b.png', 'WH2600 with All-in-One']],
+      ['hp1001b.png', 'HP100x with All-in-One']],
+    'console_temperature': {
+      'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
+    'console_humidity': {'range': '1-99%', 'res': '1%', 'acc': '5%'},
+    'temperature': {
+      'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
+    'humidity': {'range': '1-99%', 'res': '1', 'acc': '5%'},
+    'pressure': {
+      'metric': {'range': '300-1100 mbar', 'res': '0.34 mbar', 'acc': '2.7 mbar'},
+      'imperial': {'range': '8.85-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.08 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0-160 kph', 'res': '0.15 kph', 'acc': '3.2 kph or 10%'},
+      'imperial': {'range': '0-100 mph', 'res': '0.1 mph', 'acc': '2.2 mph or 10%'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '22.5&deg;'},
+    'rain': {
+      'metric': {'range': '0-9999 mm', 'res': '0.3 mm', 'acc': '10%'},
+      'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': '10%'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'0-400k Lux', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [ '' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '330 ft'},
+    'power': ['Base: 5V DC', 'Sensors: 3 AA', 'TH: 2 AAA'],
+    'battery_life': [''],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': ['SD card'],
+    'driver': 'Interceptor'
+  },
+
+
+  'foC': {
+    'manufacturer': {'name': 'Fine Offset', 'url': 'http://foshk.com/'},
+    'family': 'WH 2600',
+    'introduced': '2014',
+    'pictures': [['ws1400ip.png', 'WH2600']],
+    'models': [
+      'HP2600',
+      'Ambient Weather WS-1200-IP',
+      'Ambient Weather WS-1400-IP'],
+    'computer_interface': ['Ethernet'],
+    'components': ['Bridge', 'Cluster (TH, Rain, Anemometer)', 'Indoor Sensor'],
+    'configuration': [['wh2600a.png', 'WH2600']],
+    'console_temperature': {
+      'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
+    'console_humidity': {'range': '1-99%', 'res': '1%', 'acc': '5%'},
+    'temperature': {
+      'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
+      'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
+    'humidity': {'range': '1-99%', 'res': '1', 'acc': '5%'},
+    'pressure': {
+      'metric': {'range': '300-1100 mbar', 'res': '0.34 mbar', 'acc': '2.7 mbar'},
+      'imperial': {'range': '8.85-32.5 inHg', 'res': '0.01 inHg', 'acc': '0.08 inHg'}},
+    'wind_speed': {
+      'metric': {'range': '0-160 kph', 'res': '0.15 kph', 'acc': '3.2 kph or 10%'},
+      'imperial': {'range': '0-100 mph', 'res': '0.1 mph', 'acc': '2.2 mph or 10%'}},
+    'wind_dir': {'range': '0-360&deg;', 'res': '22.5&deg;', 'acc': '22.5&deg;'},
+    'rain': {
+      'metric': {'range': '0-9999 mm', 'res': '0.3 mm', 'acc': '10%'},
+      'imperial': {'range': '0-394 in', 'res': '0.01 in', 'acc': '10%'}},
+    'uv': {'range': '', 'res': '', 'acc': ''},
+    'solar_radiation': {'range': '', 'res': '', 'acc': ''},
+    'luminosity': {'range':'0-400k Lux', 'res':'', 'acc':''},
+    'co2': {'range':'', 'res':'', 'acc':''},
+    'sound': {'range':'', 'res':'', 'acc':''},
+    'optional_sensors': [ ],
+    'sensor_updates': [ '' ],
+    'wireless_range': {'metric': '100 m', 'imperial': '330 ft'},
+    'power': ['Base: 5V DC', 'Sensors: 3 AA', 'TH: 2 AAA'],
+    'battery_life': [''],
+    'memory': [''],
+    'calibration': [''],
+    'calculated': [''],
+    'features': ['SD card'],
+    'driver': 'Interceptor'
+  },
+
+
+  'foE': {
+    'manufacturer': {'name': 'Fine Offset', 'url': 'http://foshk.com/'},
+    'family': 'WH 2900',
+    'introduced': '2016',
+    'pictures': [
+      ['wh2900.png', 'WH2900']],
+    'models': [
+      'WH2900',
+      'Ambient Weather WS-2902'],
+    'computer_interface': ['WiFi'],
+    'components': ['Console', 'Cluster (TH, Rain, Anemometer)'],
+    'configuration': [
+      ['hp1001a.png', 'WH2900']],
     'console_temperature': {
       'metric': {'range': '-30-65 &deg;C', 'res': '0.05 &deg;C', 'acc': '1 &deg;C'},
       'imperial': {'range': '-22-149 &deg;F', 'res': '0.1 &deg;F', 'acc': '2 &deg;F'}},
@@ -2538,15 +2628,23 @@ function get_cookie(name) {
           <input type='checkbox' name='station'
                  value='envoy' id='control.envoy'
                  onclick='toggle(this)'>Envoy</input><br/>
+        </div>
+        <div class='control_block'>
           <input type='checkbox' name='station'
-                 value='fo' id='control.fo'
-                 onclick='toggle(this)'>FO WS</input><br/>
+                 value='foA' id='control.foA'
+                 onclick='toggle(this)'>10/20/30xx</input><br/>
           <input type='checkbox' name='station'
-                 value='fowh' id='control.fowh'
-                 onclick='toggle(this)'>FO WH</input><br/>
+                 value='foB' id='control.foB'
+                 onclick='toggle(this)'>HP100x</input><br/>
           <input type='checkbox' name='station'
-                 value='fohp' id='control.fohp'
-                 onclick='toggle(this)'>FO HP</input><br/>
+                 value='foC' id='control.foC'
+                 onclick='toggle(this)'>WH2600</input><br/>
+          <input type='checkbox' name='station'
+                 value='foD' id='control.foD'
+                 onclick='toggle(this)'>WH2300</input><br/>
+          <input type='checkbox' name='station'
+                 value='foE' id='control.foE'
+                 onclick='toggle(this)'>WH2900</input><br/>
         </div>
         <div class='control_block'>
           <input type='checkbox' name='station'
