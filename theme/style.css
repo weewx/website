@@ -1,28 +1,5 @@
 /* apaxy theme for weewx */
 /* by mwall, based on original by adam whitcroft */
-@import url('//fonts.googleapis.com/css?family=Open+Sans');
-/* Have to use @import for the font, as you can only specify a single stylesheet */
-* {
-  margin:0;
-  padding:0;
-  -webkit-box-sizing:border-box;
-     -moz-box-sizing:border-box;
-         box-sizing: border-box; 
-}
-
-html {
-  min-height:100%;
-  border-top:10px solid #ECEEF1;
-  border-bottom:10px solid #ECEEF1;
-  color:#61666c;
-  font-weight:400;
-  font-size:1em;
-  font-family:'Open Sans', sans-serif;
-  line-height:2em;
-}
-body {
-  -webkit-backface-visibility:hidden;
-}
 code {
   font-family:consolas,monospace;  
 }
@@ -37,6 +14,7 @@ a:hover {
   margin:0 auto;
   padding-left: 10px;
   padding-right: 10px;
+  line-height:2em;
 }
 .block {
   font-size:.875em;
@@ -44,11 +22,19 @@ a:hover {
   padding:20px;
   color:#9099A3;
 }
+.footer {
+  text-align:center;
+  font-size:.75em;
+}
+pre {
+  padding-top: 40px;
+  line-height: 100%;
+}
+
 table {
   margin-left: 10px;
   margin-right: 10px;
   border-collapse:collapse;
-  font-size:.875em;
 }
 tr {
   outline:0;
@@ -59,7 +45,6 @@ tr:hover td {
 }
 th {
   text-align:left;
-  font-size:.75em;
   padding-right:20px;
 }
 /* 2nd Column: Filename */
@@ -85,10 +70,10 @@ td {
   vertical-align:middle;
   text-align:left;
   -webkit-transition:background 300ms ease;
-     -moz-transition:background 300ms ease;
-      -ms-transition:background 300ms ease;
-       -o-transition:background 300ms ease;
-          transition:background 300ms ease;
+  -moz-transition:background 300ms ease;
+  -ms-transition:background 300ms ease;
+  -o-transition:background 300ms ease;
+  transition:background 300ms ease;
 }
 td a{
   display: block;
@@ -96,18 +81,6 @@ td a{
 tr.parent a[href^="/"] {
   color:#9099A3;
 }
-  .parent a[href^="/"]:hover {
-    color:#2281d0;
-  }
-/*------------------------------------*\
-    Footer
-\*------------------------------------*/
-.footer {
-  text-align:center;
-  font-size:.75em;
-}
-
-/* for the README block */
-pre {
-  line-height: 100%;
+.parent a[href^="/"]:hover {
+  color:#2281d0;
 }

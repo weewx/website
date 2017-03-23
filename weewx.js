@@ -111,31 +111,31 @@ function populate_header(page) {
     if(navbar) {
         var navbar_html = "\
 <div class='navitem'>\
-<a href='/'><img src='weewx-logo-128x128.png' class='logo' alt='weewx' /></a>\
+<a href='/'><img src='/weewx-logo-128x128.png' class='logo' alt='weewx' /></a>\
 </div>\
 <div class='navitem'>\
-<a href='stations.html'>MAP</a>\
+<a href='/stations.html'>MAP</a>\
 </div>\
 <div class='navitem'>\
-<a href='showcase.html'>SHOWCASE</a>\
+<a href='/showcase.html'>SHOWCASE</a>\
 </div>\
 <div class='navitem'>\
-<a href='code.html'>CODE</a>\
+<a href='/code.html'>CODE</a>\
 </div>\
 <div class='navitem'>\
-<a href='hardware.html'>HARDWARE</a>\
+<a href='/hardware.html'>HARDWARE</a>\
 </div>\
 <div class='navitem'>\
-<a href='support.html'>SUPPORT</a>\
+<a href='/support.html'>SUPPORT</a>\
 </div>\
 <div class='navitem'>\
-<a href='news.html'>NEWS</a>\
+<a href='/news.html'>NEWS</a>\
 </div>\
 <div class='navitem'>\
-<a href='docs.html'>DOCS</a>\
+<a href='/docs.html'>DOCS</a>\
 </div>\
 <div class='navitem'>\
-<a href='downloads'>DOWNLOAD</a>\
+<a href='/downloads'>DOWNLOAD</a>\
 </div>";
         tmp = document.createElement('div');
         tmp.setAttribute('class', 'nav');
