@@ -27,13 +27,13 @@ a:hover {
   font-size:.75em;
 }
 pre {
-  padding-top: 40px;
   line-height: 100%;
 }
 
 table {
   margin-left: 10px;
   margin-right: 10px;
+  margin-bottom: 50px;
   border-collapse:collapse;
 }
 tr {
