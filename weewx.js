@@ -129,9 +129,6 @@ function populate_header(page) {
 <a href='/support.html'>SUPPORT</a>\
 </div>\
 <div class='navitem'>\
-<a href='/news.html'>NEWS</a>\
-</div>\
-<div class='navitem'>\
 <a href='/docs.html'>DOCS</a>\
 </div>\
 <div class='navitem'>\
