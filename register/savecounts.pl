@@ -10,7 +10,8 @@ use strict;
 use DBI;
 use POSIX;
 
-my $basedir = '/home/content/t/o/m/tomkeffer';
+#my $basedir = '/home/content/t/o/m/tomkeffer';
+my $basedir = '/var/chroot/home/content/73/4094873';
 
 # location of the sqlite database
 my $db = "$basedir/weereg/stations.sdb";

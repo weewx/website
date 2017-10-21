@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# $Id: mkstations.pl 2839 2015-01-09 14:21:41Z mwall $
+# $Id: mkstations.pl 2201 2014-04-30 23:11:40Z mwall $
 # Copyright 2013 Matthew Wall
 #
 # insert fields from database into template html file, resulting in a web page
@@ -15,9 +15,10 @@ use DBI;
 use POSIX;
 use utf8;
 
-my $version = '$Id: mkstations.pl 2839 2015-01-09 14:21:41Z mwall $';
+my $version = '$Id: mkstations.pl 2201 2014-04-30 23:11:40Z mwall $';
 
-my $basedir = '/home/content/t/o/m/tomkeffer';
+#my $basedir = '/home/content/t/o/m/tomkeffer';
+my $basedir = '/var/chroot/home/content/73/4094873';
 
 # location of the sqlite database
 my $db = "$basedir/weereg/stations.sdb";

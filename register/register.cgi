@@ -24,7 +24,8 @@ use strict;
 
 my $version = '$Id: register.cgi 2051 2015-03-21 16:24:03Z mwall $';
 
-my $basedir = '/home/content/t/o/m/tomkeffer';
+#my $basedir = '/home/content/t/o/m/tomkeffer';
+my $basedir = '/var/chroot/home/content/73/4094873';
 
 # use this when testing so we avoid the real databases
 #my $TEST = '-test';
@@ -1008,7 +1009,7 @@ sub getrequest {
 
 sub logmsg {
     my ($msg) = @_;
-    my $logfile = "/home/content/t/o/m/tomkeffer/html/register/cgilog.log";
+    my $logfile = "$basedir/html/register/cgilog.log";
     my $DATE_FORMAT = "%Y.%m.%d %H:%M:%S";
     my $tstr = strftime $DATE_FORMAT, localtime time;
     if (open(FILE, ">>$logfile")) {
