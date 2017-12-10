@@ -325,6 +325,8 @@ sub registerstation {
             $dbh->disconnect();
             return ('FAIL', $msg, \%rec);
         }
+	# index based on everything but the timestamp - we want to retain only
+	# the latest contact from a client with a unique combination of fields
         $rc = $dbh->do('create unique index index_stations on stations(station_url asc, latitude asc, longitude asc, station_type asc, station_model asc, weewx_info asc, python_info asc, platform_info asc, last_addr asc)');
         if(!$rc) {
             my $msg = 'create index failed: ' . $DBI::errstr;
