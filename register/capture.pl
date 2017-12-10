@@ -67,7 +67,7 @@ my $DATE_FORMAT_LOG = "%b %d %H:%M:%S";
 
 # should we spit out a log message about every little thing?  if not, then
 # log only errors.
-my $verbosity = 1;
+my $verbosity = 0;
 
 while($ARGV[0]) {
     my $arg = shift;
