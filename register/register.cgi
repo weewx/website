@@ -188,6 +188,17 @@ sub handleregistration {
 	&updatecapture($rec->{station_url});
     } else {
         &writereply('Registration Failed','FAIL', $msg, $rec, $rqpairs{debug});
+#	logmsg($msg);
+	my @pairs = ();
+	foreach my $key (sort keys %{ $rec }) {
+	    my $val = $rec->{$key};
+	    $val =~ s/"/\\"/g;
+	    $val =~ s/'/\\'/g;
+	    push @pairs, $key . '=' . $val;
+	}
+	my $recstr = join(',', @pairs);
+	my $fullmsg = "$msg reg={$recstr}";
+	logmsg($fullmsg);
     }
 }
 
@@ -221,20 +232,24 @@ sub registerstation {
     $rec{user_agent} = $ENV{HTTP_USER_AGENT};
 
     my @msgs;
-    if($rec{station_url} =~ /example.com/) {
-        push @msgs, 'example.com is not a real URL';
-    }
-    if($rec{station_url} =~ /weewx.com/) {
-        push @msgs, 'weewx.com does not host any weather stations';
-    }
-    if($rec{station_url} =~ /register.cgi/) {
-        push @msgs, 'station_url should be the URL to your weather station';
-    }
-    if($rec{station_url} !~ /^https?:\/\/\S+\.\S+/) {
-        push @msgs, 'station_url is not a proper URL';
-    }
-    if($rec{station_url} =~ /'/) {
-        push @msgs, 'station_url cannot contain single quotes';
+    if($rec{station_url} eq q() || $rec{station_url} !~ /\S/) {
+        push @msgs, 'station_url must be specified';
+    } else {
+	if($rec{station_url} =~ /example.com/) {
+	    push @msgs, 'example.com is not a valid station_url';
+	}
+	if($rec{station_url} =~ /weewx.com/) {
+	    push @msgs, 'weewx.com is not a valid station_url';
+	}
+	if($rec{station_url} =~ /register.cgi/) {
+	    push @msgs, 'register.cgi is not a valid station_url';
+	}
+	if($rec{station_url} !~ /^https?:\/\/\S+\.\S+/) {
+	    push @msgs, 'station_url is not a proper URL';
+	}
+	if($rec{station_url} =~ /'/) {
+	    push @msgs, 'station_url cannot contain single quotes';
+	}
     }
     if($rec{station_type} eq q() || $rec{station_type} !~ /\S/) {
         push @msgs, 'station_type must be specified';
@@ -270,7 +285,7 @@ sub registerstation {
             $msg .= '; ' if $msg ne q();
             $msg .= $m;
         }
-        return ('FAIL', $msg, \%rec);
+        return ('FAIL', "bad registration info: $msg", \%rec);
     }
 
     my $rval = eval "{ require DBI; }"; ## no critic (ProhibitStringyEval)
