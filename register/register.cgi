@@ -270,11 +270,18 @@ sub registerstation {
     } elsif($rec{longitude} < -180 || $rec{longitude} > 180) {
         push @msgs, 'longitude must be between -180 and 180, inclusive';
     }
+
+    # do not permit stray quotes
     for my $k ('description','station_model','weewx_info','python_info','platform_info') {
         if($rec{$k} =~ /'/) {
             $rec{$k} =~ s/'//g;
         }
     }
+    # some people seem to be lax with their station model name
+    if($rec{station_model} =~ / object at 0x/) {
+	$rec{station_model} =~ s/ object at 0x[^>]*//;
+    }
+
 # accept only weewx user agent.  this will reject anything before weewx 2.6
 #    if($rec{user_agent} !~ /weewx\//) {
 #        push @msgs, 'unsupported registration protocol';
