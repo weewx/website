@@ -278,8 +278,8 @@ sub registerstation {
         }
     }
     # some people seem to be lax with their station model name
-    if($rec{station_model} =~ / object at 0x\d+/) {
-	$rec{station_model} =~ s/ object at 0x\d+//;
+    if($rec{station_model} =~ / object at 0x[0-9a-f]+/) {
+	$rec{station_model} =~ s/ object at 0x[0-9a-f]+//;
     }
 
 # accept only weewx user agent.  this will reject anything before weewx 2.6
@@ -341,7 +341,7 @@ sub registerstation {
     $last_seen = $dbh->selectrow_array("select max(last_seen) from stations where last_addr=?", undef, ($rec{last_addr}));
     if($rec{last_seen} - $last_seen < $max_frequency) {
         $dbh->disconnect();
-        return ('FAIL', 'too many updates attempted', \%rec);
+        return ('FAIL', 'too many updates attempted ($last_seen)', \%rec);
     }
 
     my $urlcount = 0;
