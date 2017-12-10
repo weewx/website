@@ -278,8 +278,8 @@ sub registerstation {
         }
     }
     # some people seem to be lax with their station model name
-    if($rec{station_model} =~ / object at 0x/) {
-	$rec{station_model} =~ s/ object at 0x[^>]*//;
+    if($rec{station_model} =~ / object at 0x\d+/) {
+	$rec{station_model} =~ s/ object at 0x\d+//;
     }
 
 # accept only weewx user agent.  this will reject anything before weewx 2.6
