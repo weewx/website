@@ -67,7 +67,7 @@ my $DATE_FORMAT_LOG = "%b %d %H:%M:%S";
 
 # should we spit out a log message about every little thing?  if not, then
 # log only errors.
-my $verbose = 0;
+my $verbosity = 1;
 
 while($ARGV[0]) {
     my $arg = shift;
@@ -79,15 +79,15 @@ while($ARGV[0]) {
         $db = shift;
     } elsif ($arg eq '--url') {
         $url = shift;
-    } elsif ($arg eq '--verbose') {
-        $verbose = 1;
+    } elsif ($arg eq '--verbosity') {
+        $verbosity = shift;
     }
 }
 
 my $logargs = q();
-#if (! $verbose) {
-#    $logargs = '> /dev/null 2>&1';
-#}
+if ($verbosity < 2) {
+    $logargs = '> /dev/null 2>&1';
+}
 my $now = time;
 my %stations;
 if ($url ne q()) {
@@ -140,6 +140,7 @@ sub get_stations {
 # do a capture of the specified url
 sub capture_station {
     my ($url, $now) = @_;
+    logout("process '$url' at $now");
     my $ctx = Digest::MD5->new;
     $ctx->add($url);
     my $fn = $ctx->hexdigest;
@@ -187,7 +188,7 @@ sub capture_station {
 
 sub logout {
     my ($msg) = @_;
-    if ($verbose) {
+    if ($verbosity) {
         my $tstr = strftime $DATE_FORMAT_LOG, gmtime time;
         print STDOUT "$tstr $msg\n";
     }
