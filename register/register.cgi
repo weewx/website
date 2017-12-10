@@ -341,7 +341,7 @@ sub registerstation {
     $last_seen = $dbh->selectrow_array("select max(last_seen) from stations where last_addr=?", undef, ($rec{last_addr}));
     if($rec{last_seen} - $last_seen < $max_frequency) {
         $dbh->disconnect();
-        return ('FAIL', 'too many updates attempted ($last_seen)', \%rec);
+        return ('FAIL', "too many updates attempted ($last_seen)", \%rec);
     }
 
     my $urlcount = 0;
