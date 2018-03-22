@@ -14,7 +14,7 @@ help:
 	@echo "make upload USER=johndoe"
 
 upload:
-	ftp -u $(USER)@$(DST) code.html docs.html dot.png hardware.html hwcmp.html index.html keys.html showcase.html support.html weewx-logo-128x128.png weewx.css weewx.js keys/*.key screenshots/*.png hardware/*.png cfg/*.png
+	ftp -u $(USER)@$(DST) code.html docs.html dot.png hardware.html hwcmp.html index.html keys.html showcase.html support.html weewx-logo-128x128.png infobox.js close.gif tipbox90pad.gif weewx.css weewx.js keys/*.key screenshots/*.png hardware/*.png cfg/*.png
 
 upload-highslide:
 	ftp -u $(USER)@$(DST) highslide/*.js highslide/*.css highslide/graphics/*.png highslide/graphics/*.gif highslide/graphics/*.cur highslide/graphics/outlines/*.png highslide/graphics/outlines/*.psd
