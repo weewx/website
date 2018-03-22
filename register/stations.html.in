@@ -26,6 +26,7 @@
   font-size: 10pt;
   font-weight: bold;
   max-width: 200px;
+  margin: 0px;
 }
 .location_details {
   font-family: Helvetic, Arial, sans-serif;
@@ -101,19 +102,45 @@
 .thumbnail {
   height: 104px;
 }
+.infoBox {
+  background: url('/tipbox90pad.gif') no-repeat scroll 0% 18px;
+  width: 250px;
+}
+.info-content {
+  overflow: hidden;
+  background-color: #ffffff;
+  border: 1px solid #555555;
+  margin-left: 10px;
+  padding: 4px;
+}
   </style>
   <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
+  <script type="text/javascript" src="infobox.js"></script>
   <script type="text/javascript">
 var sites = [];
 var map;
 
-var infowindow = new google.maps.InfoWindow({
-  content: 'nothing selected'
+//var infowindow = new google.maps.InfoWindow({
+//  content: 'nothing selected'
+//});
+
+var infowindow = new InfoBox({
+  content: 'nothing selected',
+  disableAutoPan: false,
+  maxWidth: 0,
+  pixelOffset: new google.maps.Size(10, -50),
+  zIndex: null,
+  closeBoxMargin: "2px 2px 2px 2px",
+  closeBoxURL: "close.gif",
+  infoBoxClearance: new google.maps.Size(1, 1),
+  isHidden: false,
+  pane: "floatPane",
+  enableEventPropagation: false
 });
 
 var showThumbs = 1;
 var oldZoomLevel = 0;
-var zoomThreshold = 7; /* when to switch from dots to pins */
+var zoomThreshold = 9; /* when to switch from dots to pins */
 var pingdays = 30; /* number of days in ping histogram */
 var staledays = 7; /* number of days before considered stale */
 var backgroundColor = '#ffffff';
@@ -435,7 +462,11 @@ function draw_ping_histogram(pings, maxpings, total, stale, dead) {
 
 function create_content(idx) {
   var fn = md5(sites[idx].url) + '.sm.jpg';
-  var str = '<p class="location">';
+  var w = document.createElement("div");
+  w.className = 'info-content';
+//  var str = '<div class="info-content">';
+  var str = '';
+  str += '<p class="location">';
   str += '<a href="' + sites[idx].url + '">';
   if(sites[idx].description.length > 0) {
     str += sites[idx].description;
@@ -451,7 +482,10 @@ function create_content(idx) {
   str += sites[idx].longitude.toFixed(3) + '<br/>';
   str += sites[idx].station + '<br/>';
   str += '</p>';
-  return str;
+//  str += '</div>';
+  w.innerHTML = str;
+  return w;
+//  return str;
 }
 
 function attach_info(map, marker, idx) {
