@@ -35,8 +35,11 @@ my $imgdir = "$basedir/html/shots";
 # extension for captured images
 my $imgext = 'jpg';
 
-# location of the sqlite database
-my $db = "$basedir/weereg/stations.sdb";
+# dbinfo
+my $dbhost = '45.40.164.85';
+my $dbuser = 'weereg';
+my $dbpass = 'Worldofweewx#1';
+my $db = 'weereg';
 
 # placeholder file when capture is too big to keep
 my $placeholder = "$basedir/html/blank-600x200.png";
@@ -67,7 +70,7 @@ my $DATE_FORMAT_LOG = "%b %d %H:%M:%S";
 
 # should we spit out a log message about every little thing?  if not, then
 # log only errors.
-my $verbosity = 0;
+my $verbosity = 1;
 
 while($ARGV[0]) {
     my $arg = shift;
@@ -75,8 +78,6 @@ while($ARGV[0]) {
         $stale = shift;
     } elsif ($arg eq '--active') {
         $active = shift;
-    } elsif ($arg eq '--db') {
-        $db = shift;
     } elsif ($arg eq '--url') {
         $url = shift;
     } elsif ($arg eq '--verbosity') {
@@ -106,33 +107,29 @@ exit 0;
 sub get_stations {
     my ($db, $now) = @_;
     my %stations;
-    if (-f $db) {
-        my $dbh = DBI->connect("dbi:SQLite:$db", q(), q(), { RaiseError => 0 });
-        if ($dbh) {
-            my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
-            if ($sth) {
-                $sth->execute();
-                $sth->bind_columns(\my($url,$st,$ts));
-                while($sth->fetch()) {
-                    my %r;
-                    $r{station_type} = $st;
-                    $r{last_seen} = $ts;
-                    if ($now - $ts < $active) {
-                        $stations{$url} = \%r;
-                    }
-                }
-                $sth->finish();
-                undef $sth;
-            } else {
-                logerr("cannot prepare select statement: $DBI::errstr");
-            }
-            $dbh->disconnect();
-            undef $dbh;
-        } else {
-            logerr("cannot connect to database: $DBI::errstr");
-        }
+    my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, { RaiseError => 0 });
+    if ($dbh) {
+	my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
+	if ($sth) {
+	    $sth->execute();
+	    $sth->bind_columns(\my($url,$st,$ts));
+	    while($sth->fetch()) {
+		my %r;
+		$r{station_type} = $st;
+		$r{last_seen} = $ts;
+		if ($now - $ts < $active) {
+		    $stations{$url} = \%r;
+		}
+	    }
+	    $sth->finish();
+	    undef $sth;
+	} else {
+	    logerr("cannot prepare select statement: $DBI::errstr");
+	}
+	$dbh->disconnect();
+	undef $dbh;
     } else {
-        logerr("no database at $db");
+	logerr("cannot connect to database: $DBI::errstr");
     }
     return %stations;
 }

@@ -115,7 +115,7 @@
 }
   </style>
   <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
-  <script type="text/javascript" src="infobox.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/googlemaps/v3-utility-library/master/infobox/src/infobox.js"></script>
   <script type="text/javascript">
 var sites = [];
 var map;

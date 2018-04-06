@@ -20,8 +20,11 @@ my $version = '$Id: mkstations.pl 2201 2014-04-30 23:11:40Z mwall $';
 #my $basedir = '/home/content/t/o/m/tomkeffer';
 my $basedir = '/var/chroot/home/content/73/4094873';
 
-# location of the sqlite database
-my $db = "$basedir/weereg/stations.sdb";
+# dbinfo
+my $dbhost = '45.40.164.85';
+my $dbuser = 'weereg';
+my $dbpass = 'Worldofweewx#1';
+my $db = 'weereg';
 
 # html template file
 my $tmpl = "$basedir/html/register/stations.html.in";
@@ -57,8 +60,6 @@ while($ARGV[0]) {
         $tmpl = shift;
     } elsif ($arg eq '--stale') {
         $stale = shift;
-    } elsif ($arg eq '--db') {
-        $db = shift;
     } elsif ($arg eq '--ofile') {
         $ofile = shift;
     }
@@ -85,54 +86,49 @@ if(open(IFILE, "<$tmpl")) {
 my @records;
 my $errmsg = q();
 # be sure the database is there
-if (-f $db) {
-    # read the database, keep only records that are not stale
-    my $dbh = DBI->connect("dbi:SQLite:$db", q(), q(), { RaiseError => 0 });
-    if ($dbh) {
-        my $now = time;
-        my $cutoff = $now - $stale;
+# read the database, keep only records that are not stale
+my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, { RaiseError => 0 });
+if ($dbh) {
+    my $now = time;
+    my $cutoff = $now - $stale;
 # FIXME: these queries do the right thing in sqlite3, but not in perl DBI
 #	my $qry = "select station_url,description,latitude,longitude,station_type,last_seen from (select * from stations where last_seen > $cutoff order by last_seen asc) group by station_url";
 #	my $qry = "select station_url,description,latitude,longitude,station_type,last_seen from (select * from stations order by last_seen asc) t1 where t1.last_seen > $cutoff group by t1.station_url";
         # since doing it in the db query does not work, query for everything
         # then do the filtering in perl.  sigh.
-        my $qry = "select station_url,description,latitude,longitude,station_type,last_seen,weewx_info from stations where last_seen > $cutoff order by last_seen";
-        my $sth = $dbh->prepare($qry);
-	if ($sth) {
-            my %unique;
-	    $sth->execute();
-	    $sth->bind_columns(\my($url,$desc,$lat,$lon,$st,$ts,$ver));
-	    while($sth->fetch()) {
-		my %r;
-		$r{url} = $url;
-		$r{description} = $desc;
-		$r{latitude} = $lat;
-		$r{longitude} = $lon;
-		$r{station_type} = $st;
-		$r{last_seen} = $ts;
-                $r{weewx_info} = $ver;
-                $r{sort_key} = $COLLATOR->getSortKey(trim($desc));
-                if(!defined($unique{$url}) || $ts>$unique{$url}->{last_seen}) {
-                    $unique{$url} = \%r;
-                }
-            }
-            $sth->finish();
-            undef $sth;
-            foreach my $k (keys %unique) {
-		push @records, $unique{$k};
-            }
-	} else {
-	    $errmsg = "cannot prepare select statement: $DBI::errstr";
-	    logerr($errmsg);
+    my $qry = "select station_url,description,latitude,longitude,station_type,last_seen,weewx_info from stations where last_seen > $cutoff order by last_seen";
+    my $sth = $dbh->prepare($qry);
+    if ($sth) {
+	my %unique;
+	$sth->execute();
+	$sth->bind_columns(\my($url,$desc,$lat,$lon,$st,$ts,$ver));
+	while($sth->fetch()) {
+	    my %r;
+	    $r{url} = $url;
+	    $r{description} = $desc;
+	    $r{latitude} = $lat;
+	    $r{longitude} = $lon;
+	    $r{station_type} = $st;
+	    $r{last_seen} = $ts;
+	    $r{weewx_info} = $ver;
+	    $r{sort_key} = $COLLATOR->getSortKey(trim($desc));
+	    if(!defined($unique{$url}) || $ts>$unique{$url}->{last_seen}) {
+		$unique{$url} = \%r;
+	    }
 	}
-	$dbh->disconnect();
-        undef $dbh;
+	$sth->finish();
+	undef $sth;
+	foreach my $k (keys %unique) {
+	    push @records, $unique{$k};
+	}
     } else {
-	$errmsg = "cannot connect to database: $DBI::errstr";
+	$errmsg = "cannot prepare select statement: $DBI::errstr";
 	logerr($errmsg);
     }
+    $dbh->disconnect();
+    undef $dbh;
 } else {
-    $errmsg = "no database at $db";
+    $errmsg = "cannot connect to database: $DBI::errstr";
     logerr($errmsg);
 }
 

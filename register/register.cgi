@@ -31,11 +31,11 @@ my $basedir = '/var/chroot/home/content/73/4094873';
 #my $TEST = '-test';
 my $TEST = q();
 
-# location of the station database
-my $db = "$basedir/weereg/stations${TEST}.sdb";
-
-# location of the history database
-my $histdb = "$basedir/weereg/history${TEST}.sdb";
+# dbinfo
+my $dbhost = '45.40.164.85';
+my $dbuser = 'weereg';
+my $dbpass = 'Worldofweewx#1';
+my $db = 'weereg';
 
 # location of the html generator
 my $genhtmlapp = "$basedir/html/register/mkstations.pl";
@@ -310,30 +310,13 @@ sub registerstation {
         return ('FAIL', $msg, \%rec);
     }
 
-    my $dbexists = -f $db;
-    my $dbh = DBI->connect("dbi:SQLite:$db", q(), q(), { RaiseError => 0 });
+    my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, { RaiseError => 0 });
     if (!$dbh) {
         my $msg = 'connection to database failed: ' . $DBI::errstr;
         return ('FAIL', $msg, \%rec);
     }
 
     my $rc = 0;
-    if(! $dbexists) {
-        $rc = $dbh->do('create table stations(station_url varchar2(255) not NULL, description varchar2(255), latitude number, longitude number, station_type varchar2(64), station_model varchar2(64), weewx_info varchar2(64), python_info varchar2(64), platform_info varchar2(64), last_addr varchar2(16), last_seen int)');
-        if(!$rc) {
-            my $msg = 'create table failed: ' . $DBI::errstr;
-            $dbh->disconnect();
-            return ('FAIL', $msg, \%rec);
-        }
-	# index based on everything but the timestamp - we want to retain only
-	# the latest contact from a client with a unique combination of fields
-        $rc = $dbh->do('create unique index index_stations on stations(station_url asc, latitude asc, longitude asc, station_type asc, station_model asc, weewx_info asc, python_info asc, platform_info asc, last_addr asc)');
-        if(!$rc) {
-            my $msg = 'create index failed: ' . $DBI::errstr;
-            $dbh->disconnect();
-            return ('FAIL', $msg, \%rec);
-        }
-    }
 
     # reject obvious attempts to spam the system
 
@@ -341,7 +324,7 @@ sub registerstation {
     $last_seen = $dbh->selectrow_array("select max(last_seen) from stations where last_addr=?", undef, ($rec{last_addr}));
     if($rec{last_seen} - $last_seen < $max_frequency) {
         $dbh->disconnect();
-        return ('FAIL', "too many updates attempted ($last_seen)", \%rec);
+        return ('FAIL', "too many updates attempted (last=$last_seen)", \%rec);
     }
 
     my $urlcount = 0;
@@ -354,7 +337,7 @@ sub registerstation {
     # if data are different from latest record, save a new record.  otherwise
     # just update the timestamp of the matching record.
 
-    my $sth = $dbh->prepare(q{insert or replace into stations (station_url,description,latitude,longitude,station_type,station_model,weewx_info,python_info,platform_info,last_addr,last_seen) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)});
+    my $sth = $dbh->prepare(q{replace into stations (station_url,description,latitude,longitude,station_type,station_model,weewx_info,python_info,platform_info,last_addr,last_seen) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)});
     if(!$sth) {
         my $msg = 'prepare failed: ' . $DBI::errstr;
         $dbh->disconnect();
@@ -587,8 +570,8 @@ sub get_history_data {
     my @counts;
     my @stypes;
 
-    logmsg("connect to $histdb");
-    my $dbh = DBI->connect("dbi:SQLite:$histdb", q(), q(), {RaiseError => 0});
+    logmsg("connect to $db");
+    my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, {RaiseError => 0});
     if (!$dbh) {
         my $msg = "cannot connect to database: $DBI::errstr";
 	logmsg($msg);

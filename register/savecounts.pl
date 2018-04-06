@@ -13,11 +13,11 @@ use POSIX;
 #my $basedir = '/home/content/t/o/m/tomkeffer';
 my $basedir = '/var/chroot/home/content/73/4094873';
 
-# location of the sqlite database
-my $db = "$basedir/weereg/stations.sdb";
-
-# location of the history database
-my $histdb = "$basedir/weereg/history.sdb";
+# dbinfo
+my $dbhost = '45.40.164.85';
+my $dbuser = 'weereg';
+my $dbpass = 'Worldofweewx#1';
+my $db = 'weereg';
 
 # how long ago do we consider stale, in seconds
 my $stale = 2_592_000; # 30 days
@@ -29,45 +29,35 @@ while($ARGV[0]) {
     my $arg = shift;
     if ($arg eq '--stale') {
         $stale = shift;
-    } elsif ($arg eq '--db') {
-        $db = shift;
-    } elsif ($arg eq '--history-db') {
-        $histdb = shift;
     }
 }
 
 # query the station database for the current data
 my %stations;
 my $errmsg = q();
-if (-f $db) {
-    my $dbh = DBI->connect("dbi:SQLite:$db", q(), q(), { RaiseError => 0 });
-    if ($dbh) {
-	my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
-	if ($sth) {
-	    $sth->execute();
-	    $sth->bind_columns(\my($url,$st,$ts));
-	    while($sth->fetch()) {
-		my %r;
-		$r{station_type} = $st;
-		$r{last_seen} = $ts;
-                $stations{$url} = \%r;
-	    }
-            $sth->finish();
-            undef $sth;
-	} else {
-	    $errmsg = "cannot prepare select statement: $DBI::errstr";
-	    logerr($errmsg);
-            exit 1;
+my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, { RaiseError => 0 });
+if ($dbh) {
+    my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
+    if ($sth) {
+	$sth->execute();
+	$sth->bind_columns(\my($url,$st,$ts));
+	while($sth->fetch()) {
+	    my %r;
+	    $r{station_type} = $st;
+	    $r{last_seen} = $ts;
+	    $stations{$url} = \%r;
 	}
-	$dbh->disconnect();
-        undef $dbh;
+	$sth->finish();
+	undef $sth;
     } else {
-	$errmsg = "cannot connect to database: $DBI::errstr";
+	$errmsg = "cannot prepare select statement: $DBI::errstr";
 	logerr($errmsg);
-        exit 1;
+	exit 1;
     }
+    $dbh->disconnect();
+    undef $dbh;
 } else {
-    $errmsg = "no database at $db";
+    $errmsg = "cannot connect to database: $DBI::errstr";
     logerr($errmsg);
     exit 1;
 }
@@ -98,21 +88,11 @@ while( my($url,$rec) = each %stations) {
 # timestamp, hardware, active, stale
 
 my @latestrecords;
-my $dbexists = -f $histdb;
-my $dbh = DBI->connect("dbi:SQLite:$histdb", q(), q(), { RaiseError => 0 });
+my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, { RaiseError => 0 });
 if ($dbh) {
 
     # create the history database if it does not yet exist
     my $rc = 0;
-    if(! $dbexists) {
-        $rc = $dbh->do('create table history(datetime int not NULL, station_type varchar2(64), active int, stale int)');
-        if(!$rc) {
-            $errmsg = 'create table failed: ' . $DBI::errstr;
-            $dbh->disconnect();
-            logerr($errmsg);
-            exit 1;
-        }
-    }
 
     # get the latest counts from the history database
     my $sth = $dbh->prepare("select * from history where datetime = (select max(datetime) from history)");
