@@ -15,10 +15,13 @@ use DBI;
 use POSIX;
 use utf8;
 
-my $version = '$Id: mkstations.pl 2201 2014-04-30 23:11:40Z mwall $';
+my $version = '0.5';
 
 #my $basedir = '/home/content/t/o/m/tomkeffer';
 my $basedir = '/var/chroot/home/content/73/4094873';
+
+# include shared code
+require "$basedir/html/register/common.pl";
 
 # dbinfo
 my $dbtype = 'mysql';
@@ -45,9 +48,6 @@ my $ofile = "$basedir/html/stations.html";
 
 # how long ago do we consider stale, in seconds
 my $stale = 2_592_000; # 30 days
-
-# format for logging
-my $DATE_FORMAT_LOG = "%b %d %H:%M:%S";
 
 # format for web page display
 my $DATE_FORMAT_HTML = "%H:%M:%S %d %b %Y UTC";
@@ -205,18 +205,6 @@ sub errorpage {
     } else {
         logerr("cannot write to output file $tmpfile: $!");
     }
-}
-
-sub logout {
-    my ($msg) = @_;
-    my $tstr = strftime $DATE_FORMAT_LOG, gmtime time;
-    print STDOUT "$tstr $msg\n";
-}
-
-sub logerr {
-    my ($msg) = @_;
-    my $tstr = strftime $DATE_FORMAT_LOG, gmtime time;
-    print STDERR "$tstr $msg\n";
 }
 
 # strip any leading whitespace or non-alph characters from beginning

@@ -27,15 +27,29 @@ my $version = '$Id: register.cgi 2051 2015-03-21 16:24:03Z mwall $';
 #my $basedir = '/home/content/t/o/m/tomkeffer';
 my $basedir = '/var/chroot/home/content/73/4094873';
 
+# include shared code
+require "$basedir/html/register/common.pl";
+
 # use this when testing so we avoid the real databases
 #my $TEST = '-test';
 my $TEST = q();
 
 # dbinfo
-my $dbhost = '45.40.164.85';
-my $dbuser = 'weereg';
-my $dbpass = 'Worldofweewx#1';
-my $db = 'weereg';
+my $dbtype = 'mysql';
+my $dbinfo = 'dbinfo';
+my $dbhost = 'localhost';
+my $dbuser = 'weewx';
+my $dbpass = 'weewx';
+my $dbname = 'weewx';
+my $dbfile = 'history.sdb';
+
+my $dbstr = q();
+if ($dbtype eq 'mysql') {
+    ($dbhost, $dbname, $dbuser, $dbpass) = read_dbinfo("$basedir/$dbinfo");
+    $dbstr = "dbi:mysql:$dbname:host=$dbhost";
+} else {
+    $dbstr = "dbi:SQLite:$dbfile";
+}
 
 # location of the html generator
 my $genhtmlapp = "$basedir/html/register/mkstations.pl";
@@ -310,7 +324,7 @@ sub registerstation {
         return ('FAIL', $msg, \%rec);
     }
 
-    my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, { RaiseError => 0 });
+    my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, { RaiseError => 0 });
     if (!$dbh) {
         my $msg = 'connection to database failed: ' . $DBI::errstr;
         return ('FAIL', $msg, \%rec);
@@ -392,7 +406,7 @@ sub get_summary_data {
     my %python_info_cnt;
     my %weewx_info_cnt;
 
-    my $dbh = DBI->connect("dbi:SQLite:$db", q(), q(), {RaiseError => 0});
+    my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, {RaiseError => 0});
     if (!$dbh) {
         return "cannot connect to database: $DBI::errstr";
     }
@@ -570,15 +584,15 @@ sub get_history_data {
     my @counts;
     my @stypes;
 
-    logmsg("connect to $db");
-    my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, {RaiseError => 0});
+    logmsg("connect to $dbstr");
+    my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, {RaiseError => 0});
     if (!$dbh) {
         my $msg = "cannot connect to database: $DBI::errstr";
 	logmsg($msg);
 	return $msg;
     }
 
-    logmsg("prepare select");
+#    logmsg("prepare select");
     my $sth = $dbh->prepare("select station_type from history group by station_type");
     if (!$sth) {
         my $msg = "cannot prepare select statement: $DBI::errstr";

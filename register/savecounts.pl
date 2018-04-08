@@ -13,6 +13,9 @@ use POSIX;
 #my $basedir = '/home/content/t/o/m/tomkeffer';
 my $basedir = '/var/chroot/home/content/73/4094873';
 
+# include shared code
+require "$basedir/html/register/common.pl";
+
 # dbinfo
 my $dbtype = 'mysql';
 my $dbinfo = 'dbinfo';
@@ -32,9 +35,6 @@ if ($dbtype eq 'mysql') {
 
 # how long ago do we consider stale, in seconds
 my $stale = 2_592_000; # 30 days
-
-# format for logging
-my $DATE_FORMAT_LOG = "%b %d %H:%M:%S";
 
 while($ARGV[0]) {
     my $arg = shift;
@@ -163,16 +163,3 @@ if ($dbh) {
 }
 
 exit 0;
-
-
-sub logout {
-    my ($msg) = @_;
-    my $tstr = strftime $DATE_FORMAT_LOG, gmtime time;
-    print STDOUT "$tstr $msg\n";
-}
-
-sub logerr {
-    my ($msg) = @_;
-    my $tstr = strftime $DATE_FORMAT_LOG, gmtime time;
-    print STDERR "$tstr $msg\n";
-}

@@ -23,6 +23,9 @@ use strict;
 #my $basedir = '/home/content/t/o/m/tomkeffer';
 my $basedir = '/var/chroot/home/content/73/4094873';
 
+# include shared code
+require "$basedir/html/register/common.pl";
+
 # the app that makes the screen captures
 my $imgapp = "$basedir/app/wkhtmltox/bin/wkhtmltoimage";
 
@@ -75,9 +78,6 @@ my $thumb_height = 100;
 # which url should we capture?  default is to query the database then capture
 # everything we find.  if a url is specified, then just do that one.
 my $url = q();
-
-# format for logging
-my $DATE_FORMAT_LOG = "%b %d %H:%M:%S";
 
 # should we spit out a log message about every little thing?  if not, then
 # log only errors.
@@ -192,48 +192,4 @@ sub capture_station {
             `cp $placeholder_thumb $tfile` if ! -f $tfile;
         }
     }
-}
-
-sub read_dbinfo {
-    my ($fn) = @_;
-    my $dbhost = 'localhost';
-    my $dbname = 'database';
-    my $dbuser = 'dbuser';
-    my $dbpass = 'dbpass';
-    if (open(DBFILE, "<$fn")) {
-        while(<DBFILE>) {
-            my $line = $_;
-            if ($line =~ /^dbhost/) {
-                ($dbhost) = $line =~ /^dbhost\s*=\s*(.*)/;
-                $dbhost = trim($dbhost);
-            } elsif ($line =~ /^dbname/) {
-                ($dbname) = $line =~ /^dbname\s*=\s*(.*)/;
-                $dbname = trim($dbname);
-            } elsif ($line =~ /^dbuser/) {
-                ($dbuser) = $line =~ /^dbuser\s*=\s*(.*)/;
-                $dbuser = trim($dbuser);
-            } elsif ($line =~ /^dbpass/) {
-                ($dbpass) = $line =~ /^dbpass\s*=\s*(.*)/;
-                $dbpass = trim($dbpass);
-            }
-        }
-        close(DBFILE);
-    } else {
-        print "cannot read dbinfo file $fn: $!\n";
-    }
-    return ($dbhost, $dbname, $dbuser, $dbpass);
-}
-
-sub logout {
-    my ($msg) = @_;
-    if ($verbosity) {
-        my $tstr = strftime $DATE_FORMAT_LOG, gmtime time;
-        print STDOUT "$tstr $msg\n";
-    }
-}
-
-sub logerr {
-    my ($msg) = @_;
-    my $tstr = strftime $DATE_FORMAT_LOG, gmtime time;
-    print STDERR "$tstr $msg\n";
 }
