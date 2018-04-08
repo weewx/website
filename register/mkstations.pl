@@ -21,10 +21,21 @@ my $version = '$Id: mkstations.pl 2201 2014-04-30 23:11:40Z mwall $';
 my $basedir = '/var/chroot/home/content/73/4094873';
 
 # dbinfo
-my $dbhost = '45.40.164.85';
-my $dbuser = 'weereg';
-my $dbpass = 'Worldofweewx#1';
-my $db = 'weereg';
+my $dbtype = 'mysql';
+my $dbinfo = 'dbinfo';
+my $dbhost = 'localhost';
+my $dbuser = 'weewx';
+my $dbpass = 'weewx';
+my $dbname = 'weewx';
+my $dbfile = 'history.sdb';
+
+my $dbstr = q();
+if ($dbtype eq 'mysql') {
+    ($dbhost, $dbname, $dbuser, $dbpass) = read_dbinfo("$basedir/$dbinfo");
+    $dbstr = "dbi:mysql:$dbname:host=$dbhost";
+} else {
+    $dbstr = "dbi:SQLite:$dbfile";
+}
 
 # html template file
 my $tmpl = "$basedir/html/register/stations.html.in";
@@ -87,7 +98,7 @@ my @records;
 my $errmsg = q();
 # be sure the database is there
 # read the database, keep only records that are not stale
-my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, { RaiseError => 0 });
+my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, { RaiseError => 0 });
 if ($dbh) {
     my $now = time;
     my $cutoff = $now - $stale;

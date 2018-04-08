@@ -36,10 +36,21 @@ my $imgdir = "$basedir/html/shots";
 my $imgext = 'jpg';
 
 # dbinfo
-my $dbhost = '45.40.164.85';
-my $dbuser = 'weereg';
-my $dbpass = 'Worldofweewx#1';
-my $db = 'weereg';
+my $dbtype = 'mysql';
+my $dbinfo = 'dbinfo';
+my $dbhost = 'localhost';
+my $dbuser = 'weewx';
+my $dbpass = 'weewx';
+my $dbname = 'weewx';
+my $dbfile = 'history.sdb';
+
+my $dbstr = q();
+if ($dbtype eq 'mysql') {
+    ($dbhost, $dbname, $dbuser, $dbpass) = read_dbinfo("$basedir/$dbinfo");
+    $dbstr = "dbi:mysql:$dbname:host=$dbhost";
+} else {
+    $dbstr = "dbi:SQLite:$dbfile";
+}
 
 # placeholder file when capture is too big to keep
 my $placeholder = "$basedir/html/blank-600x200.png";
@@ -70,7 +81,7 @@ my $DATE_FORMAT_LOG = "%b %d %H:%M:%S";
 
 # should we spit out a log message about every little thing?  if not, then
 # log only errors.
-my $verbosity = 1;
+my $verbosity = 0;
 
 while($ARGV[0]) {
     my $arg = shift;
@@ -94,7 +105,7 @@ my %stations;
 if ($url ne q()) {
     $stations{$url} = 1; # placeholder - all we need is the url as key
 } else {
-    %stations = get_stations($db, $now);
+    %stations = get_stations($now);
 }
 foreach my $url (keys %stations) {
     capture_station($url, $now);
@@ -105,9 +116,9 @@ exit 0;
 
 # query the station database for stations.  keep any that are active.
 sub get_stations {
-    my ($db, $now) = @_;
+    my ($now) = @_;
     my %stations;
-    my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, { RaiseError => 0 });
+    my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, { RaiseError => 0 });
     if ($dbh) {
 	my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
 	if ($sth) {
@@ -181,6 +192,36 @@ sub capture_station {
             `cp $placeholder_thumb $tfile` if ! -f $tfile;
         }
     }
+}
+
+sub read_dbinfo {
+    my ($fn) = @_;
+    my $dbhost = 'localhost';
+    my $dbname = 'database';
+    my $dbuser = 'dbuser';
+    my $dbpass = 'dbpass';
+    if (open(DBFILE, "<$fn")) {
+        while(<DBFILE>) {
+            my $line = $_;
+            if ($line =~ /^dbhost/) {
+                ($dbhost) = $line =~ /^dbhost\s*=\s*(.*)/;
+                $dbhost = trim($dbhost);
+            } elsif ($line =~ /^dbname/) {
+                ($dbname) = $line =~ /^dbname\s*=\s*(.*)/;
+                $dbname = trim($dbname);
+            } elsif ($line =~ /^dbuser/) {
+                ($dbuser) = $line =~ /^dbuser\s*=\s*(.*)/;
+                $dbuser = trim($dbuser);
+            } elsif ($line =~ /^dbpass/) {
+                ($dbpass) = $line =~ /^dbpass\s*=\s*(.*)/;
+                $dbpass = trim($dbpass);
+            }
+        }
+        close(DBFILE);
+    } else {
+        print "cannot read dbinfo file $fn: $!\n";
+    }
+    return ($dbhost, $dbname, $dbuser, $dbpass);
 }
 
 sub logout {

@@ -14,10 +14,21 @@ use POSIX;
 my $basedir = '/var/chroot/home/content/73/4094873';
 
 # dbinfo
-my $dbhost = '45.40.164.85';
-my $dbuser = 'weereg';
-my $dbpass = 'Worldofweewx#1';
-my $db = 'weereg';
+my $dbtype = 'mysql';
+my $dbinfo = 'dbinfo';
+my $dbhost = 'localhost';
+my $dbuser = 'weewx';
+my $dbpass = 'weewx';
+my $dbname = 'weewx';
+my $dbfile = 'history.sdb';
+
+my $dbstr = q();
+if ($dbtype eq 'mysql') {
+    ($dbhost, $dbname, $dbuser, $dbpass) = read_dbinfo("$basedir/$dbinfo");
+    $dbstr = "dbi:mysql:$dbname:host=$dbhost";
+} else {
+    $dbstr = "dbi:SQLite:$dbfile";
+}
 
 # how long ago do we consider stale, in seconds
 my $stale = 2_592_000; # 30 days
@@ -35,7 +46,7 @@ while($ARGV[0]) {
 # query the station database for the current data
 my %stations;
 my $errmsg = q();
-my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, { RaiseError => 0 });
+my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, { RaiseError => 0 });
 if ($dbh) {
     my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
     if ($sth) {
@@ -88,7 +99,7 @@ while( my($url,$rec) = each %stations) {
 # timestamp, hardware, active, stale
 
 my @latestrecords;
-my $dbh = DBI->connect("dbi:mysql:$db:host=$dbhost", $dbuser, $dbpass, { RaiseError => 0 });
+my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, { RaiseError => 0 });
 if ($dbh) {
 
     # create the history database if it does not yet exist
