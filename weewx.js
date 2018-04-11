@@ -113,7 +113,7 @@ function populate_header(page) {
 <div class='navitem'>\
 <a href='/downloads'>DOWNLOAD</a>\
 </div>";
-        tmp = document.createElement('div');
+        var tmp = document.createElement('div');
         tmp.setAttribute('class', 'nav');
         tmp.innerHTML = navbar_html;
         navbar.appendChild(tmp);
@@ -126,7 +126,7 @@ function populate_showcase() {
     if(!elem) {
         return;
     }
-    html = '';
+    var html = '';
     for(var i=0; i<sites.length; i++) {
         html += "<div class='showcase_item'>";
         html += "<a href='" + sites[i].url + "'>" + sites[i].description;
@@ -144,6 +144,7 @@ function populate_showcase() {
 /* if rnd is specified, then choose randomly. */
 function populate_screenshots(maxnum, rnd) {
     var elem = document.getElementById('screenshots');
+    var i;
     if(!elem) {
         return;
     }
@@ -153,19 +154,19 @@ function populate_screenshots(maxnum, rnd) {
     var indices = Array();
     if(rnd) {
         var n = 0;
-        for(var i=0; i<sites.length && n<maxnum; i++) {
+        for(i=0; i<sites.length && n<maxnum; i++) {
             if(Math.random() > 0.5) {
                 indices[n] = i;
                 n += 1;
             }
         }
     } else {
-        for(var i=0; i<maxnum; i++) {
+        for(i=0; i<maxnum; i++) {
             indices[i] = i;
         }
     }
-    html = '';
-    for(var i=0; i<indices.length; i++) {
+    var html = '';
+    for(i=0; i<indices.length; i++) {
         html += "<a href='screenshots/"+sites[indices[i]].screenshot+"'>";
         html += "<img src='screenshots/"+sites[indices[i]].screenshot+"'";
         html += " class='screenshot' /></a><br/>";
