@@ -2,7 +2,7 @@
 # this makefile contains rules for the weewx.com website
 
 WEEWX_COM=52.41.198.22
-DESTINATION=/var/www/html
+WWW_DESTINATION=/var/www/html
 RSYNC_ARGS=-avR -e ssh
 
 DST=weewx.com:/
@@ -21,12 +21,12 @@ upload:
 	rsync $(RSYNC_ARGS) code.html docs.html dot.png hardware.html hwcmp.html index.html \
 	    keys.html showcase.html support.html weewx-logo-128x128.png jetbrains-logo.svg \
 	    infobox.js close.gif tipbox90pad.gif weewx.css weewx.js keys/*.key \
-	    screenshots/*.png hardware/*.png cfg/*.png $(USER)@$(WEEWX_COM):$(DESTINATION)
+	    screenshots/*.png hardware/*.png cfg/*.png $(USER)@$(WEEWX_COM):$(WWW_DESTINATION)
 
 upload-highslide:
 	rsync $(RSYNC_ARGS) highslide/*.js highslide/*.css highslide/graphics/*.png \
 	    highslide/graphics/*.gif highslide/graphics/*.cur highslide/graphics/outlines/*.png \
-	    highslide/graphics/outlines/*.psd $(USER)@$(WEEWX_COM):$(DESTINATION)
+	    highslide/graphics/outlines/*.psd $(USER)@$(WEEWX_COM):$(WWW_DESTINATION)
 
 # Don't know what to do with this one
 upload-apaxy:
@@ -38,4 +38,4 @@ upload-register:
 
 upload-wfixer:
 	rsync $(RSYNC_ARGS) wunderfixer/README.txt wunderfixer/default.htm \
-	    $(USER)@$(WEEWX_COM):$(DESTINATION)
+	    $(USER)@$(WEEWX_COM):$(WWW_DESTINATION)
