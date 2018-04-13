@@ -9,10 +9,9 @@
 use strict;
 use POSIX;
 
-my $version = '$Id: archivelog.pl 1616 2013-11-05 15:08:42Z mwall $';
+my $version = '0.5';
 
-#my $basedir = '/home/content/t/o/m/tomkeffer';
-my $basedir = '/var/chroot/home/content/73/4094873';
+my $basedir = '/var/www';
 
 # location of the log file
 my $reglogfn = "$basedir/html/register/register.log";

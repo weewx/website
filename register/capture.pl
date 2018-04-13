@@ -20,8 +20,7 @@ use DBI;
 use POSIX;
 use strict;
 
-#my $basedir = '/home/content/t/o/m/tomkeffer';
-my $basedir = '/var/chroot/home/content/73/4094873';
+my $basedir = '/var/www';
 
 # include shared code
 require "$basedir/html/register/common.pl";

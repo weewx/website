@@ -22,10 +22,9 @@
 use POSIX;
 use strict;
 
-my $version = '$Id: register.cgi 2051 2015-03-21 16:24:03Z mwall $';
+my $version = '0.9';
 
-#my $basedir = '/home/content/t/o/m/tomkeffer';
-my $basedir = '/var/chroot/home/content/73/4094873';
+my $basedir = '/var/www';
 
 # include shared code
 require "$basedir/html/register/common.pl";
