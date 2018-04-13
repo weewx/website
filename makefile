@@ -26,14 +26,8 @@ upload:
  weewx-logo-457x437.png weewx-logo-50x50.png weewx-logo-600x200.png\
  jetbrains-logo.svg\
  infobox.js close.gif tipbox90pad.gif\
+ cfg hardware keys logo screenshots consumers .nginxy\
  $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
-	rsync -arv cfg $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
-	rsync -arv hardware $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
-	rsync -arv keys $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
-	rsync -arv logo $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
-	rsync -arv screenshots $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
-	rsync -arv consumers $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
-	rsync -arv .nginxy $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 
 upload-highslide:
 	rsync -arv highslide $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
