@@ -15,8 +15,8 @@ help:
 	@echo "make upload"
 
 upload:
-	scp code.html docs.html dot.png hardware.html hwcmp.html index.html\
- keys.html showcase.html support.html\
+	rsync -arv code.html docs.html dot.png hardware.html hwcmp.html\
+ index.html keys.html showcase.html support.html\
  weewx.css weewx.js\
  dot-red.png dot.png pushpin-red.png\
  echo.js echo.min.js md5.js\
@@ -39,7 +39,7 @@ upload-highslide:
 	rsync -arv highslide $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 
 upload-register:
-	scp register/allkeys.txt register/archivelog.pl register/capture.pl register/common.pl register/mkstations.pl register/register.cgi register/savecounts.pl register/stations.html.in $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)/register
+	rsync -arv register/allkeys.txt register/archivelog.pl register/capture.pl register/common.pl register/mkstations.pl register/register.cgi register/savecounts.pl register/stations.html.in $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)/register
 
 upload-wfixer:
 	rsync -arv wunderfixer $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
