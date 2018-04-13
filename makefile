@@ -30,6 +30,7 @@ upload:
 	rsync -arv cfg $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 	rsync -arv hardware $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 	rsync -arv keys $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
+	rsync -arv logo $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 	rsync -arv screenshots $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 	rsync -arv consumers $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 
