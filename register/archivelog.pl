@@ -14,8 +14,8 @@ my $version = '0.5';
 my $basedir = '/var/www';
 
 # location of the log file
-my $reglogfn = "$basedir/html/register/register.log";
-my $caplogfn = "$basedir/html/register/capture.log";
+my $reglogfn = "/var/log/weereg/register.log";
+my $caplogfn = "/var/log/weereg/capture.log";
 
 # format for filename timestamp
 my $DATE_FORMAT_FN = "%Y%m%d.%H%M%S";

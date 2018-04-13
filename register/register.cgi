@@ -63,10 +63,10 @@ my $savecntapp = "$basedir/html/register/savecounts.pl";
 my $captureapp = "$basedir/html/register/capture.pl";
 
 # location of the log file
-my $logfile = "$basedir/html/register/register.log";
+my $logfile = "/var/log/weereg/register.log";
 
 # location of the capture log file
-my $caplogfile = "$basedir/html/register/capture.log";
+my $caplogfile = "/var/log/weereg/capture.log";
 
 # format of the date as returned in the html footers
 my $DATE_FORMAT = "%Y.%m.%d %H:%M:%S UTC";
@@ -1029,7 +1029,7 @@ sub getrequest {
 
 sub logmsg {
     my ($msg) = @_;
-    my $logfile = "$basedir/html/register/cgilog.log";
+    my $logfile = "/var/log/weereg/cgilog.log";
     my $DATE_FORMAT = "%Y.%m.%d %H:%M:%S";
     my $tstr = strftime $DATE_FORMAT, localtime time;
     if (open(FILE, ">>$logfile")) {
