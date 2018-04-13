@@ -35,7 +35,7 @@ my $TEST = q();
 
 # dbinfo
 my $dbtype = 'mysql';
-my $dbinfo = 'dbinfo';
+my $dbinfo = '/etc/weereg/dbinfo';
 my $dbhost = 'localhost';
 my $dbuser = 'weewx';
 my $dbpass = 'weewx';
@@ -44,7 +44,7 @@ my $dbfile = 'history.sdb';
 
 my $dbstr = q();
 if ($dbtype eq 'mysql') {
-    ($dbhost, $dbname, $dbuser, $dbpass) = read_dbinfo("$basedir/$dbinfo");
+    ($dbhost, $dbname, $dbuser, $dbpass) = read_dbinfo("$dbinfo");
     $dbstr = "dbi:mysql:$dbname:host=$dbhost";
 } else {
     $dbstr = "dbi:SQLite:$dbfile";

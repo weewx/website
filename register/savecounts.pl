@@ -10,15 +10,14 @@ use strict;
 use DBI;
 use POSIX;
 
-#my $basedir = '/home/content/t/o/m/tomkeffer';
-my $basedir = '/var/chroot/home/content/73/4094873';
+my $basedir = '/var/www';
 
 # include shared code
 require "$basedir/html/register/common.pl";
 
 # dbinfo
 my $dbtype = 'mysql';
-my $dbinfo = 'dbinfo';
+my $dbinfo = '/etc/weereg/dbinfo';
 my $dbhost = 'localhost';
 my $dbuser = 'weewx';
 my $dbpass = 'weewx';
@@ -27,7 +26,7 @@ my $dbfile = 'history.sdb';
 
 my $dbstr = q();
 if ($dbtype eq 'mysql') {
-    ($dbhost, $dbname, $dbuser, $dbpass) = read_dbinfo("$basedir/$dbinfo");
+    ($dbhost, $dbname, $dbuser, $dbpass) = read_dbinfo("$dbinfo");
     $dbstr = "dbi:mysql:$dbname:host=$dbhost";
 } else {
     $dbstr = "dbi:SQLite:$dbfile";
