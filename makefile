@@ -33,6 +33,7 @@ upload:
 	rsync -arv logo $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 	rsync -arv screenshots $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 	rsync -arv consumers $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
+	rsync -arv .nginxy $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 
 upload-highslide:
 	rsync -arv highslide $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
