@@ -42,7 +42,7 @@ upload-apaxy:
 	rsync -arv downloads $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 
 upload-register:
-	rsync -arv register $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
+	scp register/allkeys.txt register/archivelog.pl register/capture.pl register/common.pl register/mkstations.pl register/register.cgi register/savecounts.pl register/stations.html.in $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)/register
 
 upload-wfixer:
 	rsync -arv wunderfixer $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
