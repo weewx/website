@@ -37,10 +37,6 @@ upload:
 upload-highslide:
 	rsync -arv highslide $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 
-upload-apaxy:
-	rsync -arv theme $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
-	rsync -arv downloads $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
-
 upload-register:
 	scp register/allkeys.txt register/archivelog.pl register/capture.pl register/common.pl register/mkstations.pl register/register.cgi register/savecounts.pl register/stations.html.in $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)/register
 
