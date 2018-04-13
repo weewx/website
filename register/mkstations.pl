@@ -167,7 +167,7 @@ if(open(OFILE,">$tmpfile")) {
             my $n = $stale / 86_400;
             print OFILE "stations will be removed after $n days without contact<br/>\n";
             print OFILE "last update $tstr<br/>\n";
-            print OFILE "<!-- $version -->\n";
+            print OFILE "<!-- mkstations version $version -->\n";
         } else {
             print OFILE "$line\n";
         }

@@ -26,7 +26,7 @@ my $basedir = '/var/www';
 require "$basedir/html/register/common.pl";
 
 # the app that makes the screen captures
-my $imgapp = "$basedir/app/wkhtmltox/bin/wkhtmltoimage";
+my $imgapp = "/opt/wkhtmltox/bin/wkhtmltoimage";
 
 # the app that converts and resizes images
 my $cvtapp = 'convert';

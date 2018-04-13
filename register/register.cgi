@@ -984,7 +984,7 @@ sub writefooter {
         print STDOUT "<p>\n";
         print STDOUT "<small><i>\n";
         print STDOUT "$mdate<br/>\n";
-        print STDOUT "$version<br/>\n";
+        print STDOUT "register v$version<br/>\n";
 	if($elapsed) {
 	    print STDOUT "$elapsed seconds<br/>\n";
 	}
