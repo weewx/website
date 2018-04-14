@@ -1,7 +1,7 @@
 # -* makefile -*-
 # this makefile contains rules for the weewx.com website
 
-WEEWX_COM=52.41.198.22
+WEEWX_COM=weewx.com
 WEEWX_HTMLDIR=/var/www/html
 
 help:
