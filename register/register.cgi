@@ -290,9 +290,10 @@ sub registerstation {
             $rec{$k} =~ s/'//g;
         }
     }
-    # some people seem to be lax with their station model name
-    if($rec{station_model} =~ / object at 0x[0-9a-f]+/) {
-	$rec{station_model} =~ s/ object at 0x[0-9a-f]+//;
+    # some people seem to be lax with their station model (hardware_name)
+    if($rec{station_model} =~ /bound method/ ||
+       $rec{station_model} =~ /object at/) {
+        $rec{station_model} = 'unknown';
     }
 
 # accept only weewx user agent.  this will reject anything before weewx 2.6
