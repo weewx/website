@@ -347,7 +347,7 @@ sub registerstation {
     }
 
     my $urlcount = 0;
-    $urlcount = $dbh->selectrow_array("select count(station_url) from (select station_url from stations where last_addr=? group by station_url)", undef, ($rec{last_addr}));
+    $urlcount = $dbh->selectrow_array("select count(station_url) from (select station_url from stations where last_addr=? group by station_url) as T", undef, ($rec{last_addr}));
     if($urlcount > $max_urls) {
         $dbh->disconnect();
         return ('FAIL', 'too many station URLs from that address', \%rec);
