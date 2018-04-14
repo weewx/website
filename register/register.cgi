@@ -314,12 +314,18 @@ sub registerstation {
         return ('FAIL', $msg, \%rec);
     }
     my $havesqlite = 0;
+    my $havemysql = 0;
     my @drivers = DBI->available_drivers();
     foreach my $d (@drivers) {
         $havesqlite = 1 if $d =~ /^sqlite/i;
+        $havemysql = 1 if $d =~ /^mysql/i;
     }
-    if(!$havesqlite) {
+    if($dbtype == 'sqlite' && !$havesqlite) {
         my $msg = 'bad server configuration: DBI::SQLite is not installed';
+        return ('FAIL', $msg, \%rec);
+    }
+    if($dbtype == 'mysql' && !$havemysql) {
+        my $msg = 'bad server configuration: DBI::MySQL is not installed';
         return ('FAIL', $msg, \%rec);
     }
 
