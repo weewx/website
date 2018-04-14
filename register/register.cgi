@@ -291,9 +291,12 @@ sub registerstation {
         }
     }
     # some people seem to be lax with their station model (hardware_name)
-    if($rec{station_model} =~ /bound method/ ||
-       $rec{station_model} =~ /object at/) {
-        $rec{station_model} = 'unknown';
+    if(length($rec{station_model}) > 128) {
+        $rec{station_model} = substr $rec{station_model}, 0, 126;
+    }
+    # ensure that the info is not longer than database field length
+    if(length($rec{platform_info}) > 128) {
+        $rec{platform_info} = substr $rec{platform_info}, 0, 126;
     }
 
 # accept only weewx user agent.  this will reject anything before weewx 2.6
