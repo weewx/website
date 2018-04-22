@@ -47,7 +47,7 @@ my %stations;
 my $errmsg = q();
 my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, { RaiseError => 0 });
 if ($dbh) {
-    my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
+    my $sth = $dbh->prepare("select station_url,any_value(station_type),last_seen from stations group by station_url, last_seen");
     if ($sth) {
 	$sth->execute();
 	$sth->bind_columns(\my($url,$st,$ts));
