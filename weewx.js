@@ -82,6 +82,9 @@ var sites = [
   { description: 'Belchertown, MA',
     url: 'http://belchertownweather.com/',
     screenshot: 'belchertown.png'},
+  { description: 'Claydons, UK',
+    url: 'https://claydonsweather.org.uk/',
+    screenshot: 'claydons.png'},
              ];
 
 /* inject navigation links into the navigation div */
