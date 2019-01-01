@@ -37,6 +37,9 @@ body {
   color: #000000;
   background-color: #ffffff;
 }
+a {
+  text-decoration: none;
+}
 #container {
   margin: 4px;
 }
