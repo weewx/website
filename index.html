@@ -1,178 +1,177 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<!DOCTYPE html>
+<html lang='en'>
 
 <head>
-  <title>WeeWX: open source weather software</title>
-  <meta name="keywords" content="open source linux weather software" />
-  <meta name="viewport" content="initial-scale=1" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <link rel="stylesheet" href="weewx.css" type="text/css" />
-  <script src="weewx.js" type="text/javascript"></script>
-  <style>
-#screenshot_caption {
-  clear: both;
-  float: right;
-  text-align: right;
-  width: 20%;
-  padding-top: 10px;
-  font-style: italic;
-  font-size: 80%;
-}
+    <title>WeeWX: open source weather software</title>
+    <meta charset='UTF-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <meta name='keywords' content='open source linux weather software'/>
+    <link rel='icon' href='favicon.ico' type='image/x-icon'/>
+    <link rel='stylesheet' href='weewx.css' type='text/css'/>
+    <script src='weewx.js' type='text/javascript'></script>
+    <style>
+        #screenshot_caption {
+            clear: both;
+            float: right;
+            text-align: right;
+            width: 20%;
+            padding-top: 10px;
+            font-style: italic;
+            font-size: 80%;
+        }
     </style>
 </head>
 
 <body onload="populate_header('about'); populate_screenshots(4);">
 
-  <!-- Begin Container -->
-  <div id="container">
-    
-    <div id="masthead">
-      <h1><a href='.'>WeeWX</a></h1>
-      <p>Open source software for your weather station</p>
+<!-- Begin Container -->
+<div id='container'>
+
+    <div id='masthead'>
+        <h1><a href='.'>WeeWX</a></h1>
+        <p>Open source software for your weather station</p>
     </div>
-    
-    <div id="navigation"></div>
+
+    <div id='navigation'></div>
 
     <div>
-      <div id='screenshots'></div>
-      <div id='screenshot_caption'>
-	<a href="showcase.html">Examples of stations</a> running WeeWX
-      </div>
-      <div id='partners'>        
-        <p>We thank
-            <a href='https://www.jetbrains.com/?from=WeeWX'>JetBrains</a> for free licenses of
-           their products to the open source community.
-        </p>
-        <a href='http://www.jetbrains.com/?from=WeeWX'><img src='jetbrains-logo.svg'
-                                                        alt='JetBrains logo'/></a>
-      </div>
+        <div id='screenshots'></div>
+        <div id='screenshot_caption'>
+            <a href='showcase.html'>Examples of stations</a> running WeeWX
+        </div>
+        <div id='partners'>
+            <p>
+                We thank <a href='https://www.jetbrains.com/?from=WeeWX'>JetBrains</a> for free
+                licenses of their products to the open source community.
+            </p>
+            <a href='http://www.jetbrains.com/?from=WeeWX'><img src='jetbrains-logo.svg'
+                                                                alt='JetBrains logo'/></a>
+        </div>
     </div>
 
     <!-- Begin Content -->
-    <div id="content">
-      <p>
-	WeeWX is a free, open source, software
-	program, written in <a href="http://www.python.org">Python</a>,
-	which interacts with your weather station to produce graphs,
-	reports, and HTML pages. It can optionally publish to weather sites
-	or web servers. It uses modern software concepts, making it simple,
-	robust, and easy to extend. It includes extensive
-        <a href="docs.html">documentation</a>.
-      </p>
-      <p>
-	WeeWX runs under most versions of Linux,
-	as well as macOS, *BSD, and Solaris. Many users are running on the
-        <a href="http://www.raspberrypi.org/">Raspberry Pi</a>. The images on
-	this page and throughout this web site are from
-        <a href="showcase.html">sample stations</a> running WeeWX.
-      </p>
-      <p>
-	Thousands of stations throughout the world run WeeWX,
-	many of whom have opted-in to be shown on our
-        <a href="stations.html">station map</a>.
-      </p>
-      <p>Key features:</p>
-      <ul>
-	<li>Support for <a href="hardware.html">many popular
-	    weather stations</a>;
-	</li>
-	<li>Uploads to popular weather sites including
-          <a href="http://www.wunderground.com">WeatherUnderground</a>,
-          <a href="http://www.pwsweather.com/">PWSweather.com</a>,
-          <a href="http://www.wxqa.com/">CWOP</a>,
-          <a href="http://wow.metoffice.gov.uk/">WOW</a>, and
-          <a href="http://awekas.at/">AWEKAS</a> and <a href="https://github.com/weewx/weewx/wiki">others</a>;
-	</li>
-	<li>Uploads to your website using FTP or rsync;</li>
-	<li>Extensive celestial <em>almanac</em>;
-	</li>
-	<li>Ability to create or modify <em>skins</em> (the look and
-	  feel of your weather site);
-	</li>
-	<li>Support for <em>localization</em>;
-	</li>
-	<li>Simple, but extensible templating system;</li>
-	<li>Native support for US or Metric unit systems;</li>
-	<li>Support for sqlite or MySQL databases;</li>
-	<li>Calibration corrections;</li>
-	<li>Filtering of anomalous values;</li>
-	<li>An easy to understand, simple, extensible micro-kernel
-	  architecture;</li>
-	<li>Ability to extend WeeWX with new services and reports.
-	</li>
-      </ul>
-      <p>Last, but definitely not least,</p>
-      <ul>
-	<li>A fun, supportive
-          <a href="http://groups.google.com/group/weewx-user">Users' Group</a>!
-	</li>
-      </ul>
-      
-      <p>
-	I wrote WeeWX over the winter of 2008-2009
-	for two reasons: it was a wet and miserable winter here in Oregon
-	with not much else to do, so there was no good reason not to, and
-	because I wanted a simple, easy-to-understand server to run my Davis
-	VantagePro2 weather station on a Linux box. I had been using
-        <a href="http://www.wviewweather.com/">wview</a>, which is a
-	high-performance and feature rich system authored by Mark Teel with
-	lots of users. Written in C, it is an efficient system that can run
-	on underpowered boxes. In exchange, it is huge (45,000+ lines of
-	code), tightly integrated in with its companion library, radlib
-	(another 14,000+ lines), and very complex, making it difficult to
-	understand and reliably customize. I wanted something more modern
-	and much, much simpler.
-      </p>
-      <p>Having made a career in C++ and Java, I was also interested in
-	some more modern languages, so I thought I would try either Python
-	or Ruby (although, truth be told, the roots of Python are nearly as
-	old as C++!). I ended up picking Python because its libraries are
-	more mature and there are many mores choices for third party
-	libraries.</p>
-      <p>
-        WeeWX has grown to about 27,000 lines of code (of which 14,000 are
-        in the hardware-specific drivers), plus 14,000 lines of comments.
-	Because it is pure Python, it requires no makefiles, no builds, no
-	special installs. It offers very powerful configuration and
-	templating options, as well as an internally extensible engine,
-	making it easy to customize. Its internal modular design and use of
-	modern exception handling make it very robust and difficult to
-	crash. It is also architecturally very simple and easy to
-	understand.
-      </p>
-      <p>Some intrepid users have run WeeWX on Microsoft Windows, but
-          this is not yet widely supported.</p>
-      
-      <h2><a href="wunderfixer">wunderfixer</a></h2>
-      <p>The <a href="wunderfixer">wunderfixer</a> is a
-        utility for users of WeeWX or wview that will compare
-        data in a local sqlite database with data at the
-        <a href="https://wunderground.com">Weather Underground</a>,
-        then optionally republish the missing data.
-      </p>
+    <div id='content'>
+        <p>
+            WeeWX is a free, open source, software
+            program, written in <a href='http://www.python.org'>Python</a>,
+            which interacts with your weather station to produce graphs,
+            reports, and HTML pages. It can optionally publish to weather sites
+            or web servers. It uses modern software concepts, making it simple,
+            robust, and easy to extend. It includes extensive
+            <a href='docs.html'>documentation</a>.
+        </p>
+        <p>
+            WeeWX runs under most versions of Linux,
+            as well as macOS, *BSD, and Solaris. Many users are running on the
+            <a href='http://www.raspberrypi.org/'>Raspberry Pi</a>. The images on
+            this page and throughout this web site are from
+            <a href='showcase.html'>sample stations</a> running WeeWX.
+        </p>
+        <p>
+            Thousands of stations throughout the world run WeeWX,
+            many of whom have opted-in to be shown on our
+            <a href='stations.html'>station map</a>.
+        </p>
+        <p>
+            Key features:
+        </p>
+        <ul>
+            <li>
+                Support for <a href='hardware.html'>many popular
+                                                    weather stations</a>;
+            </li>
+            <li>
+                Uploads to popular weather sites including
+                <a href='http://www.wunderground.com'>WeatherUnderground</a>,
+                <a href='http://www.pwsweather.com/'>PWSweather.com</a>,
+                <a href='http://www.wxqa.com/'>CWOP</a>,
+                <a href='http://wow.metoffice.gov.uk/'>WOW</a>, and
+                <a href='http://awekas.at/'>AWEKAS</a> and <a
+                    href='https://github.com/weewx/weewx/wiki'>others</a>;
+            </li>
+            <li>Uploads to your website using FTP or rsync;</li>
+            <li>Extensive celestial <em>almanac</em>;</li>
+            <li>Ability to create or modify <em>skins</em> (the look and feel of your weather site);
+            </li>
+            <li>Support for <em>localization</em>;</li>
+            <li>Simple, but extensible templating system;</li>
+            <li>Native support for US or Metric unit systems;</li>
+            <li>Support for sqlite or MySQL databases;</li>
+            <li>Calibration corrections;</li>
+            <li>Filtering of anomalous values;</li>
+            <li>An easy to understand, simple, extensible micro-kernel architecture;</li>
+            <li>Ability to extend WeeWX with new services and reports.</li>
+        </ul>
+        <p>Last, but definitely not least,</p>
+        <ul>
+            <li>A fun, supportive
+                <a href='http://groups.google.com/group/weewx-user'>Users' Group</a>!
+            </li>
+        </ul>
+
+        <p>
+            I wrote WeeWX over the winter of 2008-2009 for two reasons: it was a wet and miserable
+            winter here in Oregon with not much else to do, so there was no good reason not to, and
+            because I wanted a simple, easy-to-understand server to run my Davis VantagePro2 weather
+            station on a Linux box. I had been using <a
+                href='http://www.wviewweather.com/'>wview</a>, which is a high-performance and
+            feature rich system authored by Mark Teel with lots of users. Written in C, it is an
+            efficient system that can run on underpowered boxes. In exchange, it is huge (45,000+
+            lines of code), tightly integrated in with its companion library, radlib (another
+            14,000+ lines), and very complex, making it difficult to understand and reliably
+            customize. I wanted something more modern and much, much simpler.
+        </p>
+        <p>
+            Having made a career in C++ and Java, I was also interested in some more modern
+            languages, so I thought I would try either Python or Ruby (although, truth be told, the
+            roots of Python are nearly as old as C++!). I ended up picking Python because its
+            libraries are more mature and there are many mores choices for third party
+            libraries.
+        </p>
+        <p>
+            WeeWX has grown to about 27,000 lines of code (of which 14,000 are in the
+            hardware-specific drivers), plus 14,000 lines of comments. Because it is pure Python, it
+            requires no makefiles, no builds, no special installs. It offers very powerful
+            configuration and templating options, as well as an internally extensible engine, making
+            it easy to customize. Its internal modular design and use of modern exception handling
+            make it very robust and difficult to crash. It is also architecturally very simple and
+            easy to understand.
+        </p>
+        <p>
+            Some intrepid users have run WeeWX on Microsoft Windows, but this is not yet widely
+            supported.
+        </p>
+
+        <h2><a href='wunderfixer'>wunderfixer</a></h2>
+        <p>
+            The <a href='wunderfixer'>wunderfixer</a> is a utility for users of WeeWX or wview that
+            will compare data in a local sqlite database with data at the <a
+                href='https://wunderground.com'>Weather Underground</a>, then optionally republish
+            the missing data.
+        </p>
     </div>
     <!-- End Content -->
-    
+
     <div style='clear: both'>&nbsp;</div>
-    
-    <div id="footer">
-      <p>Copyright &copy; Tom Keffer and Matthew Wall, all rights reserved</p>
+
+    <div id='footer'>
+        <p>Copyright &copy; Tom Keffer and Matthew Wall, all rights reserved</p>
     </div>
-    
-  </div>
-  <!-- End Container -->
-  
-  <script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-  </script>
-  <script type="text/javascript">
-try {
-  var pageTracker = _gat._getTracker("UA-11386156-1");
-  pageTracker._trackPageview();
-} catch(err) {}
-  </script>
+
+</div>
+<!-- End Container -->
+
+<script type='text/javascript'>
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(
+        unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type='text/javascript'>
+    try {
+        var pageTracker = _gat._getTracker("UA-11386156-1");
+        pageTracker._trackPageview();
+    } catch (err) {}
+</script>
 
 </body>
 
