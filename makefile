@@ -3,6 +3,7 @@
 
 WEEWX_COM=weewx.com
 WEEWX_HTMLDIR=/var/www/html
+RSYNC_OPTS=-arv --chmod=ugo=rwX --no-p --no-g --no-t
 
 help:
 	@echo "options include:"
@@ -15,8 +16,8 @@ help:
 	@echo "make upload"
 
 upload:
-	rsync -arv code.html docs.html dot.png hardware.html hwcmp.html\
- index.html keys.html showcase.html support.html\
+	rsync $(RSYNC_OPTS) code.html docs.html dot.png hardware.html\
+ hwcmp.html index.html keys.html showcase.html support.html\
  weewx.css weewx.js\
  dot-red.png dot.png pushpin-red.png\
  echo.js echo.min.js md5.js\
@@ -30,10 +31,10 @@ upload:
  $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 
 upload-highslide:
-	rsync -arv highslide $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
+	rsync $(RSYNC_OPTS) highslide $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 
 upload-register:
-	rsync -arv register/allkeys.txt register/archivelog.pl register/capture.pl register/common.pl register/mkstations.pl register/register.cgi register/savecounts.pl register/stations.html.in $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)/register
+	rsync $(RSYNC_OPTS) register/allkeys.txt register/archivelog.pl register/capture.pl register/common.pl register/mkstations.pl register/register.cgi register/savecounts.pl register/stations.html.in $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)/register
 
 upload-wfixer:
-	rsync -arv wunderfixer $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
+	rsync $(RSYNC_OPTS) wunderfixer $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
