@@ -22,12 +22,19 @@
 use POSIX;
 use strict;
 
-my $version = '0.9';
+my $version = '0.10';
 
 my $basedir = '/var/www';
 
 # include shared code
 require "$basedir/html/register/common.pl";
+
+# whether to generate stations page on each connection.  if not, then run a
+# cron job separately to generate the page.
+my $genhtml = 0;
+
+# whether to save the station counts on each connection.
+my $savecnt = 1;
 
 # use this when testing so we avoid the real databases
 #my $TEST = '-test';
@@ -64,6 +71,12 @@ my $captureapp = "$basedir/html/register/capture.pl";
 
 # location of the log file
 my $logfile = "/var/log/weereg/register.log";
+
+# location of the station generator log file
+my $genlogfile = "/var/log/weereg/mkstations.log";
+
+# location of the counts log file
+my $cntlogfile = "/var/log/weereg/savecounts.log";
 
 # location of the capture log file
 my $caplogfile = "/var/log/weereg/capture.log";
@@ -217,8 +230,12 @@ sub handleregistration {
 
 # update the stations web page then update the counts database
 sub updatestations() {
-    system("$genhtmlapp >> $logfile 2>&1 &");
-    system("$savecntapp >> $logfile 2>&1 &");
+    if($genhtml) {
+        system("$genhtmlapp >> $genlogfile 2>&1 &");
+    }
+    if($savecnt) {
+        system("$savecntapp >> $cntlogfile 2>&1 &");
+    }
 #    `$genhtmlapp >> $logfile 2>&1`;
 #    `$savecntapp >> $logfile 2>&1`;
 }
