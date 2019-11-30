@@ -26,7 +26,7 @@ upload:
  weewx-logo-100x100.png weewx-logo-128x128.png weewx-logo-300x300.png\
  weewx-logo-457x437.png weewx-logo-50x50.png weewx-logo-600x200.png\
  jetbrains-logo.svg\
- infobox.js close.gif tipbox90pad.gif\
+ infobox-1.1.13.js infobox_packed-1.1.13.js infobox-1.1.18.js close.gif tipbox90pad.gif\
  cfg hardware keys logo screenshots consumers .nginxy\
  $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 
