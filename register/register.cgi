@@ -22,7 +22,7 @@
 use POSIX;
 use strict;
 
-my $version = '0.10';
+my $version = '0.11';
 
 my $basedir = '/var/www';
 
@@ -34,7 +34,10 @@ require "$basedir/html/register/common.pl";
 my $genhtml = 0;
 
 # whether to save the station counts on each connection.
-my $savecnt = 1;
+my $savecnt = 0;
+
+# whether to capture website image
+my $docapture = 0;
 
 # use this when testing so we avoid the real databases
 #my $TEST = '-test';
@@ -211,21 +214,20 @@ sub handleregistration {
     if($status eq 'OK') {
         &writereply('Registration Complete','OK', $msg, $rec, $rqpairs{debug});
         &updatestations();
-	&updatecapture($rec->{station_url});
+        &updatecapture($rec->{station_url});
     } else {
         &writereply('Registration Failed','FAIL', $msg, $rec, $rqpairs{debug});
-#	logmsg($msg);
-	my @pairs = ();
-	foreach my $key (sort keys %{ $rec }) {
-	    my $val = $rec->{$key};
-	    $val =~ s/"/\\"/g;
-	    $val =~ s/'/\\'/g;
-	    push @pairs, $key . '=' . $val;
-	}
-	my $recstr = join(',', @pairs);
-	my $fullmsg = "$msg reg={$recstr}";
-	logmsg($fullmsg);
     }
+    my @pairs = ();
+    foreach my $key (sort keys %{ $rec }) {
+        my $val = $rec->{$key};
+        $val =~ s/"/\\"/g;
+        $val =~ s/'/\\'/g;
+        push @pairs, $key . '=' . $val;
+    }
+    my $recstr = join(',', @pairs);
+    my $fullmsg = "$msg reg={$recstr}";
+    logmsg($fullmsg);
 }
 
 # update the stations web page then update the counts database
@@ -243,9 +245,11 @@ sub updatestations() {
 # update the screen capture for the indicated station
 sub updatecapture() {
     my($url) = @_;
-    $url =~ s/\'/%27/g;
-    $url =~ s/\"/%22/g;
-    system("$captureapp --url '$url' >> $caplogfile 2>&1 &");
+    if($docapture) {
+        $url =~ s/\'/%27/g;
+        $url =~ s/\"/%22/g;
+        system("$captureapp --url '$url' >> $caplogfile 2>&1 &");
+    }
 }
 
 # if this is a new station, add an entry to the database.  if an entry already

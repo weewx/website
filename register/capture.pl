@@ -37,6 +37,9 @@ my $imgdir = "$basedir/html/shots";
 # extension for captured images
 my $imgext = 'jpg';
 
+# global override to skip image captures (typically for debugging)
+my $do_captures = 1;
+
 # dbinfo
 my $dbtype = 'mysql';
 my $dbinfo = '/etc/weereg/dbinfo';
@@ -158,8 +161,10 @@ sub capture_station {
 	my $rfile = "$imgdir/$fn.raw.$imgext";
         my $sfile = "$imgdir/$fn.sm.$imgext";
         my $tfile = "$imgdir/$fn.tn.$imgext";
-        logout("capture $fn ($url)");
-	`$imgapp --quiet $url $rfile $logargs`;
+        if ($do_captures) {
+            logout("capture $fn ($url)");
+            `$imgapp --quiet $url $rfile $logargs`;
+        }
 	# the raw download is going to be too big to keep
 	if (-f $rfile && -s $rfile > 0) {
 	    # shrink to something we can keep
