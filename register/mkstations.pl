@@ -62,7 +62,19 @@ my %blacklist;
 # $blacklist{'spammerdomain.com'} = 1;
 
 # google maps api key
-my $apikey = 'AIzaSyCCFIuh9cZXlNxXJJ5w5BxHmmm1rDGbtqE';
+my $apikeyfile = "/etc/weereg/google-maps-api-key";
+my $apikey = 'NO_API_KEY_DEFINED';
+if (open(KEYFILE, "<$apikeyfile")) {
+    while(<KEYFILE>) {
+        my $line = $_;
+        $line =~ s/^\s+//;
+        $line =~ s/\s+$//;
+        if ($line =~ /\S+/) {
+            $apikey = $line;
+        }
+    }
+    close(KEYFILE);
+}
 
 my $s_ts = time;
 my $e_ts = $s_ts;
