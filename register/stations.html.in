@@ -114,7 +114,7 @@
   padding: 4px;
 }
   </style>
-  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCCFIuh9cZXlNxXJJ5w5BxHmmm1rDGbtqE"></script>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=GOOGLE_MAPS_API_KEY"></script>
   <script type="text/javascript" src="infobox-1.1.18.js"></script>
   <script type="text/javascript">
 var sites = [];

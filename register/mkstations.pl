@@ -15,7 +15,7 @@ use DBI;
 use POSIX;
 use utf8;
 
-my $version = '0.5';
+my $version = '0.6';
 
 my $basedir = '/var/www';
 
@@ -60,6 +60,9 @@ my $COLLATOR = Unicode::Collate->new(table=>$keysfile);
 # into a database.
 my %blacklist;
 # $blacklist{'spammerdomain.com'} = 1;
+
+# google maps api key
+my $apikey = 'AIzaSyCCFIuh9cZXlNxXJJ5w5BxHmmm1rDGbtqE';
 
 my $s_ts = time;
 my $e_ts = $s_ts;
@@ -168,6 +171,10 @@ if(open(OFILE,">$tmpfile")) {
             print OFILE "stations will be removed after $n days without contact<br/>\n";
             print OFILE "last update $tstr<br/>\n";
             print OFILE "<!-- mkstations version $version -->\n";
+        } elsif($line =~ /GOOGLE_MAPS_API_KEY/) {
+            my $newline = $line;
+            $newline =~ s/GOOGLE_MAPS_API_KEY/$apikey/;
+            print OFILE "$newline\n";
         } else {
             print OFILE "$line\n";
         }
