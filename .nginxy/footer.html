@@ -1,18 +1,64 @@
 <!-- End of nginx output -->
 
-    <pre>
-	  <div id='includedREADME'></div>
-    </pre>
-    <div id="footer">
-	  <p>Copyright &copy; Tom Keffer and Matthew Wall, all rights reserved</p>
-    </div>
+<div id='includedREADME'></div>
+<pre>
+  <div id='includedREADMETXT'></div>
+</pre>
+  
+<div id="footer">
+  <p>Copyright &copy; Tom Keffer and Matthew Wall, all rights reserved</p>
+</div>
 
 </div> <!-- end #container -->
 
 </body>
 
 <script>
-    populate_header('downloads');
-    $("#includedREADME").load("README.txt");
+  var readme_html = `
+<h2>Source Package</h2>
+<p>
+  If you intend to do weewx development or a lot of customization, you will probably find it easiest to use the latest source package listed above.  Older releases are in the <a href="released_versions">released_versions</a> directory.
+</p>
+<p>
+  For all operating systems including Linux, BSD<br/>
+  <a href="http://weewx.com/docs/setup.htm">http://weewx.com/docs/setup.htm</a>
+</p>
+<p>
+  MacOS<br/>
+  <a href="http://weewx.com/docs/setup.htm">http://weewx.com/docs/macos.htm</a>
+</p>
+
+<h2>Platform Packages</h2>
+<p>
+  The package files for each operating system are in the <a href="released_versions">released_versions</a> directory, but it is typically easier to install them directly from the platform repositories using the instructions listed below.
+</p>
+<p>
+  Debian, Ubuntu, Mint, including Raspberry Pi<br/>
+  <a href="http://weewx.com/docs/debian.htm">http://weewx.com/docs/debian.htm</a>
+</p>
+<p>
+  Redhat, CentOS, Fedora<br/>
+  <a href="http://weewx.com/docs/redhat.htm">http://weewx.com/docs/redhat.htm</a>
+</p>
+<p>
+  SuSE, OpenSuSE<br/>
+  <a href="http://weewx.com/docs/suse.htm">http://weewx.com/docs/suse.htm</a>
+</p>
+
+<h2>Change History</h2>
+<p>
+  The changes made in each release are included in the WeeWX documentation.<br/>
+  <a href="http://weewx.com/docs/changes.txt">http://weewx.com/docs/changes.txt</a>
+</p>`
+
+  populate_header('downloads');
+  var url = window.location.href.trim();
+  if (url[url.length-1] == '/')
+    url = url.substring(0, url.length - 1)
+  var parts = url.split('/')
+  var page = parts[parts.length-1];
+  if (page == 'downloads')
+    $("#includedREADME").html(readme_html);
+  $("#includedREADMETXT").load("README.txt");
 </script>
 </html>
