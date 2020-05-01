@@ -4,9 +4,9 @@
 <pre>
   <div id='includedREADMETXT'></div>
 </pre>
-  
-<div id="footer">
-  <p>Copyright &copy; Tom Keffer and Matthew Wall, all rights reserved</p>
+
+<div id='footer'>
+    <p>Copyright &copy; Tom Keffer and Matthew Wall, all rights reserved</p>
 </div>
 
 </div> <!-- end #container -->
@@ -14,51 +14,53 @@
 </body>
 
 <script>
-  var readme_html = `
-<h2>Source Package</h2>
-<p>
-  If you intend to do weewx development or a lot of customization, you will probably find it easiest to use the latest source package listed above.  Older releases are in the <a href="released_versions">released_versions</a> directory.
-</p>
-<p>
-  For all operating systems including Linux, BSD<br/>
-  <a href="http://weewx.com/docs/setup.htm">http://weewx.com/docs/setup.htm</a>
-</p>
-<p>
-  MacOS<br/>
-  <a href="http://weewx.com/docs/setup.htm">http://weewx.com/docs/macos.htm</a>
-</p>
-
+    var readme_html = `
 <h2>Platform Packages</h2>
 <p>
-  The package files for each operating system are in the <a href="released_versions">released_versions</a> directory, but it is typically easier to install them directly from the platform repositories using the instructions listed below.
+  For Debian, Ubuntu, Mint, including Raspberry Pi, see:<br/>
+  <a href='http://weewx.com/docs/debian.htm'>http://weewx.com/docs/debian.htm</a>
 </p>
 <p>
-  Debian, Ubuntu, Mint, including Raspberry Pi<br/>
-  <a href="http://weewx.com/docs/debian.htm">http://weewx.com/docs/debian.htm</a>
+  For Redhat, CentOS, Fedora, see:<br/>
+  <a href='http://weewx.com/docs/redhat.htm'>http://weewx.com/docs/redhat.htm</a>
 </p>
 <p>
-  Redhat, CentOS, Fedora<br/>
-  <a href="http://weewx.com/docs/redhat.htm">http://weewx.com/docs/redhat.htm</a>
+  For SuSE, OpenSuSE,see:<br/>
+  <a href='http://weewx.com/docs/suse.htm'>http://weewx.com/docs/suse.htm</a>
+</p>
+<p> The package files for each operating system are in the <a
+href='released_versions'>released_versions</a> directory, but it is typically easier to install them
+directly from the platform repositories using the instructions listed above. </p>
+
+<h2>Source Package</h2>
+<p>Installation using <span class='code'>setup.py</span> from the source package is the recommended
+method for those who plan to write custom services and reports for WeeWX. It will put everything in
+a single directory, specified by the parameter <span class='code'>home</span> in the <span
+class='code'>setup.cfg</span> file, making it easier to modify WeeWX.</p>
+<p>
+  For all operating systems including Linux, BSD, see:<br/>
+  <a href='http://weewx.com/docs/setup.htm'>http://weewx.com/docs/setup.htm</a>
 </p>
 <p>
-  SuSE, OpenSuSE<br/>
-  <a href="http://weewx.com/docs/suse.htm">http://weewx.com/docs/suse.htm</a>
+  For MacOS, see:<br/>
+  <a href='http://weewx.com/docs/setup.htm'>http://weewx.com/docs/macos.htm</a>
 </p>
+<p>  Older releases are in the <a href='released_versions'>released_versions</a> directory. </p>
 
 <h2>Change History</h2>
 <p>
   The changes made in each release are included in the WeeWX documentation.<br/>
-  <a href="http://weewx.com/docs/changes.txt">http://weewx.com/docs/changes.txt</a>
-</p>`
+  <a href='http://weewx.com/docs/changes.txt'>http://weewx.com/docs/changes.txt</a>
+</p>`;
 
-  populate_header('downloads');
-  var url = window.location.href.trim();
-  if (url[url.length-1] == '/')
-    url = url.substring(0, url.length - 1)
-  var parts = url.split('/')
-  var page = parts[parts.length-1];
-  if (page == 'downloads')
-    $("#includedREADME").html(readme_html);
-  $("#includedREADMETXT").load("README.txt");
+    populate_header('downloads');
+    var url = window.location.href.trim();
+    if (url[url.length - 1] == '/')
+        url = url.substring(0, url.length - 1);
+    var parts = url.split('/');
+    var page = parts[parts.length - 1];
+    if (page == 'downloads')
+        $("#includedREADME").html(readme_html);
+    $("#includedREADMETXT").load("README.txt");
 </script>
 </html>
