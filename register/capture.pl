@@ -119,19 +119,26 @@ exit 0;
 # query the station database for stations.  keep any that are active.
 sub get_stations {
     my ($now) = @_;
+    my $tot = 0;
+    my $cnt = 0;
     my %stations;
     my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, { RaiseError => 0 });
     if ($dbh) {
-	my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
+        # this is a crude approach that no longer works with modern mysql
+        #my $sth = $dbh->prepare("select station_url,station_type,last_seen from stations group by station_url, last_seen");
+        # do it with an inner join instead
+        my $sth = $dbh->prepare("select s.station_url,s.station_type,s.last_seen from stations s inner join (select station_url, max(last_seen) as max_last_seen from stations group by station_url) sm on s.station_url = sm.station_url and s.last_seen = sm.max_last_seen");
 	if ($sth) {
 	    $sth->execute();
 	    $sth->bind_columns(\my($url,$st,$ts));
 	    while($sth->fetch()) {
+                $tot += 1;
 		my %r;
 		$r{station_type} = $st;
 		$r{last_seen} = $ts;
 		if ($now - $ts < $active) {
 		    $stations{$url} = \%r;
+                    $cnt += 1;
 		}
 	    }
 	    $sth->finish();
@@ -144,6 +151,7 @@ sub get_stations {
     } else {
 	logerr("cannot connect to database: $DBI::errstr");
     }
+    logout("found $cnt active stations ($tot total stations)");
     return %stations;
 }
 
