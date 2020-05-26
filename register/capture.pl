@@ -26,8 +26,11 @@ my $basedir = '/var/www';
 # include shared code
 require "$basedir/html/register/common.pl";
 
-# the app that makes the screen captures
-my $imgapp = "/opt/wkhtmltox/bin/wkhtmltoimage";
+# which app to use for captures
+my $capture_app = 'wkhtmltoimage'; # weasyprint or wkhtmltoimage
+
+my $weasyprint = '/opt/anaconda3/bin/weasyprint';
+my $wkhtmltox = "/opt/wkhtmltox/bin/wkhtmltoimage";
 
 # the app that converts and resizes images
 my $cvtapp = 'convert';
@@ -177,8 +180,14 @@ sub capture_station {
         my $tfile = "$imgdir/$fn.tn.$imgext";
         if ($do_captures) {
             logout("capture $fn ($url)");
-            #system("$imgapp --quiet $url $rfile $logargs");
-            capture_or_die("$imgapp --quiet $url $rfile $logargs");
+            my $cmd = q();
+            if ($capture_app eq 'weasyprint') {
+                $cmd = "$weasyprint $url $rfile $logargs";
+            } else {
+                $cmd = "$wkhtmltox --quiet $url $rfile $logargs";
+            }
+            #system($cmd);
+            capture_or_die($url, $fn, $cmd);
         }
 	# the raw download is going to be too big to keep
 	if (-f $rfile && -s $rfile > 0) {
@@ -215,10 +224,10 @@ sub capture_station {
 
 # attempt to capture a web site.  if it takes too long, then log it and abort.
 sub capture_or_die {
-    my($cmd, $timeout) = @_;
+    my($url, $fn, $cmd, $timeout) = @_;
     # default to a sane timeout
     $timeout = 300 unless defined($timeout) && ($timeout > 0);
-
+    logout("exec: $cmd");
     my($rc, $pid);
     eval {
         local $SIG{ALRM} = sub { die "TIMEOUT" };
@@ -259,12 +268,12 @@ sub capture_or_die {
     if (($@ =~ "^TIMEOUT") || !defined($rc)) {
         # yes - kill the process
         if (! kill(KILL => $pid)) {
-            logerr("unable to kill $pid: $!");
+            logerr("unable to kill $pid ($fn): $!");
             die;
         }
         my $ret = waitpid($pid, 0);
         if (! $ret) {
-            logerr("unable to reap $pid (ret=$ret): $!");
+            logerr("unable to reap $pid (ret=$ret) ($fn): $!");
             die;
         }
         # get output of child process
@@ -275,7 +284,7 @@ sub capture_or_die {
             my $signum = $rc & 127;
             # core-dump flag is top bit
             my $dump = $rc & 128;
-            logerr("child $pid: exit_code=$exit_code kill_signal=$signum dumped_core=$dump");
+            logerr("child $pid ($fn): exit_code=$exit_code kill_signal=$signum dumped_core=$dump");
         }
         # process failed
     } else {
