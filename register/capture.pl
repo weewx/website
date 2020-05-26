@@ -17,6 +17,7 @@
 
 use Digest::MD5 qw(md5 md5_hex md5_base64);
 use DBI;
+use File::Copy;
 use POSIX;
 use strict;
 
@@ -109,7 +110,13 @@ if ($url ne q()) {
 } else {
     %stations = get_stations($now);
 }
+my $FMT = "%b %d %H:%M:%S";
+my $tot = keys %stations;
+my $cnt = 0;
 foreach my $url (keys %stations) {
+    $cnt += 1;
+    my $tstr = strftime $FMT, gmtime $now;
+    logout("process '$url' at $tstr ($now) ($cnt of $tot)");
     capture_station($url, $now);
 }
 
@@ -158,7 +165,6 @@ sub get_stations {
 # do a capture of the specified url
 sub capture_station {
     my ($url, $now) = @_;
-    logout("process '$url' at $now");
     my $ctx = Digest::MD5->new;
     $ctx->add($url);
     my $fn = $ctx->hexdigest;
@@ -171,7 +177,8 @@ sub capture_station {
         my $tfile = "$imgdir/$fn.tn.$imgext";
         if ($do_captures) {
             logout("capture $fn ($url)");
-            `$imgapp --quiet $url $rfile $logargs`;
+            #system("$imgapp --quiet $url $rfile $logargs");
+            capture_or_die("$imgapp --quiet $url $rfile $logargs");
         }
 	# the raw download is going to be too big to keep
 	if (-f $rfile && -s $rfile > 0) {
@@ -191,7 +198,7 @@ sub capture_station {
             foreach my $f (keys %files) {
                 my @stats = stat($f);
                 if ($stats[7] > $max_file_size || $stats[7] == 0) {
-                    `cp $files{$f} $f`;
+                    copy($files{$f}, $f);
                 }
             }
             # remove the raw file now that we are done
@@ -199,9 +206,80 @@ sub capture_station {
 	} else {
             # copy placeholder if the capture failed, but only if none already
             logout("using placeholder for $fn");
-            `cp $placeholder $ofile` if ! -f $ofile;
-            `cp $placeholder_small $sfile` if ! -f $sfile;
-            `cp $placeholder_thumb $tfile` if ! -f $tfile;
+            copy($placeholder, $ofile) if ! -f $ofile;
+            copy($placeholder_small, $sfile) if ! -f $sfile;
+            copy($placeholder_thumb, $tfile) if ! -f $tfile;
         }
     }
+}
+
+# attempt to capture a web site.  if it takes too long, then log it and abort.
+sub capture_or_die {
+    my($cmd, $timeout) = @_;
+    # default to a sane timeout
+    $timeout = 300 unless defined($timeout) && ($timeout > 0);
+
+    my($rc, $pid);
+    eval {
+        local $SIG{ALRM} = sub { die "TIMEOUT" };
+      FORK: {
+          if ($pid = fork) {
+              # parent does this
+              # NOOP - parent does nothing in this case
+          } elsif (defined $pid) { # $pid is zero
+              # child does this
+              # execute provided command or die if failure
+              if (! exec($cmd)) {
+                  logerr("cannot run '$cmd': $!");
+                  die;
+              }
+          } elsif ($! =~ /No more processes/) {
+              # still in parent: EAGAIN, supposedly recoverable fork error
+              logerr("fork failed, retry in 5 seconds: $!");
+              sleep 5;
+              redo FORK;
+          } else {
+              # unknown fork error
+              logerr("cannot fork: $!");
+              die;
+          }
+        }
+
+        # set alarm for timeout seconds
+        alarm($timeout);
+        # block until program is finished
+        waitpid($pid, 0);
+        # program is finished, disable alarm
+        alarm(0);
+        # get output of waitpid
+        $rc = $?;
+    };
+
+    # did eval exit due to alarm?
+    if (($@ =~ "^TIMEOUT") || !defined($rc)) {
+        # yes - kill the process
+        if (! kill(KILL => $pid)) {
+            logerr("unable to kill $pid: $!");
+            die;
+        }
+        my $ret = waitpid($pid, 0);
+        if (! $ret) {
+            logerr("unable to reap $pid (ret=$ret): $!");
+            die;
+        }
+        # get output of child process
+        if ($rc = $?) {
+            # exit code is lower byte
+            my $exit_code = $rc >> 8;
+            # killing signal is lower 7-bits of top byte
+            my $signum = $rc & 127;
+            # core-dump flag is top bit
+            my $dump = $rc & 128;
+            logerr("child $pid: exit_code=$exit_code kill_signal=$signum dumped_core=$dump");
+        }
+        # process failed
+    } else {
+        # process completed successfully
+    }
+    return $rc
 }
