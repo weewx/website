@@ -14,6 +14,11 @@
 #
 # Run this script periodically to get screen captures of each station.
 # Specify a URL to get a capture of a specific url.
+#
+# pre-requisites:
+#  capture (imagemagick must be available)
+#  xvfb
+#  weasyprint/wkhtmltoimage/phantomjs/cutycapt
 
 use Digest::MD5 qw(md5 md5_hex md5_base64);
 use DBI;
@@ -27,10 +32,14 @@ my $basedir = '/var/www';
 require "$basedir/html/register/common.pl";
 
 # which app to use for captures
-my $capture_app = 'wkhtmltoimage'; # weasyprint or wkhtmltoimage
+# weasyprint, phantomjs, cutycapt or wkhtmltoimage
+my $capture_app = 'phantomjs';
 
 my $weasyprint = '/opt/anaconda3/bin/weasyprint';
-my $wkhtmltox = "/opt/wkhtmltox/bin/wkhtmltoimage";
+my $wkhtmltox = '/opt/wkhtmltox/bin/wkhtmltoimage';
+my $phantomjs = '/usr/bin/phantomjs';
+my $cutycapt = '/usr/bin/cutycapt';
+my $xvfb = '/usr/bin/xvfb-run --server-args="-screen 0, 1024x768x24"';
 
 # the app that converts and resizes images
 my $cvtapp = 'convert';
@@ -43,6 +52,9 @@ my $imgext = 'jpg';
 
 # global override to skip image captures (typically for debugging)
 my $do_captures = 1;
+
+# should we delete the original capture after making thumbnails?
+my $delete_raw = 1;
 
 # dbinfo
 my $dbtype = 'mysql';
@@ -81,6 +93,9 @@ my $small_height = 200;
 my $thumb_width = 50;
 my $thumb_height = 100;
 
+# force capture even if not stale
+my $force = 0;
+
 # which url should we capture?  default is to query the database then capture
 # everything we find.  if a url is specified, then just do that one.
 my $url = q();
@@ -99,6 +114,21 @@ while($ARGV[0]) {
         $url = shift;
     } elsif ($arg eq '--verbosity') {
         $verbosity = shift;
+    } elsif ($arg eq '--save-captures') {
+        $delete_raw = 0;
+    } elsif ($arg eq '--force') {
+        $force = 1;
+    } elsif ($arg eq '--help') {
+        print "argument include:\n";
+        print "  --stale          how long in seconds to consider stale\n";
+        print "  --active         how long to consider stale, in seconds\n";
+        print "  --url            process a single image from this url\n";
+        print "  --verbosity      1=some, 2=lots\n";
+        print "  --save-captures  do not delete the original captures\n";
+        exit 0;
+    } else {
+        print "unknown argument '$arg'\n";
+        exit 1;
     }
 }
 
@@ -122,6 +152,8 @@ foreach my $url (keys %stations) {
     logout("process '$url' at $tstr ($now) ($cnt of $tot)");
     capture_station($url, $now);
 }
+my $elapsed = time - $now;
+logout("processed $cnt sites in $elapsed seconds");
 
 exit 0;
 
@@ -174,7 +206,7 @@ sub capture_station {
     my $ofile = "$imgdir/$fn.$imgext";
     my @stats = stat($ofile);
     # if no shot or shot is stale, do a grab and make the thumbnails
-    if (! scalar @stats || $now - $stats[9] > $stale) {
+    if (! scalar @stats || $now - $stats[9] > $stale || $force) {
 	my $rfile = "$imgdir/$fn.raw.$imgext";
         my $sfile = "$imgdir/$fn.sm.$imgext";
         my $tfile = "$imgdir/$fn.tn.$imgext";
@@ -183,6 +215,10 @@ sub capture_station {
             my $cmd = q();
             if ($capture_app eq 'weasyprint') {
                 $cmd = "$weasyprint $url $rfile $logargs";
+            } elsif ($capture_app eq 'phantomjs') {
+                $cmd = "$xvfb $phantomjs /var/www/html/register/rasterize.js $url $rfile $logargs";
+            } elsif ($capture_app eq 'cutycapt') {
+                $cmd = "$xvfb $cutycapt --url=$url --out=$rfile $logargs";
             } else {
                 $cmd = "$wkhtmltox --quiet $url $rfile $logargs";
             }
@@ -193,32 +229,56 @@ sub capture_station {
 	if (-f $rfile && -s $rfile > 0) {
 	    # shrink to something we can keep
             logout("create image for $fn");
-	    `$cvtapp $rfile -resize $snap_width $ofile $logargs`;
+            #`$cvtapp $rfile -resize $snap_width $ofile $logargs`;
+            my $cmd = "$cvtapp $rfile -resize $snap_width $ofile $logargs";
+            logout("$cmd") if $verbosity;
+            system($cmd);
             # create a small version for the pin bubble on the map
             logout("create small image for $fn");
-	    `$cvtapp $rfile -resize $small_width -crop ${small_width}x${small_height}+0+0 $sfile $logargs`;
+	    #`$cvtapp $rfile -resize $small_width -crop ${small_width}x${small_height}+0+0 $sfile $logargs`;
+            $cmd = "$cvtapp $rfile -resize $small_width -crop ${small_width}x${small_height}+0+0 $sfile $logargs";
+            logout("$cmd") if $verbosity;
+            system($cmd);
 	    # create thumbnail that is scaled to standard width and cropped
 	    # to standard height so it fits in table nicely
             logout("create thumbnail image for $fn");
-	    `$cvtapp $rfile -resize $thumb_width -crop ${thumb_width}x${thumb_height}+0+0 $tfile $logargs`;
+            $cmd = "$cvtapp $rfile -resize $thumb_width -crop ${thumb_width}x${thumb_height}+0+0 $tfile $logargs";
+            logout("$cmd") if $verbosity;
+            system($cmd);
             my %files = ($ofile => $placeholder,
                          $sfile => $placeholder_small,
                          $tfile => $placeholder_thumb);
             foreach my $f (keys %files) {
+                my $fail = q();
                 my @stats = stat($f);
-                if ($stats[7] > $max_file_size || $stats[7] == 0) {
+                if (@stats) {
+                    my $sz = $stats[7];
+                    if ($sz > $max_file_size || $sz == 0) {
+                        $fail = "size=$sz";
+                    }
+                } else {
+                    $fail = "file does not exist";
+                }
+                if ($fail) {
+                    logout("using placeholder for $f: $fail ($url)");
                     copy($files{$f}, $f);
                 }
             }
-            # remove the raw file now that we are done
-            unlink $rfile;
 	} else {
             # copy placeholder if the capture failed, but only if none already
-            logout("using placeholder for $fn");
+            logout("using placeholder for $fn ($url)");
             copy($placeholder, $ofile) if ! -f $ofile;
             copy($placeholder_small, $sfile) if ! -f $sfile;
             copy($placeholder_thumb, $tfile) if ! -f $tfile;
         }
+
+        # remove the raw file now that we are done
+        if (-f $rfile && $delete_raw) {
+            unlink $rfile;
+        }
+    } else {
+        my $age = $now - $stats[9];
+        logout("skip $url (age=$age stale=$stale)");
     }
 }
 
@@ -227,7 +287,7 @@ sub capture_or_die {
     my($url, $fn, $cmd, $timeout) = @_;
     # default to a sane timeout
     $timeout = 300 unless defined($timeout) && ($timeout > 0);
-    logout("exec: $cmd");
+    logout("$cmd") if $verbosity;
     my($rc, $pid);
     eval {
         local $SIG{ALRM} = sub { die "TIMEOUT" };
@@ -239,17 +299,17 @@ sub capture_or_die {
               # child does this
               # execute provided command or die if failure
               if (! exec($cmd)) {
-                  logerr("cannot run '$cmd': $!");
+                  logout("cannot run '$cmd': $!");
                   die;
               }
           } elsif ($! =~ /No more processes/) {
               # still in parent: EAGAIN, supposedly recoverable fork error
-              logerr("fork failed, retry in 5 seconds: $!");
+              logout("fork failed, retry in 5 seconds: $!");
               sleep 5;
               redo FORK;
           } else {
               # unknown fork error
-              logerr("cannot fork: $!");
+              logout("cannot fork: $!");
               die;
           }
         }
@@ -268,12 +328,12 @@ sub capture_or_die {
     if (($@ =~ "^TIMEOUT") || !defined($rc)) {
         # yes - kill the process
         if (! kill(KILL => $pid)) {
-            logerr("unable to kill $pid ($fn): $!");
+            logout("unable to kill $pid ($fn): $!");
             die;
         }
         my $ret = waitpid($pid, 0);
         if (! $ret) {
-            logerr("unable to reap $pid (ret=$ret) ($fn): $!");
+            logout("unable to reap $pid (ret=$ret) ($fn): $!");
             die;
         }
         # get output of child process
@@ -284,7 +344,7 @@ sub capture_or_die {
             my $signum = $rc & 127;
             # core-dump flag is top bit
             my $dump = $rc & 128;
-            logerr("child $pid ($fn): exit_code=$exit_code kill_signal=$signum dumped_core=$dump");
+            logout("child died (pid=$pid hash=$fn url=$url): exit_code=$exit_code kill_signal=$signum dumped_core=$dump");
         }
         # process failed
     } else {
