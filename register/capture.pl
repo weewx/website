@@ -20,6 +20,7 @@
 #  xvfb
 #  weasyprint/wkhtmltoimage/phantomjs/cutycapt
 
+use Time::HiRes qw(time sleep);
 use Digest::MD5 qw(md5 md5_hex md5_base64);
 use DBI;
 use File::Copy;
@@ -50,11 +51,11 @@ my $imgdir = "$basedir/html/shots";
 # extension for captured images
 my $imgext = 'jpg';
 
-# global override to skip image captures (typically for debugging)
-my $do_captures = 1;
-
 # should we delete the original capture after making thumbnails?
 my $delete_raw = 1;
+
+# how long to wait for process before killing it, in seconds
+my $DEFAULT_TIMEOUT = 180;
 
 # dbinfo
 my $dbtype = 'mysql';
@@ -146,14 +147,20 @@ if ($url ne q()) {
 my $FMT = "%b %d %H:%M:%S";
 my $tot = keys %stations;
 my $cnt = 0;
+my $total_time = 0;
 foreach my $url (keys %stations) {
     $cnt += 1;
+    my $t1 = time;
     my $tstr = strftime $FMT, gmtime $now;
     logout("process '$url' at $tstr ($now) ($cnt of $tot)");
     capture_station($url, $now);
+    my $t2 = time;
+    $total_time += $t2 - $t1;
 }
 my $elapsed = time - $now;
-logout("processed $cnt sites in $elapsed seconds");
+my $avg = $total_time;
+$avg /= $cnt if $cnt;
+logout("processed $cnt sites in $elapsed seconds (${avg}s/site)");
 
 exit 0;
 
@@ -203,30 +210,44 @@ sub capture_station {
     my $ctx = Digest::MD5->new;
     $ctx->add($url);
     my $fn = $ctx->hexdigest;
-    my $ofile = "$imgdir/$fn.$imgext";
+    my $rfile = "$imgdir/$fn.raw.$imgext";  # the raw, captured image
+    my $ofile = "$imgdir/$fn.$imgext";      # the downsized image
+    my $sfile = "$imgdir/$fn.sm.$imgext";   # small image
+    my $tfile = "$imgdir/$fn.tn.$imgext";   # thumbnail image
+    my %files = ($ofile => $placeholder,
+                 $sfile => $placeholder_small,
+                 $tfile => $placeholder_thumb);
     my @stats = stat($ofile);
-    # if no shot or shot is stale, do a grab and make the thumbnails
-    if (! scalar @stats || $now - $stats[9] > $stale || $force) {
-	my $rfile = "$imgdir/$fn.raw.$imgext";
-        my $sfile = "$imgdir/$fn.sm.$imgext";
-        my $tfile = "$imgdir/$fn.tn.$imgext";
-        if ($do_captures) {
-            logout("capture $fn ($url)");
-            my $cmd = q();
-            if ($capture_app eq 'weasyprint') {
-                $cmd = "$weasyprint $url $rfile $logargs";
-            } elsif ($capture_app eq 'phantomjs') {
-                $cmd = "$xvfb $phantomjs /var/www/html/register/rasterize.js $url $rfile $logargs";
-            } elsif ($capture_app eq 'cutycapt') {
-                $cmd = "$xvfb $cutycapt --url=$url --out=$rfile $logargs";
-            } else {
-                $cmd = "$wkhtmltox --quiet $url $rfile $logargs";
-            }
-            #system($cmd);
-            capture_or_die($url, $fn, $cmd);
+
+    # if no shot, shot is stale, or shot is just a placeholder, then attempt a
+    # capture and make the thumbnails
+    if ($force || -l $ofile || ! scalar @stats || $now - $stats[9] > $stale) {
+        logout("capture $fn ($url)");
+        my $cmd = q();
+        if ($capture_app eq 'weasyprint') {
+            $cmd = "$weasyprint $url $rfile $logargs";
+        } elsif ($capture_app eq 'phantomjs') {
+            $cmd = "$phantomjs /var/www/html/register/rasterize.js $url $rfile $logargs";
+        } elsif ($capture_app eq 'cutycapt') {
+            $cmd = "$cutycapt --url=$url --out=$rfile $logargs";
+        } else {
+            $cmd = "$wkhtmltox --quiet $url $rfile $logargs";
         }
-	# the raw download is going to be too big to keep
+        #system($cmd);
+        capture_or_die($url, $fn, $cmd);
+
+        # for each site we do reduced, small, and thumb images.  if the capture
+        # was successful, then create the images.  otherwise, make symlinks to
+        # placeholders.
+        
+	# if we got a successful download, create the derived images
 	if (-f $rfile && -s $rfile > 0) {
+            # if there are already placeholders, then delete the links
+            foreach my $f (keys %files) {
+                logout("remove link for $f") if $verbosity;
+                unlink $f if -l $f;
+            }
+
 	    # shrink to something we can keep
             logout("create image for $fn");
             #`$cvtapp $rfile -resize $snap_width $ofile $logargs`;
@@ -245,35 +266,21 @@ sub capture_station {
             $cmd = "$cvtapp $rfile -resize $thumb_width -crop ${thumb_width}x${thumb_height}+0+0 $tfile $logargs";
             logout("$cmd") if $verbosity;
             system($cmd);
-            my %files = ($ofile => $placeholder,
-                         $sfile => $placeholder_small,
-                         $tfile => $placeholder_thumb);
-            foreach my $f (keys %files) {
-                my $fail = q();
-                my @stats = stat($f);
-                if (@stats) {
-                    my $sz = $stats[7];
-                    if ($sz > $max_file_size || $sz == 0) {
-                        $fail = "size=$sz";
-                    }
-                } else {
-                    $fail = "file does not exist";
-                }
-                if ($fail) {
-                    logout("using placeholder for $f: $fail ($url)");
-                    copy($files{$f}, $f);
-                }
-            }
-	} else {
-            # copy placeholder if the capture failed, but only if none already
-            logout("using placeholder for $fn ($url)");
-            copy($placeholder, $ofile) if ! -f $ofile;
-            copy($placeholder_small, $sfile) if ! -f $sfile;
-            copy($placeholder_thumb, $tfile) if ! -f $tfile;
         }
 
-        # remove the raw file now that we are done
+        # do placeholders for any failed files
+        foreach my $f (keys %files) {
+            if (! -f $f || -s $f == 0) {
+                logout("using placeholder for $f ($url)");
+                symlink($files{$f}, $f);
+            }
+        }
+
+        # remove the raw file now that we are done.  this used to be necessary
+        # when wkhtml would create monstrous jpg images.  other capture tools
+        # might not be so disk-hungry...
         if (-f $rfile && $delete_raw) {
+            logout("delete raw image $rfile") if $verbosity;
             unlink $rfile;
         }
     } else {
@@ -286,7 +293,7 @@ sub capture_station {
 sub capture_or_die {
     my($url, $fn, $cmd, $timeout) = @_;
     # default to a sane timeout
-    $timeout = 300 unless defined($timeout) && ($timeout > 0);
+    $timeout = $DEFAULT_TIMEOUT unless defined($timeout) && ($timeout > 0);
     logout("$cmd") if $verbosity;
     my($rc, $pid);
     eval {
