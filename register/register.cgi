@@ -17,12 +17,13 @@
 # If the database does not exist, one will be created with an empty table.
 #
 # FIXME: should we have a field for first_seen?
-# FIXME: add checks to prevent update too frequently
+# FIXME: consolidate duplicated db settings and imgdir and md5 codes
 
+use Digest::MD5 qw(md5 md5_hex md5_base64);
 use POSIX;
 use strict;
 
-my $version = '0.11';
+my $version = '0.12';
 
 my $basedir = '/var/www';
 
@@ -33,10 +34,12 @@ require "$basedir/html/register/common.pl";
 # cron job separately to generate the page.
 my $genhtml = 0;
 
-# whether to save the station counts on each connection.
+# whether to save the station counts on each connection.  if not, then run a
+# cron job separately to save the historical counts.
 my $savecnt = 0;
 
-# whether to capture website image
+# whether to capture website image.  if not, then run a cron job separately
+# to capture the web page of the newly registered site.
 my $docapture = 0;
 
 # use this when testing so we avoid the real databases
@@ -72,17 +75,26 @@ my $savecntapp = "$basedir/html/register/savecounts.pl";
 # location of the screen capture app
 my $captureapp = "$basedir/html/register/capture.pl";
 
-# location of the log file
-my $logfile = "/var/log/weereg/register.log";
+# where to keep the log files
+my $logdir = '/var/log/weereg';
+
+# location of the registration log messages
+my $logfile = "$logdir/register.log";
+
+# location of the log messages for this script
+my $cgilogfile = "$logdir/cgilog.log";
 
 # location of the station generator log file
-my $genlogfile = "/var/log/weereg/mkstations.log";
+my $genlogfile = "$logdir/mkstations.log";
 
 # location of the counts log file
-my $cntlogfile = "/var/log/weereg/savecounts.log";
+my $cntlogfile = "$logdir/savecounts.log";
 
 # location of the capture log file
-my $caplogfile = "/var/log/weereg/capture.log";
+my $caplogfile = "$logdir/capture.log";
+
+# where to put the image files
+my $imgdir = "$basedir/html/shots";
 
 # format of the date as returned in the html footers
 my $DATE_FORMAT = "%Y.%m.%d %H:%M:%S UTC";
@@ -98,6 +110,17 @@ my $cutoff = time() - 30*24*3600;
 
 # how much should we aggregate the results?
 my $default_interval = 4;
+
+# placeholder images until capture can happen
+my $imgext = '.jpg';
+my $placeholder = "$basedir/html/blank-600x200.png";
+my $placeholder_small = "$basedir/html/blank-100x100.png";
+my $placeholder_thumb = "$basedir/html/blank-50x50.png";
+my %PLACEHOLDERS = (
+    ".$imgext" => $placeholder,
+    ".sm.$imgext" => $placeholder_small,
+    ".tn.$imgext" => $placeholder_thumb,
+    );
 
 # parameters that we recognize
 my @params = qw(station_url description latitude longitude station_type station_model weewx_info python_info platform_info);
@@ -213,7 +236,9 @@ sub handleregistration {
     my ($status,$msg,$rec) = registerstation(%rqpairs);
     if($status eq 'OK') {
         &writereply('Registration Complete','OK', $msg, $rec, $rqpairs{debug});
+        &set_placeholders($rec->{station_url});
         &updatestations();
+        &updatecounts();
         &updatecapture($rec->{station_url});
     } else {
         &writereply('Registration Failed','FAIL', $msg, $rec, $rqpairs{debug});
@@ -230,16 +255,32 @@ sub handleregistration {
     logmsg($fullmsg);
 }
 
-# update the stations web page then update the counts database
+# set blank placeholders so that the map does not have missing images
+sub set_placeholders {
+    my($url) = @_;
+    my $ctx = Digest::MD5->new;
+    $ctx->add($url);
+    my $fn = $ctx->hexdigest;
+    foreach my $f (keys %PLACEHOLDERS) {
+        my $imgfile = "$imgdir/$fn.$f";
+        if (! -e $imgfile) {
+            symlink($PLACEHOLDERS{$f}, $imgfile);
+        }
+    }
+}
+
+# update the stations web page
 sub updatestations() {
     if($genhtml) {
         system("$genhtmlapp >> $genlogfile 2>&1 &");
     }
+}
+
+# update the counts database
+sub updatecounts() {
     if($savecnt) {
         system("$savecntapp >> $cntlogfile 2>&1 &");
     }
-#    `$genhtmlapp >> $logfile 2>&1`;
-#    `$savecntapp >> $logfile 2>&1`;
 }
 
 # update the screen capture for the indicated station
@@ -1060,7 +1101,7 @@ sub getrequest {
 
 sub logmsg {
     my ($msg) = @_;
-    my $logfile = "/var/log/weereg/cgilog.log";
+    my $logfile = $cgilogfile;
     my $DATE_FORMAT = "%Y.%m.%d %H:%M:%S";
     my $tstr = strftime $DATE_FORMAT, localtime time;
     if (open(FILE, ">>$logfile")) {
