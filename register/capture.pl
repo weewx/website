@@ -19,6 +19,12 @@
 #  capture (imagemagick must be available)
 #  xvfb
 #  weasyprint/wkhtmltoimage/phantomjs/cutycapt
+#
+# This script needs an X server in order to operation.  Recommend to keep one
+# running all the time like this (or even higher resolution):
+#    Xvfb :99 -screen 0 1024x768x24
+# then set the DISPLAY before running this script:
+#    export DISPLAY=:99
 
 #  https://stackoverflow.com/questions/429254/how-can-i-find-memory-leaks-in-long-running-perl-program
 # https://markandruth.co.uk/2015/12/17/debugging-perl-memory-leaks
@@ -270,6 +276,8 @@ sub capture_station {
             $cmd = "$cvtapp $rfile -resize $thumb_width -crop ${thumb_width}x${thumb_height}+0+0 $tfile $logargs";
             logout("$cmd") if $verbosity;
             system($cmd);
+        } else {
+            logout("no image for $fn ($url)");
         }
 
         # do placeholders for any failed files
