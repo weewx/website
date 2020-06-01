@@ -20,6 +20,10 @@
 #  xvfb
 #  weasyprint/wkhtmltoimage/phantomjs/cutycapt
 
+#  https://stackoverflow.com/questions/429254/how-can-i-find-memory-leaks-in-long-running-perl-program
+# https://markandruth.co.uk/2015/12/17/debugging-perl-memory-leaks
+#use Devel::Leak::Object qw( GLOBAL_bless );
+
 use Time::HiRes qw(time sleep);
 use Digest::MD5 qw(md5 md5_hex md5_base64);
 use DBI;
@@ -270,7 +274,7 @@ sub capture_station {
 
         # do placeholders for any failed files
         foreach my $f (keys %files) {
-            if (! -f $f || -s $f == 0) {
+            if (! -f $f) {
                 logout("using placeholder for $f ($url)");
                 symlink($files{$f}, $f);
             }
