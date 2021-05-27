@@ -15,7 +15,7 @@ use DBI;
 use POSIX;
 use utf8;
 
-my $version = '0.6';
+my $version = '0.7';
 
 my $basedir = '/var/www';
 
@@ -167,12 +167,12 @@ if(open(OFILE,">$tmpfile")) {
             print OFILE "var sites = [\n";
             foreach my $rec (sort sort_func @records) {
                 my $url = check_blacklist($rec->{url});
-                print OFILE "  { description: '$rec->{description}',\n";
-                print OFILE "    url: '$url',\n";
+                print OFILE "  { description: \"$rec->{description}\",\n";
+                print OFILE "    url: \"$url\",\n";
                 print OFILE "    latitude: $rec->{latitude},\n";
                 print OFILE "    longitude: $rec->{longitude},\n";
-                print OFILE "    station: '$rec->{station_type}',\n";
-                print OFILE "    weewx_info: '$rec->{weewx_info}',\n";
+                print OFILE "    station: \"$rec->{station_type}\",\n";
+                print OFILE "    weewx_info: \"$rec->{weewx_info}\",\n";
                 print OFILE "    last_seen: $rec->{last_seen} },\n";
                 print OFILE "\n";
             }

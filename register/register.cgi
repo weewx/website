@@ -23,7 +23,7 @@ use Digest::MD5 qw(md5 md5_hex md5_base64);
 use POSIX;
 use strict;
 
-my $version = '0.12';
+my $version = '0.13';
 
 my $basedir = '/var/www';
 
@@ -346,11 +346,9 @@ sub registerstation {
         push @msgs, 'longitude must be between -180 and 180, inclusive';
     }
 
-    # do not permit stray quotes
+    # do not permit stray quotes or other devious characters
     for my $k ('description','station_model','weewx_info','python_info','platform_info') {
-        if($rec{$k} =~ /'/) {
-            $rec{$k} =~ s/'//g;
-        }
+        $rec{$k} = sanitize($rec{$k});
     }
     # some people seem to be lax with their station model (hardware_name)
     if(length($rec{station_model}) > 128) {
@@ -438,6 +436,14 @@ sub registerstation {
     $dbh->disconnect();
 
     return ('OK', 'registration received', \%rec);
+}
+
+sub sanitize {
+    my($txt) = @_;
+    $txt =~ s/\"//g; # no double quotes, since we single quote the js string
+    $txt =~ s/\r//g; # no carriage returns
+    $txt =~ s/\n//g; # no newlines
+    return $txt;
 }
 
 sub writereply {
