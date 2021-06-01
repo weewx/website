@@ -306,18 +306,26 @@ sub registerstation {
     $rec{last_addr} = $ENV{'REMOTE_ADDR'};
     $rec{user_agent} = $ENV{HTTP_USER_AGENT};
 
+    # do not permit stray quotes or other devious characters
+    for my $k ('station_url','station_type','description','station_model','weewx_info','python_info','platform_info') {
+        my $sanitized = sanitize($rec{$k});
+        if($rec{$k} ne $sanitized) {
+            logmsg("sanitized $k from '" . $rec{$k} . "' to '" . $sanitized . "'");
+            $rec{$k} = $sanitized;
+        }
+    }
+
     my @msgs;
     if($rec{station_url} eq q() || $rec{station_url} !~ /\S/) {
         push @msgs, 'station_url must be specified';
     } else {
-        $rec{station_url} = sanitize($rec{station_url});
-	if($rec{station_url} =~ /example.com/) {
+	if($rec{station_url} =~ /example.com$/) {
 	    push @msgs, 'example.com is not a valid station_url';
 	}
-	if($rec{station_url} =~ /weewx.com/) {
+	if($rec{station_url} =~ /weewx.com$/) {
 	    push @msgs, 'weewx.com is not a valid station_url';
 	}
-	if($rec{station_url} =~ /register.cgi/) {
+	if($rec{station_url} =~ /register.cgi$/) {
 	    push @msgs, 'register.cgi is not a valid station_url';
 	}
 	if($rec{station_url} !~ /^https?:\/\/\S+\.\S+/) {
@@ -326,8 +334,6 @@ sub registerstation {
     }
     if($rec{station_type} eq q() || $rec{station_type} !~ /\S/) {
         push @msgs, 'station_type must be specified';
-    } elsif($rec{station_type} =~ /'/) {
-        push @msgs, 'station_type cannot contain single quotes';
     }
     if($rec{latitude} eq q()) {
         push @msgs, 'latitude must be specified';
@@ -344,10 +350,6 @@ sub registerstation {
         push @msgs, 'longitude must be between -180 and 180, inclusive';
     }
 
-    # do not permit stray quotes or other devious characters
-    for my $k ('description','station_model','weewx_info','python_info','platform_info') {
-        $rec{$k} = sanitize($rec{$k});
-    }
     # some people seem to be lax with their station model (hardware_name)
     if(length($rec{station_model}) > 128) {
         $rec{station_model} = substr $rec{station_model}, 0, 126;
