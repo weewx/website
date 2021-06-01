@@ -310,6 +310,7 @@ sub registerstation {
     if($rec{station_url} eq q() || $rec{station_url} !~ /\S/) {
         push @msgs, 'station_url must be specified';
     } else {
+        $rec{station_url} = sanitize($rec{station_url});
 	if($rec{station_url} =~ /example.com/) {
 	    push @msgs, 'example.com is not a valid station_url';
 	}
@@ -321,9 +322,6 @@ sub registerstation {
 	}
 	if($rec{station_url} !~ /^https?:\/\/\S+\.\S+/) {
 	    push @msgs, 'station_url is not a proper URL';
-	}
-	if($rec{station_url} =~ /'/) {
-	    push @msgs, 'station_url cannot contain single quotes';
 	}
     }
     if($rec{station_type} eq q() || $rec{station_type} !~ /\S/) {
