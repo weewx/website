@@ -481,6 +481,7 @@ function create_content(idx) {
   str += sites[idx].latitude.toFixed(3) + ', ';
   str += sites[idx].longitude.toFixed(3) + '<br/>';
   str += sites[idx].station + '<br/>';
+  str += sites[idx].model + '<br/>';                                  
   str += '</p>';
 //  str += '</div>';
   w.innerHTML = str;
