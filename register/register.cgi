@@ -23,7 +23,7 @@ use Digest::MD5 qw(md5 md5_hex md5_base64);
 use POSIX;
 use strict;
 
-my $version = '0.13';
+my $version = '0.14';
 
 my $basedir = '/var/www';
 
@@ -112,7 +112,7 @@ my $cutoff = time() - 30*24*3600;
 my $default_interval = 4;
 
 # placeholder images until capture can happen
-my $imgext = '.jpg';
+my $imgext = 'jpg';
 my $placeholder = "$basedir/html/blank-600x200.png";
 my $placeholder_small = "$basedir/html/blank-100x100.png";
 my $placeholder_thumb = "$basedir/html/blank-50x50.png";
@@ -262,7 +262,7 @@ sub set_placeholders {
     $ctx->add($url);
     my $fn = $ctx->hexdigest;
     foreach my $f (keys %PLACEHOLDERS) {
-        my $imgfile = "$imgdir/$fn.$f";
+        my $imgfile = "$imgdir/{$fn}${f}";
         if (! -e $imgfile) {
             symlink($PLACEHOLDERS{$f}, $imgfile);
         }
