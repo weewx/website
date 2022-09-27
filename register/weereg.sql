@@ -79,7 +79,8 @@ CREATE TABLE `stations` (
   `platform_info` varchar(128) DEFAULT NULL,
   `last_addr` varchar(16) DEFAULT NULL,
   `last_seen` int(11) DEFAULT NULL,
-  UNIQUE KEY `index_stations` (`station_url`,`latitude`,`longitude`,`station_type`,`station_model`,`weewx_info`,`python_info`,`platform_info`,`last_addr`)
+  UNIQUE KEY `index_url` (`station_url`),
+  KEY `index_addr` (`last_addr`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
