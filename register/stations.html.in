@@ -325,13 +325,13 @@ function populate_station_list(sort_metric, sort_order) {
         return compare(sites[b].weewx_info, sites[a].weewx_info); });
     }
   }
-  } else if (sort_metric == 'entrypoint') {
+  } else if (sort_metric == 'config_path') {
     if (sort_order == 'up') {
       indices.sort(function(a,b) {
-        return compare(sites[a].entrypoint, sites[b].entrypoint); });
+        return compare(sites[a].config_path, sites[b].config_path); });
     } else {
       indices.sort(function(a,b) {
-        return compare(sites[b].entrypoint, sites[a].entrypoint); });
+        return compare(sites[b].config_path, sites[a].config_path); });
     }
   }
 
@@ -353,7 +353,7 @@ function populate_station_list(sort_metric, sort_order) {
   buttons += create_buttons("Longitude", "longitude");
   buttons += create_buttons("Hardware", "station");
   buttons += create_buttons("Version", "weewx_info");
-  buttons += create_buttons("Entrypoint", "entrypoint");
+  buttons += create_buttons("Config Path", "config_path");
   buttons += create_buttons("Last Seen", "last_seen");
   buttons += '<div class="button_pair">Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()"';
   if (showThumbs) {

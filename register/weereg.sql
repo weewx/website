@@ -77,10 +77,10 @@ CREATE TABLE `stations` (
   `weewx_info` varchar(64) DEFAULT NULL,
   `python_info` varchar(64) DEFAULT NULL,
   `platform_info` varchar(128) DEFAULT NULL,
-  `entrypoint` varchar(128) DEFAULT NULL,
+  `config_path` varchar(128) DEFAULT NULL,
   `last_addr` varchar(16) DEFAULT NULL,
   `last_seen` int(11) DEFAULT NULL,
-  UNIQUE KEY `index_stations` (`station_url`,`latitude`,`longitude`,`station_type`,`station_model`,`weewx_info`,`python_info`,`platform_info`,`entrypoint`,`last_addr`)
+  UNIQUE KEY `index_stations` (`station_url`,`latitude`,`longitude`,`station_type`,`station_model`,`weewx_info`,`python_info`,`platform_info`,`config_path`,`last_addr`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

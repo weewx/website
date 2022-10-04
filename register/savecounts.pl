@@ -74,17 +74,17 @@ my $errmsg = q();
 my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, { RaiseError => 0 });
 if ($dbh) {
     #my $sth = $dbh->prepare("select station_url,any_value(station_type),last_seen from stations group by station_url, last_seen");
-    my $sth = $dbh->prepare("select s.station_url,s.station_type,s.weewx_info,s.python_info,s.platform_info,s.entrypoint,s.last_seen from stations s inner join(select station_url, max(last_seen) as max_last_seen from stations group by station_url) sm on s.station_url = sm.station_url and s.last_seen = sm.max_last_seen");
+    my $sth = $dbh->prepare("select s.station_url,s.station_type,s.weewx_info,s.python_info,s.platform_info,s.config_path,s.last_seen from stations inner join(select station_url, max(last_seen) as max_last_seen from stations group by station_url) sm on s.station_url = sm.station_url and s.last_seen = sm.max_last_seen");
     if ($sth) {
 	$sth->execute();
-	$sth->bind_columns(\my($url,$st,$wi,$pi,$oi,$ep,$ts));
+	$sth->bind_columns(\my($url,$st,$wi,$pi,$oi,$cp,$ts));
 	while($sth->fetch()) {
 	    my %r;
 	    $r{station_type} = $st;
             $r{weewx_info} = $wi;
             $r{python_info} = $pi;
             $r{platform_info} = $oi;
-            $r{entrypoint} = $ep;
+            $r{config_path} = $cp;
 	    $r{last_seen} = $ts;
 	    $stations{$url} = \%r;
 	}
@@ -109,7 +109,7 @@ my %attrs = (
     'weewx_info' => 'weewx_history',
     'python_info' => 'python_history',
     'platform_info' => 'platform_history',
-    'entrypoint' => 'entrypoint_history'
+    'config_path' => 'config_path_history'
 );
 
 # massage the counts into hashed active/stale lists

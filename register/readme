@@ -55,7 +55,7 @@ To set up a clean raspberry pi with mysql, apache2, and the registration cgi:
 
 1) install the required rpms
 
-apt-get install libdbd-sqlite3-perl libdbd-mysal-perl mariadb-server
+apt-get install libdbd-sqlite3-perl libdbd-mysql-perl mariadb-server
 
 2)  create a /etc/weereg/dbinfo file ala the following example,
     substituting in your desired values
@@ -73,8 +73,12 @@ service apache2 reload
 
 4) set up mariadb user and database
 
+mysql -u root -p
+<enter mysql root password>
+create database weewx
+source weereg.sql
 create user 'weewx'@'localhost' identified by 'weewx';
-create database weeex;
+create database weewx;
 grant all privileges on weewx.* to 'weewx'@'localhost';
 
 5) install the registration code and pages
@@ -87,11 +91,19 @@ copy everything else to /var/www/html/register
 crontab -u www-data crontab.reg
 and 'crontab -e' to edit the paths therein to taste
 
-
 7a) test the registration - register a system
 
-curl 'curl 'http://127.0.0.1/cgi-bin/register.cgi?station_url=http%3A%2F%2Fwww.somedomain.com&description=My+Little+Town%2C+Oregon&latitude=-71.123&longitude=123.345&station_type=whatever&station_model=something&python_info=3.7.1&platform_info=Linux-4.19.0-16-amd64-x86_64-with-debian-10.11'
+#
+# the url here has to have execCGI set
+# the actual one weewx uses is http://www.weewx.com/register/register.cgi
+#
+curl 'http://www.weewx.com/cgi-bin/register.cgi?station_url=http%3A%2F%2Fwww.mydomain.com&description=My+Little+Town%2C+Oregon&latitude=-71.123&longitude=123.345&station_type=whatever&station_model=something&python_info=3.7.1&platform_info=Linux-4.19.0-16-amd64-x86_64-with-debian-10.11&config_path=%2Fhome%2Fweewx%2Fweewx.conf' > /tmp/testing 2>/tmp/testing.err
 
+a successful registration will be indicated in the scratch file /tmp/testing
+with error output in /tmp/testing.err
+
+to zero the db out, rerun 'source weereg.sql'
+and potentially restart weewx to zero its timer
 
 7b) verify the database shows the newly registered system
 
@@ -106,17 +118,13 @@ Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
 MariaDB [(none)]> use weewx
-Reading table information for completion of table and column names
-You can turn off this feature to get a quicker startup with -A
-
-Database changed
 MariaDB [weewx]> select * from stations;
-+-------------------------------+------------------------+----------+-----------+--------------+---------------+------------+-------------+------------------------------------------------+--------------------+-----------+------------+
-| station_url                   | description            | latitude | longitude | station_type | station_model | weewx_info | python_info | platform_info                                  | entrypoint         | last_addr | last_seen  |
-+-------------------------------+------------------------+----------+-----------+--------------+---------------+------------+-------------+------------------------------------------------+--------------------+-----------+------------+
-| http://www23.example123a.com  | My Little Town, Oregon |  -11.123 |   112.345 | whatever     | Something2    | NULL       | 3.7.0       | Linux-4.19.0-16-amd64-x86_64-with-debian-10.11 | /usr/bin/weewxd    | 127.0.0.1 | 1634352207 |
-+-------------------------------+------------------------+----------+-----------+--------------+---------------+------------+-------------+------------------------------------------------+--------------------+-----------+------------+
-3 rows in set (0.000 sec)
++-------------------------------+------------------------+----------+-----------+--------------+---------------+------------+-------------+------------------------------------------------+------------------------+-----------+------------+
+| station_url                   | description            | latitude | longitude | station_type | station_model | weewx_info | python_info | platform_info                                  | config_path            | last_addr | last_seen  |
++-------------------------------+------------------------+----------+-----------+--------------+---------------+------------+-------------+------------------------------------------------+------------------------+-----------+------------+
+| http://www.somedomain.com     | My Little Town, Oregon |  -71.123 |   123.345 | whatever     | something     | NULL       | 3.7.1       | Linux-4.19.0-16-amd64-x86_64-with-debian-10.11 | /home/weewx/weewx.conf | 127.0.0.1 | 1664920923 |
++-------------------------------+------------------------+----------+-----------+--------------+---------------+------------+-------------+------------------------------------------------+------------------------+-----------+------------+
+1 rows in set (0.000 sec)
 
 MariaDB [weewx]> exit
 
