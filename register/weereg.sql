@@ -78,6 +78,7 @@ CREATE TABLE `stations` (
   `weewx_info` varchar(64) DEFAULT NULL,
   `python_info` varchar(64) DEFAULT NULL,
   `platform_info` varchar(128) DEFAULT NULL,
+  `config_path` varchar(128) DEFAULT NULL,
   `last_addr` varchar(16) DEFAULT NULL,
   `last_seen` int(11) DEFAULT NULL,
   UNIQUE KEY `index_url` (`station_url`),

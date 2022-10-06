@@ -123,7 +123,7 @@ my %PLACEHOLDERS = (
     );
 
 # parameters that we recognize
-my @params = qw(station_url description latitude longitude station_type station_model weewx_info python_info platform_info);
+my @params = qw(station_url description latitude longitude station_type station_model weewx_info python_info platform_info config_path);
 
 my $RMETHOD = $ENV{'REQUEST_METHOD'};
 if($RMETHOD eq 'GET' || $RMETHOD eq 'POST') {
@@ -307,7 +307,7 @@ sub registerstation {
     $rec{user_agent} = $ENV{HTTP_USER_AGENT};
 
     # do not permit stray quotes or other devious characters
-    for my $k ('station_url','station_type','description','station_model','weewx_info','python_info','platform_info') {
+    for my $k ('station_url','station_type','description','station_model','weewx_info','python_info','platform_info','config_path') {
         my $sanitized = sanitize($rec{$k});
         if($rec{$k} ne $sanitized) {
             logmsg("sanitized $k from '" . $rec{$k} . "' to '" . $sanitized . "'");
@@ -420,13 +420,13 @@ sub registerstation {
     # if data are different from latest record, save a new record.  otherwise
     # just update the timestamp of the matching record.
 
-    my $sth = $dbh->prepare(q{replace into stations (station_url,description,latitude,longitude,station_type,station_model,weewx_info,python_info,platform_info,last_addr,last_seen) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)});
+    my $sth = $dbh->prepare(q{replace into stations (station_url,description,latitude,longitude,station_type,station_model,weewx_info,python_info,platform_info,config_path,last_addr,last_seen) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)});
     if(!$sth) {
         my $msg = 'prepare failed: ' . $DBI::errstr;
         $dbh->disconnect();
         return ('FAIL', $msg, \%rec);
     }
-    $rc = $sth->execute($rec{station_url},$rec{description},$rec{latitude},$rec{longitude},$rec{station_type},$rec{station_model},$rec{weewx_info},$rec{python_info},$rec{platform_info},$rec{last_addr},$rec{last_seen});
+    $rc = $sth->execute($rec{station_url},$rec{description},$rec{latitude},$rec{longitude},$rec{station_type},$rec{station_model},$rec{weewx_info},$rec{python_info},$rec{platform_info},$rec{config_path},$rec{last_addr},$rec{last_seen});
     if(!$rc) {
         my $msg = 'execute failed: ' . $DBI::errstr;
         $dbh->disconnect();
@@ -478,10 +478,12 @@ sub get_summary_data {
     my @platform_info;
     my @python_info;
     my @weewx_info;
+    my @config_path;
     my %station_info_cnt;
     my %platform_info_cnt;
     my %python_info_cnt;
     my %weewx_info_cnt;
+    my %config_path_cnt;
 
     my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, {RaiseError => 0});
     if (!$dbh) {
@@ -592,12 +594,25 @@ sub get_summary_data {
     $sth->finish();
     undef $sth;
 
+    $sth = $dbh->prepare("select config_path,count(config_path) from stations where last_seen > ? group by config_path");
+    if (!$sth) {
+        return "cannot prepare select statement: $DBI::errstr";
+    }
+    $sth->execute($cutoff);
+    $sth->bind_columns(\my($x,$y));
+    while($sth->fetch()) {
+        next if($x eq q());
+        $config_path_cnt{$x} = $y;
+    }
+    $sth->finish();
+    undef $sth;
+
     $dbh->disconnect();
     undef $dbh;
 
     return (q(),
-            \@station_info, \@platform_info, \@python_info, \@weewx_info,
-            \%station_info_cnt, \%platform_info_cnt, \%python_info_cnt, \%weewx_info_cnt
+            \@station_info, \@platform_info, \@python_info, \@weewx_info, \@config_path,
+            \%station_info_cnt, \%platform_info_cnt, \%python_info_cnt, \%weewx_info_cnt, \%config_path_cnt
         );
 }
 
