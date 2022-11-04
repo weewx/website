@@ -1,0 +1,8 @@
+# generate stations file every 5 minutes
+*/5 * * * * root /var/www/html/register/mkstations.pl >> /var/log/weereg/mkstations.log 2>&1
+
+# update the historical data every 30 minutes
+*/30 * * * * root /var/www/html/register/savecounts.pl >> /var/log/weereg/savecounts.log 2>&1
+
+# update the screen captures once per week
+#10 3 * * 0 root /var/www/html/register/capture.pl >> /var/log/weereg/capture.log 2>&1

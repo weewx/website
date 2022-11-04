@@ -1,0 +1,10 @@
+/var/log/weereg/*.log {
+  weekly
+  missingok
+  rotate 208
+  compress
+  delaycompress
+  notifempty
+  dateformat -%Y-%m-%d
+  notruncate
+}

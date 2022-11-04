@@ -1,17 +1,21 @@
 weewx station registry
-24nov2013 mwall
+03nov2022 mwall
 
-this is a quick hack to enable weewx stations to phone home so they can be
-plotted on a google map.  stations phone home periodically with their url,
-location, lat/lon, and station type.  these data are plotted on a map.  if
+This is a quick hack to enable weewx stations to phone home so they can be
+plotted on a google map.  Stations phone home periodically with their url,
+location, lat/lon, and station type.  These data are plotted on a map.  If
 a station does not phone home after a certain period of time it will be
 removed from the map.
 
-as of weewx 2.5, the client-side of station registry is included in the
+As of weewx 2.5, the client-side of station registry is included in the
 weewx distribution in restful.py.
 
+The registry was introduced 24nov2013.  It originally used a sqlite database
+on a sourceforge server.  Later it was migrated to a MySQL database and nginx
+on an Amazon lightsail instance.
 
-these are the server-side bits:
+
+These are the server-side bits:
 
 register.cgi - runs on the web server, accepts connections from stations
 
@@ -21,26 +25,69 @@ savecounts.pl - record changes to number and types of stations
 
 archivelog.pl - rollover the register logfile
 
-stations.html.in - template html page
+stations.html.in - template html page from which stations.html is generated
 
-crontab.reg - crontab entries for generating pages, log rollover, history
+weereg.crontab - crontab entries for generating pages
+
+weereg.logrotate - configuration file for log rotation
 
 
-to configure the server:
+How to create a registry server
+
+These instructions show how to configure a debian-derived machine with nginx to
+be a registration server.
 
 1) install prerequisites
 
-apt-get install libdbd-sqlite3-perl
+  apt-get install libdbd-mysql-perl
 
-2) install the cgi script
+2) install files
 
-cp register.cgi /var/lib/cgi-bin
+  mkdir -p /var/www/html/register
+  for f in archivelog.pl capture.pl common.pl mkstations.pl register.cgi savecounts.pl stations.html.in; do
+    cp $f /var/www/html/register
+  done
+  rsync -arv allkeys.txt rasterize.js Unicode /var/www/html/register
 
-3) set up database location
+3) create the database
 
-mkdir /var/lib/weewx
-chown www-data /var/lib/weewx
+  mysql -u root -p
+  create database weereg
+  source weereg.sql
+  create user 'weereg'@'localhost' identified by 'xxx';
+  grant all privileges on weereg.* to 'weereg'@'localhost';
 
-4) configure crontab to generate the html page
+4) create dbinfo
 
-crontab -u www-data crontab.reg
+sudo mkdir /etc/weereg
+echo > /etc/weereg/dbinfo<<EoF
+dbhost=localhost
+dbname=weereg
+dbuser=weereg
+dbpass=xxx
+EoF
+
+5) configure nginx
+
+ensure that fcgiwrap is installed
+
+modify /etc/nginx/fcgiwrap.conf:
+
+  fastcgi_param SCRIPT_FILENAME  /var/www/html/register/register.cgi;
+
+6) install ancillary configuration files
+
+  sudo mkdir /var/log/weereg
+  sudo chmod 2775 /var/log/weereg
+  sudo chown www-data.www-data /var/log/weereg
+  cp weereg.crontab /etc/cron.d/weereg
+  cp weereg.logrotate /etc/logrotate.d/weereg
+
+
+How to test the server
+
+Use curl to send data to the server, then check the 'stations' table.  For
+example:
+
+curl 'http://localhost/register/register.cgi?station_url=http%3A%2F%2Fexample.com&description=smallville&latitude=-71.123&longitude=123.345&station_type=slender&station_model=giselle&python_info=3.10&platform_info=linux'
+

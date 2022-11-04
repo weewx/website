@@ -70,7 +70,7 @@ DROP TABLE IF EXISTS `stations`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stations` (
   `station_url` varchar(255) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
   `latitude` float DEFAULT NULL,
   `longitude` float DEFAULT NULL,
   `station_type` varchar(64) DEFAULT NULL,
