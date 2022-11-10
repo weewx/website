@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.7.35, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.31, for Linux (x86_64)
 --
 -- Host: localhost    Database: weereg
 -- ------------------------------------------------------
--- Server version	5.7.35-0ubuntu0.18.04.2
+-- Server version	8.0.31-0ubuntu0.20.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,12 +21,13 @@
 
 DROP TABLE IF EXISTS `history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `history` (
-  `datetime` int(11) NOT NULL,
+  `datetime` int NOT NULL,
   `station_type` varchar(64) NOT NULL,
-  `active` int(11) NOT NULL,
-  `stale` int(11) NOT NULL
+  `active` int NOT NULL,
+  `stale` int NOT NULL,
+  KEY `datetime` (`datetime`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -36,12 +37,12 @@ CREATE TABLE `history` (
 
 DROP TABLE IF EXISTS `platform_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `platform_history` (
-  `datetime` int(11) NOT NULL,
+  `datetime` int NOT NULL,
   `platform_info` varchar(256) NOT NULL,
-  `active` int(11) NOT NULL,
-  `stale` int(11) NOT NULL,
+  `active` int NOT NULL,
+  `stale` int NOT NULL,
   KEY `index_datetime` (`datetime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -52,12 +53,12 @@ CREATE TABLE `platform_history` (
 
 DROP TABLE IF EXISTS `python_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `python_history` (
-  `datetime` int(11) NOT NULL,
+  `datetime` int NOT NULL,
   `python_info` varchar(256) NOT NULL,
-  `active` int(11) NOT NULL,
-  `stale` int(11) NOT NULL
+  `active` int NOT NULL,
+  `stale` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -67,10 +68,10 @@ CREATE TABLE `python_history` (
 
 DROP TABLE IF EXISTS `stations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `stations` (
   `station_url` varchar(255) NOT NULL,
-  `description` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `latitude` float DEFAULT NULL,
   `longitude` float DEFAULT NULL,
   `station_type` varchar(64) DEFAULT NULL,
@@ -79,7 +80,7 @@ CREATE TABLE `stations` (
   `python_info` varchar(64) DEFAULT NULL,
   `platform_info` varchar(128) DEFAULT NULL,
   `last_addr` varchar(16) DEFAULT NULL,
-  `last_seen` int(11) DEFAULT NULL,
+  `last_seen` int DEFAULT NULL,
   UNIQUE KEY `index_url` (`station_url`),
   KEY `index_addr` (`last_addr`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -91,12 +92,12 @@ CREATE TABLE `stations` (
 
 DROP TABLE IF EXISTS `weewx_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `weewx_history` (
-  `datetime` int(11) NOT NULL,
+  `datetime` int NOT NULL,
   `weewx_info` varchar(256) NOT NULL,
-  `active` int(11) NOT NULL,
-  `stale` int(11) NOT NULL
+  `active` int NOT NULL,
+  `stale` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -109,4 +110,4 @@ CREATE TABLE `weewx_history` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-15  2:30:10
+-- Dump completed on 2022-11-10 16:48:01
