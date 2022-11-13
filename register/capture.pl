@@ -220,10 +220,10 @@ sub capture_station {
     my $ctx = Digest::MD5->new;
     $ctx->add($url);
     my $fn = $ctx->hexdigest;
-    my $rfile = "$imgdir/$fn.raw.$imgext";  # the raw, captured image
-    my $ofile = "$imgdir/$fn.$imgext";      # the downsized image
-    my $sfile = "$imgdir/$fn.sm.$imgext";   # small image
-    my $tfile = "$imgdir/$fn.tn.$imgext";   # thumbnail image
+    my $rfile = "$imgdir/${fn}.raw.$imgext";  # the raw, captured image
+    my $ofile = "$imgdir/${fn}.$imgext";      # the downsized image
+    my $sfile = "$imgdir/${fn}.sm.$imgext";   # small image
+    my $tfile = "$imgdir/${fn}.tn.$imgext";   # thumbnail image
     my %files = ($ofile => $placeholder,
                  $sfile => $placeholder_small,
                  $tfile => $placeholder_thumb);
