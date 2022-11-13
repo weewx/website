@@ -26,8 +26,7 @@ CREATE TABLE `history` (
   `datetime` int NOT NULL,
   `station_type` varchar(64) NOT NULL,
   `active` int NOT NULL,
-  `stale` int NOT NULL,
-  KEY `datetime` (`datetime`)
+  `stale` int NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -42,8 +41,7 @@ CREATE TABLE `platform_history` (
   `datetime` int NOT NULL,
   `platform_info` varchar(256) NOT NULL,
   `active` int NOT NULL,
-  `stale` int NOT NULL,
-  KEY `index_datetime` (`datetime`)
+  `stale` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -81,8 +79,7 @@ CREATE TABLE `stations` (
   `platform_info` varchar(128) DEFAULT NULL,
   `last_addr` varchar(16) DEFAULT NULL,
   `last_seen` int DEFAULT NULL,
-  UNIQUE KEY `index_url` (`station_url`),
-  KEY `index_addr` (`last_addr`)
+  KEY `index_stations` (`station_url`,`latitude`,`longitude`,`station_type`,`station_model`,`weewx_info`,`python_info`,`platform_info`,`last_addr`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -110,4 +107,4 @@ CREATE TABLE `weewx_history` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-10 16:48:01
+-- Dump completed on 2022-11-13  3:22:19
