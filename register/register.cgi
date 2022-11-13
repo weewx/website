@@ -23,7 +23,12 @@ use Digest::MD5 qw(md5 md5_hex md5_base64);
 use POSIX;
 use strict;
 
-my $version = '0.14';
+my $version = '0.15';
+
+# set maintenance mode when you want to disable all database access.  this is
+# useful when you are doing database manipulations and you do not want any
+# modifications coming in from any clients.
+my $maintenance_mode = 0;
 
 my $basedir = '/var/www';
 
@@ -126,7 +131,10 @@ my %PLACEHOLDERS = (
 my @params = qw(station_url description latitude longitude station_type station_model weewx_info python_info platform_info);
 
 my $RMETHOD = $ENV{'REQUEST_METHOD'};
-if($RMETHOD eq 'GET' || $RMETHOD eq 'POST') {
+if($maintenance_mode) {
+    # we are in maintenance mode, respond with a simple explanation
+    &writereply('Registration Failed','FAIL',"Server is undergoing maintenance");
+} elsif($RMETHOD eq 'GET' || $RMETHOD eq 'POST') {
     my($qs,%rqpairs) = &getrequest;
     if($rqpairs{action} eq 'chkenv') {
         &checkenv();
