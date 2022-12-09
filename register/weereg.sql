@@ -77,10 +77,11 @@ CREATE TABLE `stations` (
   `weewx_info` varchar(64) DEFAULT NULL,
   `python_info` varchar(64) DEFAULT NULL,
   `platform_info` varchar(128) DEFAULT NULL,
+  `config_path` varchar(255) DEFAULT NULL,
+  `entry_path` varchar(255) DEFAULT NULL,
   `last_addr` varchar(16) DEFAULT NULL,
   `last_seen` int DEFAULT NULL,
-  KEY `index_last_seen` (`last_seen`),
-  KEY `index_ip` (`last_addr`)
+  KEY `index_stations` (`station_url`,`latitude`,`longitude`,`station_type`,`station_model`,`weewx_info`,`python_info`,`platform_info`,`last_addr`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -108,4 +109,4 @@ CREATE TABLE `weewx_history` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-09  0:11:30
+-- Dump completed on 2022-12-09  4:07:17
