@@ -50,7 +50,7 @@ my $version = '0.16';
 # set maintenance mode when you want to disable all database access.  this is
 # useful when you are doing database manipulations and you do not want any
 # modifications coming in from any clients.
-my $maintenance_mode = 1;
+my $maintenance_mode = 0;
 
 my $basedir = '/var/www';
 
@@ -145,13 +145,19 @@ my %PLACEHOLDERS = (
     ".tn.$imgext" => $placeholder_thumb,
     );
 
+# response keywords.  before dec2022 we responded with FAIL, but that causes
+# older clients to retry, even when a retry is pointless.  so respond with
+# FLOP instead.
+my $OK = 'OK';
+my $FAIL = 'FLOP';
+
 # parameters that we recognize
 my @params = qw(station_url description latitude longitude station_type station_model weewx_info python_info platform_info config_path entry_path);
 
 my $RMETHOD = $ENV{'REQUEST_METHOD'};
 if($maintenance_mode) {
     # we are in maintenance mode, respond with a simple explanation
-    &writereply('Registration Failed','FAIL',"Server is undergoing maintenance");
+    &writereply('Registration Failed',$FAIL,"Server is undergoing maintenance");
 } elsif($RMETHOD eq 'GET' || $RMETHOD eq 'POST') {
     my($qs,%rqpairs) = &getrequest;
     if($rqpairs{action} eq 'chkenv') {
@@ -176,7 +182,7 @@ if($maintenance_mode) {
 } else {
    my %rqpairs;
     &history(%rqpairs);
-#    &writereply('Bad Request','FAIL',"Unsupported request method '$RMETHOD'.");
+#    &writereply('Bad Request',$FAIL,"Unsupported request method '$RMETHOD'.");
 }
 
 exit 0;
@@ -260,14 +266,14 @@ sub handleregistration {
     my(%rqpairs) = @_;
 
     my ($status,$msg,$rec) = registerstation(%rqpairs);
-    if($status eq 'OK') {
-        &writereply('Registration Complete','OK', $msg, $rec, $rqpairs{debug});
+    if($status eq $OK) {
+        &writereply('Registration Complete',$OK, $msg, $rec, $rqpairs{debug});
         &set_placeholders($rec->{station_url});
         &updatestations();
         &updatecounts();
         &updatecapture($rec->{station_url});
     } else {
-        &writereply('Registration Failed','FAIL', $msg, $rec, $rqpairs{debug});
+        &writereply('Registration Failed',$FAIL, $msg, $rec, $rqpairs{debug});
     }
     my @pairs = ();
     foreach my $key (sort keys %{ $rec }) {
@@ -395,13 +401,13 @@ sub registerstation {
             $msg .= '; ' if $msg ne q();
             $msg .= $m;
         }
-        return ('FAIL', "bad registration info: $msg", \%rec);
+        return ($FAIL, "bad registration info: $msg", \%rec);
     }
 
     my $rval = eval "{ require DBI; }"; ## no critic (ProhibitStringyEval)
     if(!$rval) {
         my $msg = 'bad server configuration: DBI is not installed';
-        return ('FAIL', $msg, \%rec);
+        return ($FAIL, $msg, \%rec);
     }
     my $havesqlite = 0;
     my $havemysql = 0;
@@ -412,17 +418,17 @@ sub registerstation {
     }
     if($dbtype == 'sqlite' && !$havesqlite) {
         my $msg = 'bad server configuration: DBI::SQLite is not installed';
-        return ('FAIL', $msg, \%rec);
+        return ($FAIL, $msg, \%rec);
     }
     if($dbtype == 'mysql' && !$havemysql) {
         my $msg = 'bad server configuration: DBI::MySQL is not installed';
-        return ('FAIL', $msg, \%rec);
+        return ($FAIL, $msg, \%rec);
     }
 
     my $dbh = DBI->connect($dbstr, $dbuser, $dbpass, { RaiseError => 0 });
     if (!$dbh) {
         my $msg = 'connection to database failed: ' . $DBI::errstr;
-        return ('FAIL', $msg, \%rec);
+        return ($FAIL, $msg, \%rec);
     }
 
     my $rc = 0;
@@ -433,14 +439,14 @@ sub registerstation {
     $last_seen = $dbh->selectrow_array("select max(last_seen) from stations where last_addr=?", undef, ($rec{last_addr}));
     if($rec{last_seen} - $last_seen < $max_frequency) {
         $dbh->disconnect();
-        return ('FAIL', "too many updates attempted (last=$last_seen)", \%rec);
+        return ($FAIL, "too many updates attempted (last=$last_seen)", \%rec);
     }
 
     my $urlcount = 0;
     $urlcount = $dbh->selectrow_array("select count(station_url) from (select station_url from stations where last_addr=? group by station_url) as T", undef, ($rec{last_addr}));
     if($urlcount > $max_urls) {
         $dbh->disconnect();
-        return ('FAIL', 'too many station URLs from that address', \%rec);
+        return ($FAIL, 'too many station URLs from that address', \%rec);
     }
 
     # if data are different from latest record, save a new record.  otherwise
@@ -450,18 +456,18 @@ sub registerstation {
     if(!$sth) {
         my $msg = 'prepare failed: ' . $DBI::errstr;
         $dbh->disconnect();
-        return ('FAIL', $msg, \%rec);
+        return ($FAIL, $msg, \%rec);
     }
     $rc = $sth->execute($rec{station_url},$rec{description},$rec{latitude},$rec{longitude},$rec{station_type},$rec{station_model},$rec{weewx_info},$rec{python_info},$rec{platform_info},$rec{config_path},$rec{entry_path},$rec{last_addr},$rec{last_seen});
     if(!$rc) {
         my $msg = 'execute failed: ' . $DBI::errstr;
         $dbh->disconnect();
-        return ('FAIL', $msg, \%rec);
+        return ($FAIL, $msg, \%rec);
     }
 
     $dbh->disconnect();
 
-    return ('OK', 'registration received', \%rec);
+    return ($OK, 'registration received', \%rec);
 }
 
 sub sanitize {
@@ -634,7 +640,7 @@ sub summary {
        $sref, $plref, $pyref, $wref,
        $sref_cnt, $plref_cnt, $pyref_cnt, $wref_cnt) = get_summary_data();
     if($errmsg ne q()) {
-        &writereply('Database Failure', 'FAIL', $errmsg);
+        &writereply('Database Failure', $FAIL, $errmsg);
         return;
     }
 
@@ -760,14 +766,14 @@ sub history_bg {
     $SIG{CHLD} = 'IGNORE';
     my $pid;
     if(!defined($pid=fork())) {
-	&writereply('Fork Failed', 'FAIL', '');
+	&writereply('Fork Failed', $FAIL, '');
     } elsif($pid == 0) {
 	open(my $OLDOUT, '>&', STDOUT);
 	open(STDOUT, '>', 'history.html');
 	&history(%rqpairs);
 	open(STDOUT, '>&', $OLDOUT);
     } else {
-	&writereply('Fork Complete', 'OK', '');
+	&writereply('Fork Complete', $OK, '');
     }
 }
 
@@ -778,7 +784,7 @@ sub history {
 
     my($errmsg, $tref, $cref, $sref, $elapsed) = get_history_data($interval);
     if($errmsg ne q()) {
-        &writereply('Database Failure', 'FAIL', $errmsg);
+        &writereply('Database Failure', $FAIL, $errmsg);
         return;
     }
 
