@@ -1,10 +1,16 @@
 #!/usr/bin/perl
-# Copyright 2013 Matthew Wall
+# Copyright 2013-2022 Matthew Wall
 #
 # register/update a weewx station via GET or POST request
 #
 # This CGI script takes requests from weewx stations and registers them into
 # a database.
+#
+# Data are saved to a database.  The database contains a few tables.  The
+# stations table is the primary table - it tracks the state changes of each
+# station.  The history tables track the count of each attribute over time.
+#
+# If the database does not exist, one will be created with empty tables.
 #
 # The station_url is used to uniquely identify a station.
 #
@@ -12,9 +18,25 @@
 # station has been seen, then a field is updated with the timestamp of the
 # request.
 #
-# Data are saved to a database.  The database contains a single table.
+# The stations table keeps track of the *state* of each station, so it has a
+# compound index that includes every column but last_seen.  The result is a
+# record for each state (consisting of every column but last_seen) reported by
+# each station (identified by station_url).
 #
-# If the database does not exist, one will be created with an empty table.
+# The counts in each history table are made based on the current states in the
+# stations table.
+#
+# Some lore...
+# When I first created this system, we had no shell access to the system on
+# which the registration was running.  As a result, this cgi script served as
+# the entry point to manage all of the aspects of the registration system:
+#  - rollover the log files
+#  - generate a summary report of station data
+#  - generate the stations html page (explicitly, or after each registration)
+#  - explicitly generate thumbnails or refresh thumbnails
+#  - update the counts in the history tables
+# When weewx.com moved to a lightsail instance, the cgi script was no longer
+# necessary for these functions - they were moved to crontabs and logrotate.
 #
 # FIXME: should we have a field for first_seen?
 # FIXME: consolidate duplicated db settings and imgdir and md5 codes
@@ -23,33 +45,29 @@ use Digest::MD5 qw(md5 md5_hex md5_base64);
 use POSIX;
 use strict;
 
-my $version = '0.15';
+my $version = '0.16';
 
 # set maintenance mode when you want to disable all database access.  this is
 # useful when you are doing database manipulations and you do not want any
 # modifications coming in from any clients.
-my $maintenance_mode = 0;
+my $maintenance_mode = 1;
 
 my $basedir = '/var/www';
 
 # include shared code
 require "$basedir/html/register/common.pl";
 
-# whether to generate stations page on each connection.  if not, then run a
-# cron job separately to generate the page.
+# whether to generate stations page on each connection.  if this script is not
+# used to generate the stations page, then you must run a cron job separately.
 my $genhtml = 0;
 
-# whether to save the station counts on each connection.  if not, then run a
-# cron job separately to save the historical counts.
+# whether to save the station counts on each connection.  if this script is not
+# used to save the historical counts, then you must run a cron job separately.
 my $savecnt = 0;
 
-# whether to capture website image.  if not, then run a cron job separately
-# to capture the web page of the newly registered site.
+# whether to capture website image on each connection.  if this script is not
+# used to update captures, then you must run a cron job separately.
 my $docapture = 0;
-
-# use this when testing so we avoid the real databases
-#my $TEST = '-test';
-my $TEST = q();
 
 # dbinfo
 my $dbtype = 'mysql';
@@ -128,7 +146,7 @@ my %PLACEHOLDERS = (
     );
 
 # parameters that we recognize
-my @params = qw(station_url description latitude longitude station_type station_model weewx_info python_info platform_info);
+my @params = qw(station_url description latitude longitude station_type station_model weewx_info python_info platform_info config_path entry_path);
 
 my $RMETHOD = $ENV{'REQUEST_METHOD'};
 if($maintenance_mode) {
@@ -138,18 +156,18 @@ if($maintenance_mode) {
     my($qs,%rqpairs) = &getrequest;
     if($rqpairs{action} eq 'chkenv') {
         &checkenv();
-    } elsif($rqpairs{action} eq 'genhtml') {
-        &runcmd('generate html', $genhtmlapp);
-    } elsif($rqpairs{action} eq 'arclog') {
-        &runcmd('archive log', $arclogapp);
-    } elsif($rqpairs{action} eq 'getcounts') {
-        &runcmd('save counts', $savecntapp);
-    } elsif($rqpairs{action} eq 'history') {
-        if($rqpairs{bg}) {
-            &history_bg(%rqpairs);
-        } else {
-            &history(%rqpairs);
-        }
+#    } elsif($rqpairs{action} eq 'genhtml') {
+#        &runcmd('generate html', $genhtmlapp);
+#    } elsif($rqpairs{action} eq 'arclog') {
+#        &runcmd('archive log', $arclogapp);
+#    } elsif($rqpairs{action} eq 'getcounts') {
+#        &runcmd('save counts', $savecntapp);
+#    } elsif($rqpairs{action} eq 'history') {
+#        if($rqpairs{bg}) {
+#            &history_bg(%rqpairs);
+#        } else {
+#            &history(%rqpairs);
+#        }
     } elsif($rqpairs{action} eq 'summary') {
         &summary(%rqpairs);
     } else {
@@ -315,7 +333,7 @@ sub registerstation {
     $rec{user_agent} = $ENV{HTTP_USER_AGENT};
 
     # do not permit stray quotes or other devious characters
-    for my $k ('station_url','station_type','description','station_model','weewx_info','python_info','platform_info') {
+    for my $k ('station_url','station_type','description','station_model','weewx_info','python_info','platform_info','config_path','entry_path') {
         my $sanitized = sanitize($rec{$k});
         if($rec{$k} ne $sanitized) {
             logmsg("sanitized $k from '" . $rec{$k} . "' to '" . $sanitized . "'");
@@ -428,13 +446,13 @@ sub registerstation {
     # if data are different from latest record, save a new record.  otherwise
     # just update the timestamp of the matching record.
 
-    my $sth = $dbh->prepare(q{replace into stations (station_url,description,latitude,longitude,station_type,station_model,weewx_info,python_info,platform_info,last_addr,last_seen) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)});
+    my $sth = $dbh->prepare(q{replace into stations (station_url,description,latitude,longitude,station_type,station_model,weewx_info,python_info,platform_info,config_path,entry_path,last_addr,last_seen) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)});
     if(!$sth) {
         my $msg = 'prepare failed: ' . $DBI::errstr;
         $dbh->disconnect();
         return ('FAIL', $msg, \%rec);
     }
-    $rc = $sth->execute($rec{station_url},$rec{description},$rec{latitude},$rec{longitude},$rec{station_type},$rec{station_model},$rec{weewx_info},$rec{python_info},$rec{platform_info},$rec{last_addr},$rec{last_seen});
+    $rc = $sth->execute($rec{station_url},$rec{description},$rec{latitude},$rec{longitude},$rec{station_type},$rec{station_model},$rec{weewx_info},$rec{python_info},$rec{platform_info},$rec{config_path},$rec{entry_path},$rec{last_addr},$rec{last_seen});
     if(!$rc) {
         my $msg = 'execute failed: ' . $DBI::errstr;
         $dbh->disconnect();
