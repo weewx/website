@@ -45,12 +45,12 @@ use Digest::MD5 qw(md5 md5_hex md5_base64);
 use POSIX;
 use strict;
 
-my $version = '0.16';
+my $version = '0.17';
 
 # set maintenance mode when you want to disable all database access.  this is
 # useful when you are doing database manipulations and you do not want any
 # modifications coming in from any clients.
-my $maintenance_mode = 0;
+my $maintenance_mode = 1;
 
 my $basedir = '/var/www';
 
@@ -123,7 +123,7 @@ my $imgdir = "$basedir/html/shots";
 my $DATE_FORMAT = "%Y.%m.%d %H:%M:%S UTC";
 
 # how often can clients update, in seconds
-my $max_frequency = 60;
+my $max_frequency = 3600;
 
 # maximum number of unique URLs registered from any given IP address
 my $max_urls = 10;
@@ -131,7 +131,7 @@ my $max_urls = 10;
 # how far in the past to consider counts
 my $cutoff = time() - 30*24*3600;
 
-# how much should we aggregate the results?
+# how much should we aggregate the results when retrieving historical data?
 my $default_interval = 4;
 
 # placeholder images until capture can happen
@@ -145,11 +145,9 @@ my %PLACEHOLDERS = (
     ".tn.$imgext" => $placeholder_thumb,
     );
 
-# response keywords.  before dec2022 we responded with FAIL, but that causes
-# older clients to retry, even when a retry is pointless.  so respond with
-# FLOP instead.
+# response keywords.
 my $OK = 'OK';
-my $FAIL = 'FLOP';
+my $FAIL = 'FAIL';
 
 # parameters that we recognize
 my @params = qw(station_url description latitude longitude station_type station_model weewx_info python_info platform_info config_path entry_path);
@@ -382,6 +380,14 @@ sub registerstation {
         push @msgs, 'longitude must be between -180 and 180, inclusive';
     }
 
+    # strip out object references for stations with bogus station model
+    # examples of bogus station_model:
+    # <bound method InterceptorDriver.hardware_name of <user.interceptor.InterceptorDriver object at 0x7fdd2fcff310>>
+    # <bound method WH23xxDriver.hardware_name of <user.wh23xx.WH23xxDriver object at 0x4c7b2db0>>
+    if($rec{station_model} =~ /bound method (\S+) /) {
+        $rec{station_model} = $1;
+    }
+
     # some people seem to be lax with their station model (hardware_name)
     if(length($rec{station_model}) > 128) {
         $rec{station_model} = substr $rec{station_model}, 0, 126;
@@ -475,6 +481,8 @@ sub sanitize {
     $txt =~ s/\"//g; # no double quotes, since we single quote the js string
     $txt =~ s/\r//g; # no carriage returns
     $txt =~ s/\n//g; # no newlines
+    $txt =~ s/^\s+//g; # no leading whitespace
+    $txt =~ s/\s+$//g; # no trailing whitespace
     return $txt;
 }
 
