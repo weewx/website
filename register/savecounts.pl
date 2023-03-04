@@ -1,6 +1,5 @@
 #!/usr/bin/perl
-# $Id: savecounts.pl 2045 2014-02-03 03:27:39Z mwall $
-# Copyright 2013 Matthew Wall
+# Copyright 2013-2023 Matthew Wall
 #
 # scan the database for counts, then save the counts to history database
 #

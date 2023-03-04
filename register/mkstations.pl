@@ -1,6 +1,5 @@
 #!/usr/bin/perl
-# $Id: mkstations.pl 2201 2014-04-30 23:11:40Z mwall $
-# Copyright 2013 Matthew Wall
+# Copyright 2013-2023 Matthew Wall
 #
 # insert fields from database into template html file, resulting in a web page
 # with a map and list of stations.
@@ -15,7 +14,7 @@ use DBI;
 use POSIX;
 use utf8;
 
-my $version = '0.8';
+my $version = '0.9';
 
 my $basedir = '/var/www';
 
@@ -121,7 +120,12 @@ if ($dbh) {
 #	my $qry = "select station_url,description,latitude,longitude,station_type,last_seen from (select * from stations order by last_seen asc) t1 where t1.last_seen > $cutoff group by t1.station_url";
         # since doing it in the db query does not work, query for everything
         # then do the filtering in perl.  sigh.
-    my $qry = "select station_url,description,latitude,longitude,station_type,station_model,last_seen,weewx_info from stations where last_seen > $cutoff order by last_seen";
+    # this was the query when the stations table contained unique entries
+#    my $qry = "select station_url,description,latitude,longitude,station_type,station_model,last_seen,weewx_info from stations where last_seen > $cutoff order by last_seen";
+    # as of mar2023 the stations table contains every client request.  so now
+    # we need a join to filter out the duplicates.
+    my $maxrows = 5000;
+    my $qry = "SELECT t.station_url,description,latitude,longitude,station_type,station_model,last_seen,weewx_info FROM stations t INNER JOIN ( SELECT station_url, MAX(last_seen) AS MaxSeen FROM stations WHERE last_seen > $cutoff GROUP BY station_url LIMIT $maxrows) tm ON t.station_url=tm.station_url AND t.last_seen=tm.MaxSeen ORDER BY last_seen ASC";
     my $sth = $dbh->prepare($qry);
     if ($sth) {
 	my %unique;
