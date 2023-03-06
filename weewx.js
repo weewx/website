@@ -177,14 +177,22 @@ function populate_screenshots(maxnum, rnd) {
     elem.innerHTML = html;
 }
 
-function loadScript(src) {
-    return new Promise(function(resolve, reject) {
-        let script = document.createElement('script');
-        script.src = src;
-
-        script.onload = () => resolve(script);
-        script.onerror = () => reject(new Error(`Script load error for ${src}`));
-
-        document.head.append(script);
-    });
+function toggle(control, id) {
+    const elem = document.getElementById(id);
+    if(elem) {
+        let html = control.innerHTML;
+        let display = 'none';
+        let indicator = '';
+        if(elem.style.display !== 'none') {
+            display = 'none';
+            indicator = '&#x25b6;';     // Right-pointing triangle
+        } else {
+            display = 'inline';
+            indicator = '&#x25bc;';     // Down-pointing triangle
+        }
+        elem.style.display = display;
+        html = indicator + html.substring(1,html.length);
+        control.innerHTML = html;
+    }
 }
+

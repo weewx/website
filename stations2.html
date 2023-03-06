@@ -1,26 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
     <!-- map of WeeWX weather stations, by matthew wall -->
     <!-- the page includes a map, a list of stations (station_listing_div), and a -->
     <!-- list of hardware (hardware_types_div).  it also includes a small graph -->
     <!-- that contains a histogram of when the last contact was made over  -->
     <!-- the past 'pingdays' days. -->
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="initial-scale=1" />
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+    <meta name='viewport' content='initial-scale=1'/>
     <title>WeeWX: Stations Running WeeWX</title>
-    <link href="weewx.css" rel="stylesheet" type="text/css" />
-    <script src="weewx.js" type="text/javascript"></script>
-    <script src="md5.js" type="text/javascript"></script>
-    <script src="echo.js" type="text/javascript"></script>
+    <link href='weewx.css' rel='stylesheet' type='text/css'/>
+    <script src='weewx.js' type='text/javascript'></script>
+    <script src='md5.js' type='text/javascript'></script>
+    <script src='echo.js' type='text/javascript'></script>
     <style>
         #map_container {
             margin-top: 10px;
         }
+
         #map_canvas {
             border: 1px solid #5f8ea9;
             height: 500px;
         }
+
         .location {
             font-family: Helvetic, Arial, sans-serif;
             font-size: 10pt;
@@ -28,84 +30,105 @@
             max-width: 200px;
             margin: 0;
         }
+
         .location_details {
             font-family: Helvetic, Arial, sans-serif;
             font-size: 8pt;
             float: left;
             padding-right: 20px;
         }
+
         .location_img {
             float: right;
         }
+
         .gm-style-iw {
             width: 250px;
         }
+
         .details {
             font-style: italic;
             text-align: right;
             font-size: 80%;
         }
+
         #content {
             width: auto;
         }
+
         #instructions {
             padding-right: 20px;
         }
+
         #station_summary {
             float: right;
             padding-bottom: 30px;
         }
+
         #ping_details_container {
             padding-top: 10px;
             padding-bottom: 20px;
         }
+
         #hardware_types_div td {
             padding-right: 10px;
         }
+
         #sites {
             padding-top: 20px;
             padding-right: 20px;
             padding-bottom: 30px;
         }
+
         #station_listing_div table {
             padding-top: 10px;
         }
+
         #station_listing_div td {
             background-repeat: no-repeat;
             background-position: center;
             vertical-align: top;
         }
+
         .sort_buttons {
             padding-top: 10px;
             padding-bottom: 10px;
         }
+
         .button_pair {
             float: left;
             padding-left: 10px;
             padding-right: 10px;
             font-weight: normal;
         }
+
         .alignright {
             text-align: right;
         }
+
         .oddrow {
             background-color: #f4f4f4;
         }
+
         .evenrow {
             background-color: #ffffff;
         }
+
         .indicator {
             width: 18px;
             border: 1px solid #2f5e79;
             cursor: cell;
         }
+
         .thumbnail {
             height: 104px;
         }
+
         .infoBox {
             background: url('/tipbox90pad.gif') no-repeat scroll 0% 18px;
             width: 250px;
         }
+
         .info-content {
             overflow: hidden;
             background-color: #ffffff;
@@ -114,25 +137,34 @@
             padding: 4px;
         }
     </style>
-    <script type="text/javascript">
-        function setup(){
-            // Asynchronously import InfoBox and the station data. Then resolve them both.
+    <script type='text/javascript'>
+        function setup() {
+            /*
+                This function is called after the Google Maps API has loaded. It then asynchronously
+                loads the InfoBox API (which depends on the Google API having been loaded) and
+                the station data. Once the results have resolved, they are used to call initMap().
+            */
             Promise.all([
-                import("./infobox-1.1.19.js")
-                    .then(imported => imported.InfoBox),
-                fetch("http://localhost/api/v2/stations/?limit=2000&max_age=30d")
-                    .then(response => response.json())
+                            import("./infobox-1.1.19.js")
+                                .then(imported => imported.InfoBox),
+                            fetch("http://localhost/api/v2/stations/?limit=2000&max_age=30d")
+                                .then(response => response.json())
                         ])
-                .then(values => initMap(...values))
+                   .then(values => initMap(...values));
         }
 
         function initMap(InfoBox, sites) {
+            /*
+                The original "station.html" depended heavily on global variables and functions.
+                Nothing existed within smaller scopes. Yet, much of it required that the Google Maps
+                API having been loaded in order for it to function.
+
+                The solution was to enclose all of those variables and functions inside of this
+                function, initMap(), which is not fired until after the Google Maps API has been
+                loaded.
+             */
 
             var map;
-
-            //var infowindow = new google.maps.InfoWindow({
-            //  content: 'nothing selected'
-            //});
 
             var infowindow = new InfoBox({
                                              content: 'nothing selected',
@@ -156,8 +188,7 @@
             var backgroundColor = '#ffffff';
             var highlightColor = '#9fcef9';
             var maxTitleLen = 70;
-            var maxURLLen = 80;
-            var redDotURL = 'https://weewx.com/dot-red.png';
+            var redDotURL = './dot-red.png';
 
             function count_sorter(a, b) {
                 if (a === 'total') {
@@ -165,8 +196,8 @@
                 } else if (b === 'total') {
                     return 1;
                 }
-                var A = a.toLowerCase();
-                var B = b.toLowerCase();
+                const A = a.toLowerCase();
+                const B = b.toLowerCase();
                 if (A < B) {
                     return -1;
                 } else if (A > B) {
@@ -177,13 +208,12 @@
             }
 
             function initialize() {
-                var now = Math.round((new Date).getTime() / 1000);
+                const now = Math.round((new Date).getTime() / 1000);
 
                 /* create a map with the settings we want */
-                var latlng = new google.maps.LatLng(21.0, 0.0);
-                var settings = {
+                const settings = {
                     zoom: 2,
-                    center: latlng,
+                    center: new google.maps.LatLng(21.0, 0.0),
                     mapTypeControl: true,
                     mapTypeControlOptions: {
                         style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
@@ -207,22 +237,22 @@
                 });
 
                 /* track counts of each station type */
-                var counts = {};
+                let counts = {};
                 counts['total'] = 0;
 
                 /* histogram of when each station last phoned home */
-                var maxpings = 0; /* maximum number of pings in a single day */
-                var pings = new Array(pingdays); /* histogram of daily pings */
-                for (var i = 0; i < pings.length; i++) { pings[i] = 0; }
-                var stale = 0;
-                var dead = 0;
+                let maxpings = 0; /* maximum number of pings in a single day */
+                let pings = new Array(pingdays); /* histogram of daily pings */
+                for (let i = 0; i < pings.length; i++) { pings[i] = 0; }
+                let stale = 0;
+                let dead = 0;
 
                 /* loop through all sites to get the data we need */
                 for (let i = 0; i < sites.length; i++) {
                     /* create the markers */
-                    var title = decode_html(get_title(sites[i]));
-                    var pos = new google.maps.LatLng(sites[i].latitude, sites[i].longitude);
-                    var mkr = new google.maps.Marker({
+                    const title = decode_html(get_title(sites[i]));
+                    const pos = new google.maps.LatLng(sites[i].latitude, sites[i].longitude);
+                    const mkr = new google.maps.Marker({
                                                          position: pos,
                                                          map: map,
                                                          title: title + "\n" + sites[i].station_type,
@@ -287,11 +317,13 @@
                 } else if (sort_metric === 'station_url') {
                     if (sort_order === 'up') {
                         indices.sort(function (a, b) {
-                            return compare(sites[a].station_url.toLowerCase(), sites[b].station_url.toLowerCase());
+                            return compare(sites[a].station_url.toLowerCase(),
+                                           sites[b].station_url.toLowerCase());
                         });
                     } else {
                         indices.sort(function (a, b) {
-                            return compare(sites[b].station_url.toLowerCase(), sites[a].station_url.toLowerCase());
+                            return compare(sites[b].station_url.toLowerCase(),
+                                           sites[a].station_url.toLowerCase());
                         });
                     }
                 } else if (sort_metric === 'latitude') {
@@ -377,10 +409,8 @@
                 td = document.createElement('td');
                 tr.appendChild(td);
                 tbdy.appendChild(tr);
-                var disp = 'none';
-                if (showThumbs) {
-                    disp = 'inline';
-                }
+                const disp = showThumbs ? 'inline' : 'none';
+
                 for (let i = 0; i < indices.length; i++) {
                     let title = get_title(sites[indices[i]]);
                     let tr = document.createElement('tr');
@@ -403,9 +433,9 @@
                     tr.className = rowclass;
                     tbdy.appendChild(tr);
                     if (rowclass === 'oddrow') {
-                        rowclass = 'evenrow'
+                        rowclass = 'evenrow';
                     } else {
-                        rowclass = 'oddrow'
+                        rowclass = 'oddrow';
                     }
                 }
                 tbl.appendChild(tbdy);
@@ -466,7 +496,7 @@
                     }
                     c.fillStyle = "#888888";
                     c.strokeStyle = "#dddddd";
-                    for (var i = 0; i < pings.length; i++) {
+                    for (let i = 0; i < pings.length; i++) {
                         var bh = pings[pings.length - i - 1] * unitheight;
                         c.fillRect(i * barwidth, h - bh, barwidth, bh);
                         c.beginPath();
@@ -655,6 +685,7 @@
                 e.innerHTML = s;
                 return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
             }
+
             initialize();
             populate_header('stations');
         }
@@ -662,13 +693,13 @@
 </head>
 
 <body>
-<div id="container">
-    <div id="masthead">
+<div id='container'>
+    <div id='masthead'>
         <h1><a href='.'>WeeWX</a></h1>
         <p>Open source software for your weather station</p>
     </div>
 
-    <div id="navigation">
+    <div id='navigation'>
     </div>
 
     <div id='map_container'>
@@ -680,17 +711,20 @@
             <div id='ping_details_container'>
                 <canvas id='ping_details'></canvas>
             </div>
-            <div onclick="toggle(this,'hardware_types_div')" style='cursor: pointer'>&#x25b6; <strong>Hardware</strong></div>
+            <div onclick="toggle(this,'hardware_types_div')" style='cursor: pointer'>&#x25b6;
+                <strong>Hardware</strong></div>
             <div id='hardware_types_div' style='display:none'></div>
         </div>
 
         <div id='instructions'>
             <strong>How to Add Your Station</strong><br/>
-            Enable <a href="docs/usersguide.htm#station_registry"><span class='code'>register_this_station</span></a> in weewx.conf, then restart weeWX.
+            Enable <a href='docs/usersguide.htm#station_registry'><span class='code'>register_this_station</span></a>
+            in weewx.conf, then restart weeWX.
         </div>
 
         <div id='sites'>
-            <div onclick="toggle(this,'station_listing_div')" style='cursor: pointer'>&#x25b6; <strong>Stations</strong></div>
+            <div onclick="toggle(this,'station_listing_div')" style='cursor: pointer'>&#x25b6;
+                <strong>Stations</strong></div>
             <div id='station_listing_div' style='display:none'></div>
         </div>
     </div>
@@ -699,5 +733,5 @@
 </body>
 </html>
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCFIuh9cZXlNxXJJ5w5BxHmmm1rDGbtqE&callback=setup"></script>
+        src='https://maps.googleapis.com/maps/api/js?key=AIzaSyCCFIuh9cZXlNxXJJ5w5BxHmmm1rDGbtqE&callback=setup'></script>
 </script>
