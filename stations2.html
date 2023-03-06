@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<html lang="en">
 <head>
-    <!-- map of weewx weather stations, by matthew wall -->
-    <!-- the page includes a map, a list of stations (site_listing), and a -->
-    <!-- list of hardware (station_types).  it also includes a small graph -->
+    <!-- map of WeeWX weather stations, by matthew wall -->
+    <!-- the page includes a map, a list of stations (station_listing_div), and a -->
+    <!-- list of hardware (hardware_types_div).  it also includes a small graph -->
     <!-- that contains a histogram of when the last contact was made over  -->
     <!-- the past 'pingdays' days. -->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="initial-scale=1" />
-    <title>weeWX: Stations Running weeWX</title>
+    <title>WeeWX: Stations Running WeeWX</title>
     <link href="weewx.css" rel="stylesheet" type="text/css" />
     <script src="weewx.js" type="text/javascript"></script>
     <script src="md5.js" type="text/javascript"></script>
@@ -26,7 +26,7 @@
             font-size: 10pt;
             font-weight: bold;
             max-width: 200px;
-            margin: 0px;
+            margin: 0;
         }
         .location_details {
             font-family: Helvetic, Arial, sans-serif;
@@ -59,7 +59,7 @@
             padding-top: 10px;
             padding-bottom: 20px;
         }
-        #station_types td {
+        #hardware_types_div td {
             padding-right: 10px;
         }
         #sites {
@@ -67,10 +67,10 @@
             padding-right: 20px;
             padding-bottom: 30px;
         }
-        #site_listing table {
+        #station_listing_div table {
             padding-top: 10px;
         }
-        #site_listing td {
+        #station_listing_div td {
             background-repeat: no-repeat;
             background-position: center;
             vertical-align: top;
@@ -116,34 +116,16 @@
     </style>
     <script type="text/javascript">
         function setup(){
+            // Asynchronously import InfoBox and the station data. Then resolve them both.
             Promise.all([
-                import("./infobox-1.1.19.js").then(imported => imported.InfoBox),
-                fetch("http://localhost/api/v2/stations/?limit=20").then(response =>
-                                                                              response.json())
+                import("./infobox-1.1.19.js")
+                    .then(imported => imported.InfoBox),
+                fetch("http://localhost/api/v2/stations/?limit=2000&max_age=30d")
+                    .then(response => response.json())
                         ])
-                .then(values => initMap(values[0], values[1]))
-
-            // var sites = [
-            //     { description: "Aalesunds Skiklub Standalhytta, Sunnmore Alps",
-            //         url: "http://www.standalhytta.no",
-            //         latitude: 62.2474,
-            //         longitude: 6.3482,
-            //         station: "Vantage",
-            //         model: "Vantage Pro2",
-            //         weewx_info: "4.10.1",
-            //         last_seen: 1677933317 },
-            //
-            //     { description: "Abelleira, Muros",
-            //         url: "http://www.meteoabelleira.com",
-            //         latitude: 42.8065,
-            //         longitude: -9.0227,
-            //         station: "WLL",
-            //         model: "WLL",
-            //         weewx_info: "4.10.1",
-            //         last_seen: 1677919223 },
-            // ];
-            // import("./infobox-1.1.19.js").then(imported => initMap(imported.InfoBox, sites))
+                .then(values => initMap(...values))
         }
+
         function initMap(InfoBox, sites) {
 
             var map;
@@ -178,9 +160,9 @@
             var redDotURL = 'https://weewx.com/dot-red.png';
 
             function count_sorter(a, b) {
-                if (a == 'total') {
+                if (a === 'total') {
                     return -1;
-                } else if (b == 'total') {
+                } else if (b === 'total') {
                     return 1;
                 }
                 var A = a.toLowerCase();
@@ -216,7 +198,7 @@
                 map = new google.maps.Map(canvas, settings);
 
                 google.maps.event.addListener(map, 'zoom_changed', function (event) {
-                    zoomLevel = map.getZoom();
+                    const zoomLevel = map.getZoom();
                     if ((oldZoomLevel < zoomThreshold && zoomLevel >= zoomThreshold) ||
                         (oldZoomLevel >= zoomThreshold && zoomLevel < zoomThreshold)) {
                         set_marker_image(map);
@@ -236,14 +218,14 @@
                 var dead = 0;
 
                 /* loop through all sites to get the data we need */
-                for (var i = 0; i < sites.length; i++) {
+                for (let i = 0; i < sites.length; i++) {
                     /* create the markers */
                     var title = decode_html(get_title(sites[i]));
                     var pos = new google.maps.LatLng(sites[i].latitude, sites[i].longitude);
                     var mkr = new google.maps.Marker({
                                                          position: pos,
                                                          map: map,
-                                                         title: title + "\n" + sites[i].station,
+                                                         title: title + "\n" + sites[i].station_type,
                                                          icon: redDotURL,
                                                      });
                     sites[i].marker = mkr;
@@ -251,15 +233,15 @@
 
                     /* do the station count accounting */
                     counts['total'] = counts['total'] + 1;
-                    var n = 0;
-                    if (sites[i].station in counts) {
-                        n = counts[sites[i].station];
+                    let n = 0;
+                    if (sites[i].station_type in counts) {
+                        n = counts[sites[i].station_type];
                     }
-                    counts[sites[i].station] = n + 1;
+                    counts[sites[i].station_type] = n + 1;
 
                     /* do the ping accounting */
-                    var tdiff = now - sites[i].last_seen;
-                    var idx = Math.round(tdiff / 86400);
+                    let tdiff = now - sites[i].last_seen;
+                    let idx = Math.round(tdiff / 86400);
                     if (idx < pingdays) {
                         pings[idx] += 1;
                         if (idx > staledays) {
@@ -279,9 +261,9 @@
             }
 
             function set_marker_image(map) {
-                var z = map.getZoom();
-                var url = z < zoomThreshold ? redDotURL : '';
-                for (var i = 0; i < sites.length; i++) {
+                const z = map.getZoom();
+                const url = z < zoomThreshold ? redDotURL : '';
+                for (let i = 0; i < sites.length; i++) {
                     sites[i].marker.setIcon(url);
                 }
             }
@@ -293,27 +275,27 @@
             function populate_station_list(sort_metric, sort_order) {
                 // do the sort...
                 var indices = [];
-                for (var i = 0; i < sites.length; i++) {
+                for (let i = 0; i < sites.length; i++) {
                     indices[i] = i;
                 }
-                if (sort_metric == 'description') {
-                    if (sort_order == 'dn') {
-                        for (var i = 0; i < sites.length; i++) {
+                if (sort_metric === 'description') {
+                    if (sort_order === 'dn') {
+                        for (let i = 0; i < sites.length; i++) {
                             indices[i] = sites.length - i - 1;
                         }
                     }
-                } else if (sort_metric == 'url') {
-                    if (sort_order == 'up') {
+                } else if (sort_metric === 'station_url') {
+                    if (sort_order === 'up') {
                         indices.sort(function (a, b) {
-                            return compare(sites[a].url.toLowerCase(), sites[b].url.toLowerCase());
+                            return compare(sites[a].station_url.toLowerCase(), sites[b].station_url.toLowerCase());
                         });
                     } else {
                         indices.sort(function (a, b) {
-                            return compare(sites[b].url.toLowerCase(), sites[a].url.toLowerCase());
+                            return compare(sites[b].station_url.toLowerCase(), sites[a].station_url.toLowerCase());
                         });
                     }
-                } else if (sort_metric == 'latitude') {
-                    if (sort_order == 'up') {
+                } else if (sort_metric === 'latitude') {
+                    if (sort_order === 'up') {
                         indices.sort(function (a, b) {
                             return compare(sites[a].latitude, sites[b].latitude);
                         });
@@ -322,8 +304,8 @@
                             return compare(sites[b].latitude, sites[a].latitude);
                         });
                     }
-                } else if (sort_metric == 'longitude') {
-                    if (sort_order == 'up') {
+                } else if (sort_metric === 'longitude') {
+                    if (sort_order === 'up') {
                         indices.sort(function (a, b) {
                             return compare(sites[a].longitude, sites[b].longitude);
                         });
@@ -332,18 +314,18 @@
                             return compare(sites[b].longitude, sites[a].longitude);
                         });
                     }
-                } else if (sort_metric == 'station') {
-                    if (sort_order == 'up') {
+                } else if (sort_metric === 'station_type') {
+                    if (sort_order === 'up') {
                         indices.sort(function (a, b) {
-                            return compare(sites[a].station, sites[b].station);
+                            return compare(sites[a].station_type, sites[b].station_type);
                         });
                     } else {
                         indices.sort(function (a, b) {
-                            return compare(sites[b].station, sites[a].station);
+                            return compare(sites[b].station_type, sites[a].station_type);
                         });
                     }
-                } else if (sort_metric == 'last_seen') {
-                    if (sort_order == 'up') {
+                } else if (sort_metric === 'last_seen') {
+                    if (sort_order === 'up') {
                         indices.sort(function (a, b) {
                             return compare(sites[a].last_seen, sites[b].last_seen);
                         });
@@ -352,8 +334,8 @@
                             return compare(sites[b].last_seen, sites[a].last_seen);
                         });
                     }
-                } else if (sort_metric == 'weewx_info') {
-                    if (sort_order == 'up') {
+                } else if (sort_metric === 'weewx_info') {
+                    if (sort_order === 'up') {
                         indices.sort(function (a, b) {
                             return compare(sites[a].weewx_info, sites[b].weewx_info);
                         });
@@ -365,22 +347,22 @@
                 }
 
                 // ...clear existing list...
-                var s = document.getElementById('site_listing');
+                let s = document.getElementById('station_listing_div');
                 while (s.firstChild) {
                     s.removeChild(s.firstChild);
                 }
 
                 // ...then populate the table
-                var tbl = document.createElement('table');
-                var tbdy = document.createElement('tbody');
-                var rowclass = 'oddrow';
-                var tr = document.createElement('tr');
-                var td = document.createElement('th');
-                var buttons = create_buttons("Description", "description");
-                buttons += create_buttons("URL", "url");
+                let tbl = document.createElement('table');
+                let tbdy = document.createElement('tbody');
+                let rowclass = 'oddrow';
+                let tr = document.createElement('tr');
+                let td = document.createElement('th');
+                let buttons = create_buttons("Description", "description");
+                buttons += create_buttons("URL", "station_url");
                 buttons += create_buttons("Latitude", "latitude");
                 buttons += create_buttons("Longitude", "longitude");
-                buttons += create_buttons("Hardware", "station");
+                buttons += create_buttons("Hardware", "station_type");
                 buttons += create_buttons("Version", "weewx_info");
                 buttons += create_buttons("Last Seen", "last_seen");
                 buttons += '<div class="button_pair">Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()"';
@@ -399,18 +381,18 @@
                 if (showThumbs) {
                     disp = 'inline';
                 }
-                for (var i = 0; i < indices.length; i++) {
-                    var title = get_title(sites[indices[i]]);
-                    var tr = document.createElement('tr');
-                    var td = document.createElement('td');
-                    td.innerHTML = '<a href="' + sites[indices[i]].url + '">' + title + '</a><br/><small>' + sites[indices[i]].url + '</small>';
-                    tr.appendChild(td);
-                    var td = document.createElement('td');
-                    var date = new Date(sites[indices[i]].last_seen * 1000);
-                    td.innerHTML = '<div style="float: left">' + sites[indices[i]].weewx_info + '</div><div style="float: right">' + sites[indices[i]].station + '</div><div style="clear:both; float:right"><small>' + date.toUTCString() + '</small></div>';
+                for (let i = 0; i < indices.length; i++) {
+                    let title = get_title(sites[indices[i]]);
+                    let tr = document.createElement('tr');
+                    let td = document.createElement('td');
+                    td.innerHTML = '<a href="' + sites[indices[i]].station_url + '">' + title + '</a><br/><small>' + sites[indices[i]].station_url + '</small>';
                     tr.appendChild(td);
                     td = document.createElement('td');
-                    var basename = '/shots/' + md5(sites[indices[i]].url);
+                    let date = new Date(sites[indices[i]].last_seen * 1000);
+                    td.innerHTML = '<div style="float: left">' + sites[indices[i]].weewx_info + '</div><div style="float: right">' + sites[indices[i]].station_type + '</div><div style="clear:both; float:right"><small>' + date.toUTCString() + '</small></div>';
+                    tr.appendChild(td);
+                    td = document.createElement('td');
+                    let basename = '/shots/' + md5(sites[indices[i]].station_url);
                     td.innerHTML = '<div class="thumbnail" style="display:' + disp + '"><a href="' + basename + '.jpg"><img src="/blank.gif" alt="" data-echo="' + basename + '.tn.jpg" width="50"></a></div>';
                     tr.appendChild(td);
                     td = document.createElement('td');
@@ -420,7 +402,7 @@
                     tr.appendChild(td);
                     tr.className = rowclass;
                     tbdy.appendChild(tr);
-                    if (rowclass == 'oddrow') {
+                    if (rowclass === 'oddrow') {
                         rowclass = 'evenrow'
                     } else {
                         rowclass = 'oddrow'
@@ -437,24 +419,24 @@
             }
 
             function populate_station_table(counts) {
-                var s = document.getElementById('station_types');
-                var tbl = document.createElement('table');
-                var tbdy = document.createElement('tbody');
-                var count_keys = new Array(); /* array of station types */
-                for (var key in counts) {
+                const s = document.getElementById('hardware_types_div');
+                const tbl = document.createElement('table');
+                const tbdy = document.createElement('tbody');
+                const count_keys = new Array(); /* array of station types */
+                for (let key in counts) {
                     count_keys.push(key);
                 }
                 count_keys.sort(count_sorter);
-                for (var key in count_keys) {
-                    var tr = document.createElement('tr');
-                    var td = document.createElement('td');
+                for (let key in count_keys) {
+                    const tr = document.createElement('tr');
+                    let td = document.createElement('td');
                     td.innerHTML = count_keys[key];
                     tr.appendChild(td);
-                    var td = document.createElement('td');
+                    td = document.createElement('td');
                     td.className = 'alignright';
                     td.innerHTML = counts[count_keys[key]];
                     tr.appendChild(td);
-                    var td = document.createElement('td');
+                    td = document.createElement('td');
                     td.id = 'station_type_' + count_keys[key];
                     td.className = 'indicator';
                     attach_station_type(td, count_keys[key], count_keys);
@@ -499,37 +481,36 @@
             }
 
             function create_content(idx) {
-                var fn = md5(sites[idx].url) + '.sm.jpg';
-                var w = document.createElement("div");
+                const fn = md5(sites[idx].station_url) + '.sm.jpg';
+                const w = document.createElement("div");
                 w.className = 'info-content';
                 //  var str = '<div class="info-content">';
-                var str = '';
+                let str = '';
                 str += '<p class="location">';
-                str += '<a href="' + sites[idx].url + '">';
+                str += '<a href="' + sites[idx].station_url + '">';
                 if (sites[idx].description.length > 0) {
                     str += sites[idx].description;
                 } else {
-                    str += sites[idx].url;
+                    str += sites[idx].station_url;
                 }
                 str += '</a></p>';
                 str += '<p class="location_img">';
-                str += '<img src="/shots/' + fn + '" width="100">';
+                str += '<img src="/shots/' + fn + '" width="100", alt="Screenshot">';
                 str += '</p>';
                 str += '<p class="location_details">';
                 str += sites[idx].latitude.toFixed(3) + ', ';
                 str += sites[idx].longitude.toFixed(3) + '<br/>';
-                str += sites[idx].station + '<br/>';
-                str += sites[idx].model + '<br/>';
+                str += sites[idx].station_type + '<br/>';
+                str += sites[idx].station_mode + '<br/>';
                 str += '</p>';
                 //  str += '</div>';
                 w.innerHTML = str;
                 return w;
-                //  return str;
             }
 
             function attach_info(map, marker, idx) {
                 google.maps.event.addListener(marker, 'click', function () {
-                    var str = create_content(idx);
+                    const str = create_content(idx);
                     infowindow.setContent(str);
                     infowindow.open(map, marker);
                     hide_all_dots();
@@ -539,7 +520,7 @@
 
             function attach_station(elem, map, marker, idx) {
                 elem.addEventListener('click', function () {
-                    var str = create_content(idx);
+                    const str = create_content(idx);
                     infowindow.setContent(str);
                     if (marker) infowindow.open(map, marker);
                     hide_all_dots();
@@ -558,11 +539,11 @@
                     infowindow.close();
                     hide_all_markers();
                     hide_all_dots();
-                    for (i = 0; i < sites.length; i++) {
-                        if (station_type == 'total' || sites[i].station == station_type) {
+                    for (let i = 0; i < sites.length; i++) {
+                        if (station_type === 'total' || sites[i].station_type === station_type) {
                             show_marker(i);
                         }
-                        if (sites[i].station == station_type) {
+                        if (sites[i].station_type === station_type) {
                             highlight_row(i);
                         }
                     }
@@ -590,27 +571,27 @@
             }
 
             function dehighlight_all() {
-                for (var i = 0; i < sites.length; i++) {
+                for (let i = 0; i < sites.length; i++) {
                     dehighlight_row(i);
                 }
             }
 
             function show_dot(idx) {
-                elem = document.getElementById('site_' + idx);
+                const elem = document.getElementById('site_' + idx);
                 if (elem) {
                     elem.style.backgroundImage = 'url(dot.png)';
                 }
             }
 
             function hide_dot(idx) {
-                elem = document.getElementById('site_' + idx);
+                const elem = document.getElementById('site_' + idx);
                 if (elem) {
                     elem.style.backgroundImage = '';
                 }
             }
 
             function hide_all_dots() {
-                for (var i = 0; i < sites.length; i++) {
+                for (let i = 0; i < sites.length; i++) {
                     hide_dot(i);
                 }
             }
@@ -624,49 +605,30 @@
             }
 
             function show_all_markers() {
-                for (var i = 0; i < sites.length; i++) {
+                for (let i = 0; i < sites.length; i++) {
                     show_marker(i);
                 }
             }
 
             function hide_all_markers() {
-                for (var i = 0; i < sites.length; i++) {
+                for (let i = 0; i < sites.length; i++) {
                     hide_marker(i);
-                }
-            }
-
-            function toggle(control, id) {
-                elem = document.getElementById(id);
-                if (elem) {
-                    var html = control.innerHTML;
-                    var display = 'none';
-                    var indicator = '';
-                    if (elem.style.display != 'none') {
-                        display = 'none';
-                        indicator = '&#x25b6;';
-                    } else {
-                        display = 'inline';
-                        indicator = '&#x25bc;';
-                    }
-                    elem.style.display = display;
-                    html = indicator + html.substr(1, html.length);
-                    control.innerHTML = html;
                 }
             }
 
             function trim_string(x, max_len) {
                 if (x.length > max_len) {
-                    x = x.substr(0, max_len).concat('...');
+                    x = x.substring(0, max_len).concat('...');
                 }
                 return x;
             }
 
             function get_title(x) {
-                var title = 'untitled';
+                let title = 'untitled';
                 if (x.description.length > 0) {
                     title = x.description;
                 } else {
-                    title = x.url;
+                    title = x.station_url;
                 }
                 return trim_string(title, maxTitleLen);
             }
@@ -677,8 +639,8 @@
                 } else {
                     showThumbs = 1;
                 }
-                var tn = document.getElementsByClassName('thumbnail');
-                for (var i = 0; i < tn.length; i++) {
+                const tn = document.getElementsByClassName('thumbnail');
+                for (let i = 0; i < tn.length; i++) {
                     if (showThumbs) {
                         tn[i].style.display = 'inline';
                         tn[i].height = 104;
@@ -689,7 +651,7 @@
             }
 
             function decode_html(s) {
-                var e = document.createElement('div');
+                const e = document.createElement('div');
                 e.innerHTML = s;
                 return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
             }
@@ -702,7 +664,7 @@
 <body>
 <div id="container">
     <div id="masthead">
-        <h1><a href='.'>weeWX</a></h1>
+        <h1><a href='.'>WeeWX</a></h1>
         <p>Open source software for your weather station</p>
     </div>
 
@@ -711,10 +673,6 @@
 
     <div id='map_container'>
         <div id='map_canvas'></div>
-
-        <div class='details'>
-            LAST_MODIFIED
-        </div>
     </div>
 
     <div id='content'>
@@ -722,8 +680,8 @@
             <div id='ping_details_container'>
                 <canvas id='ping_details'></canvas>
             </div>
-            <div onclick="toggle(this,'station_types')" style='cursor: pointer'>&#x25b6; <strong>Hardware</strong></div>
-            <div id='station_types' style='display:none'></div>
+            <div onclick="toggle(this,'hardware_types_div')" style='cursor: pointer'>&#x25b6; <strong>Hardware</strong></div>
+            <div id='hardware_types_div' style='display:none'></div>
         </div>
 
         <div id='instructions'>
@@ -732,8 +690,8 @@
         </div>
 
         <div id='sites'>
-            <div onclick="toggle(this,'site_listing')" style='cursor: pointer'>&#x25b6; <strong>Stations</strong></div>
-            <div id='site_listing' style='display:none'></div>
+            <div onclick="toggle(this,'station_listing_div')" style='cursor: pointer'>&#x25b6; <strong>Stations</strong></div>
+            <div id='station_listing_div' style='display:none'></div>
         </div>
     </div>
 </div>
