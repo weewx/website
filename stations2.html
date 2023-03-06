@@ -114,551 +114,592 @@
             padding: 4px;
         }
     </style>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCFIuh9cZXlNxXJJ5w5BxHmmm1rDGbtqE"></script>
-    <script type="text/javascript" src="infobox-1.1.19.js"></script>
     <script type="text/javascript">
-        var sites = [];
-        var map;
+        function setup(){
+            Promise.all([
+                import("./infobox-1.1.19.js").then(imported => imported.InfoBox),
+                fetch("http://localhost/api/v2/stations/?limit=20").then(response =>
+                                                                              response.json())
+                        ])
+                .then(values => initMap(values[0], values[1]))
 
-        //var infowindow = new google.maps.InfoWindow({
-        //  content: 'nothing selected'
-        //});
-
-        var infowindow = new InfoBox({
-                                         content: 'nothing selected',
-                                         disableAutoPan: false,
-                                         maxWidth: 0,
-                                         pixelOffset: new google.maps.Size(10, -50),
-                                         zIndex: null,
-                                         closeBoxMargin: "2px 2px 2px 2px",
-                                         closeBoxURL: "close.gif",
-                                         infoBoxClearance: new google.maps.Size(1, 1),
-                                         isHidden: false,
-                                         pane: "floatPane",
-                                         enableEventPropagation: false
-                                     });
-
-        var showThumbs = 1;
-        var oldZoomLevel = 0;
-        var zoomThreshold = 9; /* when to switch from dots to pins */
-        var pingdays = 30; /* number of days in ping histogram */
-        var staledays = 7; /* number of days before considered stale */
-        var backgroundColor = '#ffffff';
-        var highlightColor = '#9fcef9';
-        var maxTitleLen = 70;
-        var maxURLLen = 80;
-        var redDotURL = 'https://weewx.com/dot-red.png';
-
-        function count_sorter(a,b) {
-            if(a == 'total') {
-                return -1;
-            } else if(b == 'total') {
-                return 1;
-            }
-            var A = a.toLowerCase();
-            var B = b.toLowerCase();
-            if(A < B) {
-                return -1;
-            } else if(A > B) {
-                return 1;
-            } else {
-                return 0;
-            }
+            // var sites = [
+            //     { description: "Aalesunds Skiklub Standalhytta, Sunnmore Alps",
+            //         url: "http://www.standalhytta.no",
+            //         latitude: 62.2474,
+            //         longitude: 6.3482,
+            //         station: "Vantage",
+            //         model: "Vantage Pro2",
+            //         weewx_info: "4.10.1",
+            //         last_seen: 1677933317 },
+            //
+            //     { description: "Abelleira, Muros",
+            //         url: "http://www.meteoabelleira.com",
+            //         latitude: 42.8065,
+            //         longitude: -9.0227,
+            //         station: "WLL",
+            //         model: "WLL",
+            //         weewx_info: "4.10.1",
+            //         last_seen: 1677919223 },
+            // ];
+            // import("./infobox-1.1.19.js").then(imported => initMap(imported.InfoBox, sites))
         }
+        function initMap(InfoBox, sites) {
 
-        function initialize() {
-            var now = Math.round((new Date).getTime() / 1000);
+            var map;
 
-            /* create a map with the settings we want */
-            var latlng = new google.maps.LatLng(21.0,0.0);
-            var settings = {
-                zoom: 2,
-                center: latlng,
-                mapTypeControl: true,
-                mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-                },
-                navigationControl: true,
-                navigationControlOptions: {
-                    style: google.maps.NavigationControlStyle.SMALL
-                },
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            var canvas = document.getElementById("map_canvas");
-            map = new google.maps.Map(canvas, settings);
+            //var infowindow = new google.maps.InfoWindow({
+            //  content: 'nothing selected'
+            //});
 
-            google.maps.event.addListener(map,'zoom_changed',function(event) {
-                zoomLevel = map.getZoom();
-                if((oldZoomLevel < zoomThreshold && zoomLevel >= zoomThreshold) ||
-                   (oldZoomLevel >= zoomThreshold && zoomLevel < zoomThreshold)) {
-                    set_marker_image(map);
+            var infowindow = new InfoBox({
+                                             content: 'nothing selected',
+                                             disableAutoPan: false,
+                                             maxWidth: 0,
+                                             pixelOffset: new google.maps.Size(10, -50),
+                                             zIndex: null,
+                                             closeBoxMargin: "2px 2px 2px 2px",
+                                             closeBoxURL: "close.gif",
+                                             infoBoxClearance: new google.maps.Size(1, 1),
+                                             isHidden: false,
+                                             pane: "floatPane",
+                                             enableEventPropagation: false
+                                         });
+
+            var showThumbs = 1;
+            var oldZoomLevel = 0;
+            var zoomThreshold = 9; /* when to switch from dots to pins */
+            var pingdays = 30; /* number of days in ping histogram */
+            var staledays = 7; /* number of days before considered stale */
+            var backgroundColor = '#ffffff';
+            var highlightColor = '#9fcef9';
+            var maxTitleLen = 70;
+            var maxURLLen = 80;
+            var redDotURL = 'https://weewx.com/dot-red.png';
+
+            function count_sorter(a, b) {
+                if (a == 'total') {
+                    return -1;
+                } else if (b == 'total') {
+                    return 1;
                 }
-                oldZoomLevel = zoomLevel;
-            });
-
-            /* track counts of each station type */
-            var counts = {};
-            counts['total'] = 0;
-
-            /* histogram of when each station last phoned home */
-            var maxpings = 0; /* maximum number of pings in a single day */
-            var pings = new Array(pingdays); /* histogram of daily pings */
-            for(var i=0; i<pings.length; i++) { pings[i] = 0; }
-            var stale = 0;
-            var dead = 0;
-
-            /* loop through all sites to get the data we need */
-            for (var i=0; i<sites.length; i++) {
-                /* create the markers */
-                var title = decode_html(get_title(sites[i]));
-                var pos = new google.maps.LatLng(sites[i].latitude, sites[i].longitude);
-                var mkr = new google.maps.Marker({
-                                                     position: pos,
-                                                     map: map,
-                                                     title: title + "\n" + sites[i].station,
-                                                     icon: redDotURL,
-                                                 });
-                sites[i].marker = mkr;
-                attach_info(map, mkr, i);
-
-                /* do the station count accounting */
-                counts['total'] = counts['total'] + 1;
-                var n = 0;
-                if(sites[i].station in counts) {
-                    n = counts[sites[i].station];
+                var A = a.toLowerCase();
+                var B = b.toLowerCase();
+                if (A < B) {
+                    return -1;
+                } else if (A > B) {
+                    return 1;
+                } else {
+                    return 0;
                 }
-                counts[sites[i].station] = n + 1;
+            }
 
-                /* do the ping accounting */
-                var tdiff = now - sites[i].last_seen;
-                var idx = Math.round(tdiff / 86400);
-                if(idx < pingdays) {
-                    pings[idx] += 1;
-                    if (idx > staledays) {
-                        stale += 1;
+            function initialize() {
+                var now = Math.round((new Date).getTime() / 1000);
+
+                /* create a map with the settings we want */
+                var latlng = new google.maps.LatLng(21.0, 0.0);
+                var settings = {
+                    zoom: 2,
+                    center: latlng,
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+                    },
+                    navigationControl: true,
+                    navigationControlOptions: {
+                        style: google.maps.NavigationControlStyle.SMALL
+                    },
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                var canvas = document.getElementById("map_canvas");
+                map = new google.maps.Map(canvas, settings);
+
+                google.maps.event.addListener(map, 'zoom_changed', function (event) {
+                    zoomLevel = map.getZoom();
+                    if ((oldZoomLevel < zoomThreshold && zoomLevel >= zoomThreshold) ||
+                        (oldZoomLevel >= zoomThreshold && zoomLevel < zoomThreshold)) {
+                        set_marker_image(map);
                     }
-                } else {
-                    dead += 1;
-                }
-                if(pings[idx] > maxpings) {
-                    maxpings = pings[idx];
-                }
-            }
+                    oldZoomLevel = zoomLevel;
+                });
 
-            populate_station_list('description', 'up');
-            populate_station_table(counts);
-            draw_ping_histogram(pings, maxpings, counts['total'], stale, dead);
-        }
+                /* track counts of each station type */
+                var counts = {};
+                counts['total'] = 0;
 
-        function set_marker_image(map) {
-            var z = map.getZoom();
-            var url = z < zoomThreshold ? redDotURL : '';
-            for (var i=0; i<sites.length; i++) {
-                sites[i].marker.setIcon(url);
-            }
-        }
+                /* histogram of when each station last phoned home */
+                var maxpings = 0; /* maximum number of pings in a single day */
+                var pings = new Array(pingdays); /* histogram of daily pings */
+                for (var i = 0; i < pings.length; i++) { pings[i] = 0; }
+                var stale = 0;
+                var dead = 0;
 
-        function compare(x,y) {
-            return x < y ? -1 : x > y ? 1 : 0;
-        }
+                /* loop through all sites to get the data we need */
+                for (var i = 0; i < sites.length; i++) {
+                    /* create the markers */
+                    var title = decode_html(get_title(sites[i]));
+                    var pos = new google.maps.LatLng(sites[i].latitude, sites[i].longitude);
+                    var mkr = new google.maps.Marker({
+                                                         position: pos,
+                                                         map: map,
+                                                         title: title + "\n" + sites[i].station,
+                                                         icon: redDotURL,
+                                                     });
+                    sites[i].marker = mkr;
+                    attach_info(map, mkr, i);
 
-        function populate_station_list(sort_metric, sort_order) {
-            // do the sort...
-            var indices = [];
-            for (var i=0; i<sites.length; i++) {
-                indices[i] = i;
-            }
-            if (sort_metric == 'description') {
-                if (sort_order == 'dn') {
-                    for (var i=0; i<sites.length; i++) {
-                        indices[i] = sites.length-i-1;
+                    /* do the station count accounting */
+                    counts['total'] = counts['total'] + 1;
+                    var n = 0;
+                    if (sites[i].station in counts) {
+                        n = counts[sites[i].station];
+                    }
+                    counts[sites[i].station] = n + 1;
+
+                    /* do the ping accounting */
+                    var tdiff = now - sites[i].last_seen;
+                    var idx = Math.round(tdiff / 86400);
+                    if (idx < pingdays) {
+                        pings[idx] += 1;
+                        if (idx > staledays) {
+                            stale += 1;
+                        }
+                    } else {
+                        dead += 1;
+                    }
+                    if (pings[idx] > maxpings) {
+                        maxpings = pings[idx];
                     }
                 }
-            } else if (sort_metric == 'url') {
-                if (sort_order == 'up') {
-                    indices.sort(function(a,b) {
-                        return compare(sites[a].url.toLowerCase(), sites[b].url.toLowerCase());
-                    });
-                } else {
-                    indices.sort(function(a,b) {
-                        return compare(sites[b].url.toLowerCase(), sites[a].url.toLowerCase());
-                    });
-                }
-            } else if (sort_metric == 'latitude') {
-                if (sort_order == 'up') {
-                    indices.sort(function(a,b) {
-                        return compare(sites[a].latitude, sites[b].latitude); });
-                } else {
-                    indices.sort(function(a,b) {
-                        return compare(sites[b].latitude, sites[a].latitude); });
-                }
-            } else if (sort_metric == 'longitude') {
-                if (sort_order == 'up') {
-                    indices.sort(function(a,b) {
-                        return compare(sites[a].longitude, sites[b].longitude); });
-                } else {
-                    indices.sort(function(a,b) {
-                        return compare(sites[b].longitude, sites[a].longitude); });
-                }
-            } else if (sort_metric == 'station') {
-                if (sort_order == 'up') {
-                    indices.sort(function(a,b) {
-                        return compare(sites[a].station, sites[b].station); });
-                } else {
-                    indices.sort(function(a,b) {
-                        return compare(sites[b].station, sites[a].station); });
-                }
-            } else if (sort_metric == 'last_seen') {
-                if (sort_order == 'up') {
-                    indices.sort(function(a,b) {
-                        return compare(sites[a].last_seen, sites[b].last_seen); });
-                } else {
-                    indices.sort(function(a,b) {
-                        return compare(sites[b].last_seen, sites[a].last_seen); });
-                }
-            } else if (sort_metric == 'weewx_info') {
-                if (sort_order == 'up') {
-                    indices.sort(function(a,b) {
-                        return compare(sites[a].weewx_info, sites[b].weewx_info); });
-                } else {
-                    indices.sort(function(a,b) {
-                        return compare(sites[b].weewx_info, sites[a].weewx_info); });
+
+                populate_station_list('description', 'up');
+                populate_station_table(counts);
+                draw_ping_histogram(pings, maxpings, counts['total'], stale, dead);
+            }
+
+            function set_marker_image(map) {
+                var z = map.getZoom();
+                var url = z < zoomThreshold ? redDotURL : '';
+                for (var i = 0; i < sites.length; i++) {
+                    sites[i].marker.setIcon(url);
                 }
             }
 
-            // ...clear existing list...
-            var s = document.getElementById('site_listing');
-            while (s.firstChild) {
-                s.removeChild(s.firstChild);
+            function compare(x, y) {
+                return x < y ? -1 : x > y ? 1 : 0;
             }
 
-            // ...then populate the table
-            var tbl = document.createElement('table');
-            var tbdy = document.createElement('tbody');
-            var rowclass = 'oddrow';
-            var tr = document.createElement('tr');
-            var td = document.createElement('th');
-            var buttons = create_buttons("Description", "description");
-            buttons += create_buttons("URL", "url");
-            buttons += create_buttons("Latitude", "latitude");
-            buttons += create_buttons("Longitude", "longitude");
-            buttons += create_buttons("Hardware", "station");
-            buttons += create_buttons("Version", "weewx_info");
-            buttons += create_buttons("Last Seen", "last_seen");
-            buttons += '<div class="button_pair">Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()"';
-            if (showThumbs) {
-                buttons += ' checked';
-            }
-            buttons += ' /></div>';
-            td.innerHTML = buttons;
-            td.colSpan = "2";
-            td.className = 'sort_buttons';
-            tr.appendChild(td);
-            td = document.createElement('td');
-            tr.appendChild(td);
-            tbdy.appendChild(tr);
-            var disp = 'none';
-            if (showThumbs) {
-                disp = 'inline';
-            }
-            for (var i=0; i<indices.length; i++) {
-                var title = get_title(sites[indices[i]]);
+            function populate_station_list(sort_metric, sort_order) {
+                // do the sort...
+                var indices = [];
+                for (var i = 0; i < sites.length; i++) {
+                    indices[i] = i;
+                }
+                if (sort_metric == 'description') {
+                    if (sort_order == 'dn') {
+                        for (var i = 0; i < sites.length; i++) {
+                            indices[i] = sites.length - i - 1;
+                        }
+                    }
+                } else if (sort_metric == 'url') {
+                    if (sort_order == 'up') {
+                        indices.sort(function (a, b) {
+                            return compare(sites[a].url.toLowerCase(), sites[b].url.toLowerCase());
+                        });
+                    } else {
+                        indices.sort(function (a, b) {
+                            return compare(sites[b].url.toLowerCase(), sites[a].url.toLowerCase());
+                        });
+                    }
+                } else if (sort_metric == 'latitude') {
+                    if (sort_order == 'up') {
+                        indices.sort(function (a, b) {
+                            return compare(sites[a].latitude, sites[b].latitude);
+                        });
+                    } else {
+                        indices.sort(function (a, b) {
+                            return compare(sites[b].latitude, sites[a].latitude);
+                        });
+                    }
+                } else if (sort_metric == 'longitude') {
+                    if (sort_order == 'up') {
+                        indices.sort(function (a, b) {
+                            return compare(sites[a].longitude, sites[b].longitude);
+                        });
+                    } else {
+                        indices.sort(function (a, b) {
+                            return compare(sites[b].longitude, sites[a].longitude);
+                        });
+                    }
+                } else if (sort_metric == 'station') {
+                    if (sort_order == 'up') {
+                        indices.sort(function (a, b) {
+                            return compare(sites[a].station, sites[b].station);
+                        });
+                    } else {
+                        indices.sort(function (a, b) {
+                            return compare(sites[b].station, sites[a].station);
+                        });
+                    }
+                } else if (sort_metric == 'last_seen') {
+                    if (sort_order == 'up') {
+                        indices.sort(function (a, b) {
+                            return compare(sites[a].last_seen, sites[b].last_seen);
+                        });
+                    } else {
+                        indices.sort(function (a, b) {
+                            return compare(sites[b].last_seen, sites[a].last_seen);
+                        });
+                    }
+                } else if (sort_metric == 'weewx_info') {
+                    if (sort_order == 'up') {
+                        indices.sort(function (a, b) {
+                            return compare(sites[a].weewx_info, sites[b].weewx_info);
+                        });
+                    } else {
+                        indices.sort(function (a, b) {
+                            return compare(sites[b].weewx_info, sites[a].weewx_info);
+                        });
+                    }
+                }
+
+                // ...clear existing list...
+                var s = document.getElementById('site_listing');
+                while (s.firstChild) {
+                    s.removeChild(s.firstChild);
+                }
+
+                // ...then populate the table
+                var tbl = document.createElement('table');
+                var tbdy = document.createElement('tbody');
+                var rowclass = 'oddrow';
                 var tr = document.createElement('tr');
-                var td = document.createElement('td');
-                td.innerHTML = '<a href="' + sites[indices[i]].url + '">' + title + '</a><br/><small>' + sites[indices[i]].url + '</small>';
-                tr.appendChild(td);
-                var td = document.createElement('td');
-                var date = new Date(sites[indices[i]].last_seen * 1000);
-                td.innerHTML = '<div style="float: left">' + sites[indices[i]].weewx_info + '</div><div style="float: right">' + sites[indices[i]].station + '</div><div style="clear:both; float:right"><small>' + date.toUTCString() + '</small></div>';
-                tr.appendChild(td);
-                td = document.createElement('td');
-                var basename = '/shots/' + md5(sites[indices[i]].url);
-                td.innerHTML = '<div class="thumbnail" style="display:' + disp + '"><a href="' + basename + '.jpg"><img src="/blank.gif" alt="" data-echo="' + basename + '.tn.jpg" width="50"></a></div>';
-                tr.appendChild(td);
-                td = document.createElement('td');
-                td.id = 'site_' + indices[i];
-                td.className = 'indicator';
-                attach_station(td, map, sites[indices[i]].marker, indices[i]);
-                tr.appendChild(td);
-                tr.className = rowclass;
-                tbdy.appendChild(tr);
-                if(rowclass == 'oddrow') {
-                    rowclass = 'evenrow'
-                } else {
-                    rowclass = 'oddrow'
-                }
-            }
-            tbl.appendChild(tbdy);
-            s.appendChild(tbl);
-            /* let the lazy loader do its thing */
-            echo.init();
-        }
-
-        function create_buttons(label, sort_metric) {
-            return "<div class='button_pair'><input type='submit' value='" + label + " &#8593;' onClick='populate_station_list(\"" + sort_metric + "\",\"up\")' /><br/><input type='submit' value='" + label + " &#8595;' onClick='populate_station_list(\"" + sort_metric + "\",\"dn\")' /></div>";
-        }
-
-        function populate_station_table(counts) {
-            var s = document.getElementById('station_types');
-            var tbl = document.createElement('table');
-            var tbdy = document.createElement('tbody');
-            var count_keys = new Array(); /* array of station types */
-            for(var key in counts) {
-                count_keys.push(key);
-            }
-            count_keys.sort(count_sorter);
-            for(var key in count_keys) {
-                var tr = document.createElement('tr');
-                var td = document.createElement('td');
-                td.innerHTML = count_keys[key];
-                tr.appendChild(td);
-                var td = document.createElement('td');
-                td.className = 'alignright';
-                td.innerHTML = counts[count_keys[key]];
-                tr.appendChild(td);
-                var td = document.createElement('td');
-                td.id = 'station_type_' + count_keys[key];
-                td.className = 'indicator';
-                attach_station_type(td, count_keys[key], count_keys);
-                tr.appendChild(td);
-                tbdy.appendChild(tr);
-            }
-            tbl.appendChild(tbdy);
-            s.appendChild(tbl);
-        }
-
-        function draw_ping_histogram(pings, maxpings, total, stale, dead) {
-            canvas = document.getElementById('ping_details');
-            if(canvas) {
-                canvas.width = 180;
-                canvas.height = 60;
-                var c = canvas.getContext("2d");
-                var w = canvas.clientWidth;
-                var h = canvas.clientHeight;
-                var barwidth = w / pings.length;
-                var unitheight = h / maxpings;
-                c.strokeStyle = "#dddddd";
-                for(var i=h; i>=0; i-=20*unitheight) {
-                    c.beginPath();
-                    c.moveTo(1, i);
-                    c.lineTo(w, i);
-                    c.stroke();
-                }
-                c.fillStyle = "#888888";
-                c.strokeStyle = "#dddddd";
-                for(var i=0; i<pings.length; i++) {
-                    var bh = pings[pings.length-i-1]*unitheight;
-                    c.fillRect(i*barwidth, h-bh, barwidth, bh);
-                    c.beginPath();
-                    c.moveTo(i*barwidth, h-4);
-                    c.lineTo(i*barwidth, h);
-                    c.stroke();
-                }
-                c.fillText('total: '+total, 10, 20);
-                c.fillText('stale: '+stale, 10, 32);
-                c.fillText('dead: '+dead, 10, 44);
-            }
-        }
-
-        function create_content(idx) {
-            var fn = md5(sites[idx].url) + '.sm.jpg';
-            var w = document.createElement("div");
-            w.className = 'info-content';
-            //  var str = '<div class="info-content">';
-            var str = '';
-            str += '<p class="location">';
-            str += '<a href="' + sites[idx].url + '">';
-            if(sites[idx].description.length > 0) {
-                str += sites[idx].description;
-            } else {
-                str += sites[idx].url;
-            }
-            str += '</a></p>';
-            str += '<p class="location_img">';
-            str += '<img src="/shots/' + fn + '" width="100">';
-            str += '</p>';
-            str += '<p class="location_details">';
-            str += sites[idx].latitude.toFixed(3) + ', ';
-            str += sites[idx].longitude.toFixed(3) + '<br/>';
-            str += sites[idx].station + '<br/>';
-            str += sites[idx].model + '<br/>';
-            str += '</p>';
-            //  str += '</div>';
-            w.innerHTML = str;
-            return w;
-            //  return str;
-        }
-
-        function attach_info(map, marker, idx) {
-            google.maps.event.addListener(marker, 'click', function() {
-                var str = create_content(idx);
-                infowindow.setContent(str);
-                infowindow.open(map, marker);
-                hide_all_dots();
-                show_dot(idx);
-            });
-        }
-
-        function attach_station(elem, map, marker, idx) {
-            elem.addEventListener('click', function() {
-                var str = create_content(idx);
-                infowindow.setContent(str);
-                if(marker) infowindow.open(map, marker);
-                hide_all_dots();
-                show_dot(idx);
-            });
-        }
-
-        function attach_station_type(elem, station_type, count_keys) {
-            elem.addEventListener('click', function() {
-                for(var key in count_keys) {
-                    dehighlight(document.getElementById('station_type_'+count_keys[key]));
-                }
-                highlight(document.getElementById('station_type_' + station_type));
-                infowindow.close();
-                dehighlight_all();
-                infowindow.close();
-                hide_all_markers();
-                hide_all_dots();
-                for(i=0; i<sites.length; i++) {
-                    if(station_type == 'total' || sites[i].station == station_type) {
-                        show_marker(i);
-                    }
-                    if(sites[i].station == station_type) {
-                        highlight_row(i);
-                    }
-                }
-            });
-        }
-
-        function highlight(elem) {
-            if(elem) {
-                elem.style.backgroundColor = highlightColor;
-            }
-        }
-
-        function dehighlight(elem) {
-            if(elem) {
-                elem.style.backgroundColor = backgroundColor;
-            }
-        }
-
-        function highlight_row(idx) {
-            highlight(document.getElementById('site_' + idx));
-        }
-
-        function dehighlight_row(idx) {
-            dehighlight(document.getElementById('site_' + idx));
-        }
-
-        function dehighlight_all() {
-            for(var i=0; i<sites.length; i++) {
-                dehighlight_row(i);
-            }
-        }
-
-        function show_dot(idx) {
-            elem = document.getElementById('site_' + idx);
-            if(elem) {
-                elem.style.backgroundImage = 'url(dot.png)';
-            }
-        }
-
-        function hide_dot(idx) {
-            elem = document.getElementById('site_' + idx);
-            if(elem) {
-                elem.style.backgroundImage = '';
-            }
-        }
-
-        function hide_all_dots() {
-            for(var i=0; i<sites.length; i++) {
-                hide_dot(i);
-            }
-        }
-
-        function show_marker(idx) {
-            sites[idx].marker.setMap(map);
-        }
-
-        function hide_marker(idx) {
-            sites[idx].marker.setMap(null);
-        }
-
-        function show_all_markers() {
-            for(var i=0; i<sites.length; i++) {
-                show_marker(i);
-            }
-        }
-
-        function hide_all_markers() {
-            for(var i=0; i<sites.length; i++) {
-                hide_marker(i);
-            }
-        }
-
-        function toggle(control, id) {
-            elem = document.getElementById(id);
-            if(elem) {
-                var html = control.innerHTML;
-                var display = 'none';
-                var indicator = '';
-                if(elem.style.display != 'none') {
-                    display = 'none';
-                    indicator = '&#x25b6;';
-                } else {
-                    display = 'inline';
-                    indicator = '&#x25bc;';
-                }
-                elem.style.display = display;
-                html = indicator + html.substr(1,html.length);
-                control.innerHTML = html;
-            }
-        }
-
-        function trim_string(x, max_len) {
-            if(x.length > max_len) {
-                x = x.substr(0, max_len).concat('...');
-            }
-            return x;
-        }
-
-        function get_title(x) {
-            var title = 'untitled';
-            if(x.description.length > 0) {
-                title = x.description;
-            } else {
-                title = x.url;
-            }
-            return trim_string(title, maxTitleLen);
-        }
-
-        function toggle_thumbnails() {
-            if (showThumbs) {
-                showThumbs = 0;
-            } else {
-                showThumbs = 1;
-            }
-            var tn = document.getElementsByClassName('thumbnail');
-            for (var i=0; i<tn.length; i++) {
+                var td = document.createElement('th');
+                var buttons = create_buttons("Description", "description");
+                buttons += create_buttons("URL", "url");
+                buttons += create_buttons("Latitude", "latitude");
+                buttons += create_buttons("Longitude", "longitude");
+                buttons += create_buttons("Hardware", "station");
+                buttons += create_buttons("Version", "weewx_info");
+                buttons += create_buttons("Last Seen", "last_seen");
+                buttons += '<div class="button_pair">Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()"';
                 if (showThumbs) {
-                    tn[i].style.display = 'inline';
-                    tn[i].height = 104;
-                } else {
-                    tn[i].style.display = 'none';
+                    buttons += ' checked';
+                }
+                buttons += ' /></div>';
+                td.innerHTML = buttons;
+                td.colSpan = "2";
+                td.className = 'sort_buttons';
+                tr.appendChild(td);
+                td = document.createElement('td');
+                tr.appendChild(td);
+                tbdy.appendChild(tr);
+                var disp = 'none';
+                if (showThumbs) {
+                    disp = 'inline';
+                }
+                for (var i = 0; i < indices.length; i++) {
+                    var title = get_title(sites[indices[i]]);
+                    var tr = document.createElement('tr');
+                    var td = document.createElement('td');
+                    td.innerHTML = '<a href="' + sites[indices[i]].url + '">' + title + '</a><br/><small>' + sites[indices[i]].url + '</small>';
+                    tr.appendChild(td);
+                    var td = document.createElement('td');
+                    var date = new Date(sites[indices[i]].last_seen * 1000);
+                    td.innerHTML = '<div style="float: left">' + sites[indices[i]].weewx_info + '</div><div style="float: right">' + sites[indices[i]].station + '</div><div style="clear:both; float:right"><small>' + date.toUTCString() + '</small></div>';
+                    tr.appendChild(td);
+                    td = document.createElement('td');
+                    var basename = '/shots/' + md5(sites[indices[i]].url);
+                    td.innerHTML = '<div class="thumbnail" style="display:' + disp + '"><a href="' + basename + '.jpg"><img src="/blank.gif" alt="" data-echo="' + basename + '.tn.jpg" width="50"></a></div>';
+                    tr.appendChild(td);
+                    td = document.createElement('td');
+                    td.id = 'site_' + indices[i];
+                    td.className = 'indicator';
+                    attach_station(td, map, sites[indices[i]].marker, indices[i]);
+                    tr.appendChild(td);
+                    tr.className = rowclass;
+                    tbdy.appendChild(tr);
+                    if (rowclass == 'oddrow') {
+                        rowclass = 'evenrow'
+                    } else {
+                        rowclass = 'oddrow'
+                    }
+                }
+                tbl.appendChild(tbdy);
+                s.appendChild(tbl);
+                /* let the lazy loader do its thing */
+                echo.init();
+            }
+
+            function create_buttons(label, sort_metric) {
+                return "<div class='button_pair'><input type='submit' value='" + label + " &#8593;' onClick='populate_station_list(\"" + sort_metric + "\",\"up\")' /><br/><input type='submit' value='" + label + " &#8595;' onClick='populate_station_list(\"" + sort_metric + "\",\"dn\")' /></div>";
+            }
+
+            function populate_station_table(counts) {
+                var s = document.getElementById('station_types');
+                var tbl = document.createElement('table');
+                var tbdy = document.createElement('tbody');
+                var count_keys = new Array(); /* array of station types */
+                for (var key in counts) {
+                    count_keys.push(key);
+                }
+                count_keys.sort(count_sorter);
+                for (var key in count_keys) {
+                    var tr = document.createElement('tr');
+                    var td = document.createElement('td');
+                    td.innerHTML = count_keys[key];
+                    tr.appendChild(td);
+                    var td = document.createElement('td');
+                    td.className = 'alignright';
+                    td.innerHTML = counts[count_keys[key]];
+                    tr.appendChild(td);
+                    var td = document.createElement('td');
+                    td.id = 'station_type_' + count_keys[key];
+                    td.className = 'indicator';
+                    attach_station_type(td, count_keys[key], count_keys);
+                    tr.appendChild(td);
+                    tbdy.appendChild(tr);
+                }
+                tbl.appendChild(tbdy);
+                s.appendChild(tbl);
+            }
+
+            function draw_ping_histogram(pings, maxpings, total, stale, dead) {
+                canvas = document.getElementById('ping_details');
+                if (canvas) {
+                    canvas.width = 180;
+                    canvas.height = 60;
+                    var c = canvas.getContext("2d");
+                    var w = canvas.clientWidth;
+                    var h = canvas.clientHeight;
+                    var barwidth = w / pings.length;
+                    var unitheight = h / maxpings;
+                    c.strokeStyle = "#dddddd";
+                    for (var i = h; i >= 0; i -= 20 * unitheight) {
+                        c.beginPath();
+                        c.moveTo(1, i);
+                        c.lineTo(w, i);
+                        c.stroke();
+                    }
+                    c.fillStyle = "#888888";
+                    c.strokeStyle = "#dddddd";
+                    for (var i = 0; i < pings.length; i++) {
+                        var bh = pings[pings.length - i - 1] * unitheight;
+                        c.fillRect(i * barwidth, h - bh, barwidth, bh);
+                        c.beginPath();
+                        c.moveTo(i * barwidth, h - 4);
+                        c.lineTo(i * barwidth, h);
+                        c.stroke();
+                    }
+                    c.fillText('total: ' + total, 10, 20);
+                    c.fillText('stale: ' + stale, 10, 32);
+                    c.fillText('dead: ' + dead, 10, 44);
                 }
             }
-        }
 
-        function decode_html(s) {
-            var e = document.createElement('div');
-            e.innerHTML = s;
-            return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+            function create_content(idx) {
+                var fn = md5(sites[idx].url) + '.sm.jpg';
+                var w = document.createElement("div");
+                w.className = 'info-content';
+                //  var str = '<div class="info-content">';
+                var str = '';
+                str += '<p class="location">';
+                str += '<a href="' + sites[idx].url + '">';
+                if (sites[idx].description.length > 0) {
+                    str += sites[idx].description;
+                } else {
+                    str += sites[idx].url;
+                }
+                str += '</a></p>';
+                str += '<p class="location_img">';
+                str += '<img src="/shots/' + fn + '" width="100">';
+                str += '</p>';
+                str += '<p class="location_details">';
+                str += sites[idx].latitude.toFixed(3) + ', ';
+                str += sites[idx].longitude.toFixed(3) + '<br/>';
+                str += sites[idx].station + '<br/>';
+                str += sites[idx].model + '<br/>';
+                str += '</p>';
+                //  str += '</div>';
+                w.innerHTML = str;
+                return w;
+                //  return str;
+            }
+
+            function attach_info(map, marker, idx) {
+                google.maps.event.addListener(marker, 'click', function () {
+                    var str = create_content(idx);
+                    infowindow.setContent(str);
+                    infowindow.open(map, marker);
+                    hide_all_dots();
+                    show_dot(idx);
+                });
+            }
+
+            function attach_station(elem, map, marker, idx) {
+                elem.addEventListener('click', function () {
+                    var str = create_content(idx);
+                    infowindow.setContent(str);
+                    if (marker) infowindow.open(map, marker);
+                    hide_all_dots();
+                    show_dot(idx);
+                });
+            }
+
+            function attach_station_type(elem, station_type, count_keys) {
+                elem.addEventListener('click', function () {
+                    for (var key in count_keys) {
+                        dehighlight(document.getElementById('station_type_' + count_keys[key]));
+                    }
+                    highlight(document.getElementById('station_type_' + station_type));
+                    infowindow.close();
+                    dehighlight_all();
+                    infowindow.close();
+                    hide_all_markers();
+                    hide_all_dots();
+                    for (i = 0; i < sites.length; i++) {
+                        if (station_type == 'total' || sites[i].station == station_type) {
+                            show_marker(i);
+                        }
+                        if (sites[i].station == station_type) {
+                            highlight_row(i);
+                        }
+                    }
+                });
+            }
+
+            function highlight(elem) {
+                if (elem) {
+                    elem.style.backgroundColor = highlightColor;
+                }
+            }
+
+            function dehighlight(elem) {
+                if (elem) {
+                    elem.style.backgroundColor = backgroundColor;
+                }
+            }
+
+            function highlight_row(idx) {
+                highlight(document.getElementById('site_' + idx));
+            }
+
+            function dehighlight_row(idx) {
+                dehighlight(document.getElementById('site_' + idx));
+            }
+
+            function dehighlight_all() {
+                for (var i = 0; i < sites.length; i++) {
+                    dehighlight_row(i);
+                }
+            }
+
+            function show_dot(idx) {
+                elem = document.getElementById('site_' + idx);
+                if (elem) {
+                    elem.style.backgroundImage = 'url(dot.png)';
+                }
+            }
+
+            function hide_dot(idx) {
+                elem = document.getElementById('site_' + idx);
+                if (elem) {
+                    elem.style.backgroundImage = '';
+                }
+            }
+
+            function hide_all_dots() {
+                for (var i = 0; i < sites.length; i++) {
+                    hide_dot(i);
+                }
+            }
+
+            function show_marker(idx) {
+                sites[idx].marker.setMap(map);
+            }
+
+            function hide_marker(idx) {
+                sites[idx].marker.setMap(null);
+            }
+
+            function show_all_markers() {
+                for (var i = 0; i < sites.length; i++) {
+                    show_marker(i);
+                }
+            }
+
+            function hide_all_markers() {
+                for (var i = 0; i < sites.length; i++) {
+                    hide_marker(i);
+                }
+            }
+
+            function toggle(control, id) {
+                elem = document.getElementById(id);
+                if (elem) {
+                    var html = control.innerHTML;
+                    var display = 'none';
+                    var indicator = '';
+                    if (elem.style.display != 'none') {
+                        display = 'none';
+                        indicator = '&#x25b6;';
+                    } else {
+                        display = 'inline';
+                        indicator = '&#x25bc;';
+                    }
+                    elem.style.display = display;
+                    html = indicator + html.substr(1, html.length);
+                    control.innerHTML = html;
+                }
+            }
+
+            function trim_string(x, max_len) {
+                if (x.length > max_len) {
+                    x = x.substr(0, max_len).concat('...');
+                }
+                return x;
+            }
+
+            function get_title(x) {
+                var title = 'untitled';
+                if (x.description.length > 0) {
+                    title = x.description;
+                } else {
+                    title = x.url;
+                }
+                return trim_string(title, maxTitleLen);
+            }
+
+            function toggle_thumbnails() {
+                if (showThumbs) {
+                    showThumbs = 0;
+                } else {
+                    showThumbs = 1;
+                }
+                var tn = document.getElementsByClassName('thumbnail');
+                for (var i = 0; i < tn.length; i++) {
+                    if (showThumbs) {
+                        tn[i].style.display = 'inline';
+                        tn[i].height = 104;
+                    } else {
+                        tn[i].style.display = 'none';
+                    }
+                }
+            }
+
+            function decode_html(s) {
+                var e = document.createElement('div');
+                e.innerHTML = s;
+                return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+            }
+            initialize();
+            populate_header('stations');
         }
     </script>
 </head>
 
-<body onload="initialize(); populate_header('stations');">
+<body>
 <div id="container">
     <div id="masthead">
         <h1><a href='.'>weeWX</a></h1>
@@ -699,3 +740,6 @@
 
 </body>
 </html>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCFIuh9cZXlNxXJJ5w5BxHmmm1rDGbtqE&callback=setup"></script>
+</script>
