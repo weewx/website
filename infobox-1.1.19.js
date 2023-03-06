@@ -75,7 +75,9 @@
  * @constructor
  * @param {InfoBoxOptions} [opt_opts]
  */
-function InfoBox(opt_opts) {
+
+// Added "export". -Tom Keffer 05 March 2023
+export function InfoBox(opt_opts) {
 
   opt_opts = opt_opts || {};
 
