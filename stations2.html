@@ -147,7 +147,7 @@
             Promise.all([
                             import("./infobox-1.1.19.js")
                                 .then(imported => imported.InfoBox),
-                            fetch("http://localhost/api/v2/stations/?limit=2000&max_age=30d")
+                            fetch("/api/v2/stations/?limit=2000&max_age=30d")
                                 .then(response => response.json())
                         ])
                    .then(values => initMap(...values));
@@ -390,19 +390,24 @@
                 let rowclass = 'oddrow';
                 let tr = document.createElement('tr');
                 let td = document.createElement('th');
-                let buttons = create_buttons("Description", "description");
-                buttons += create_buttons("URL", "station_url");
-                buttons += create_buttons("Latitude", "latitude");
-                buttons += create_buttons("Longitude", "longitude");
-                buttons += create_buttons("Hardware", "station_type");
-                buttons += create_buttons("Version", "weewx_info");
-                buttons += create_buttons("Last Seen", "last_seen");
-                buttons += '<div class="button_pair">Thumbnails<br/><input type="checkbox" onClick="toggle_thumbnails()"';
-                if (showThumbs) {
-                    buttons += ' checked';
-                }
-                buttons += ' /></div>';
-                td.innerHTML = buttons;
+                td.appendChild(create_buttons("Description", "description"))
+                td.appendChild(create_buttons("URL", "station_url"));
+                td.appendChild(create_buttons("Latitude", "latitude"));
+                td.appendChild(create_buttons("Longitude", "longitude"));
+                td.appendChild(create_buttons("Hardware", "station_type"));
+                td.appendChild(create_buttons("Version", "weewx_info"));
+                td.appendChild(create_buttons("Last Seen", "last_seen"));
+
+                const thumbButton = document.createElement('input')
+                thumbButton.setAttribute('type', 'checkbox')
+                thumbButton.setAttribute('checked', showThumbs)
+                thumbButton.addEventListener("click", () => toggle_thumbnails())
+
+                const thumbDiv = document.createElement('div')
+                thumbDiv.innerHTML = 'Thumbnails<br/>'
+                thumbDiv.appendChild(thumbButton)
+                td.appendChild(thumbDiv)
+
                 td.colSpan = "2";
                 td.className = 'sort_buttons';
                 tr.appendChild(td);
@@ -440,12 +445,32 @@
                 }
                 tbl.appendChild(tbdy);
                 s.appendChild(tbl);
+
                 /* let the lazy loader do its thing */
                 echo.init();
             }
 
             function create_buttons(label, sort_metric) {
-                return "<div class='button_pair'><input type='submit' value='" + label + " &#8593;' onClick='populate_station_list(\"" + sort_metric + "\",\"up\")' /><br/><input type='submit' value='" + label + " &#8595;' onClick='populate_station_list(\"" + sort_metric + "\",\"dn\")' /></div>";
+
+                // const up_button =
+                //     document.createElement(`<input type='submit' value='${label} &#8593;' />`)
+
+                const up_button = document.createElement('input')
+                up_button.setAttribute('type', 'submit')
+                up_button.setAttribute('value', `${label} ↑`)
+                up_button.addEventListener("click", () => populate_station_list(sort_metric, "up"))
+
+                const dn_button = document.createElement('input')
+                dn_button.setAttribute('type', 'submit')
+                dn_button.setAttribute('value', `${label} ↓`)
+                dn_button.addEventListener("click", () => populate_station_list(sort_metric, "dn"))
+
+                const button_group = document.createElement("div")
+                button_group.setAttribute('class', 'button_pair')
+                button_group.appendChild(up_button)
+                button_group.appendChild(document.createElement('br'))
+                button_group.appendChild(dn_button)
+                return button_group
             }
 
             function populate_station_table(counts) {
