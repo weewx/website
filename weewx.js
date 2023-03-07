@@ -176,23 +176,3 @@ function populate_screenshots(maxnum, rnd) {
     }
     elem.innerHTML = html;
 }
-
-function toggle(control, id) {
-    const elem = document.getElementById(id);
-    if(elem) {
-        let html = control.innerHTML;
-        let display = 'none';
-        let indicator = '';
-        if(elem.style.display !== 'none') {
-            display = 'none';
-            indicator = '&#x25b6;';     // Right-pointing triangle
-        } else {
-            display = 'inline';
-            indicator = '&#x25bc;';     // Down-pointing triangle
-        }
-        elem.style.display = display;
-        html = indicator + html.substring(1,html.length);
-        control.innerHTML = html;
-    }
-}
-
