@@ -13,7 +13,7 @@
     <script src='weewx.js' type='text/javascript'></script>
     <script src='md5.js' type='text/javascript'></script>
     <script src='echo.js' type='text/javascript'></script>
-    <script src='google-api-key.js' type = 'text/javascript'></script>
+    <script src='google-api-key.js' type='text/javascript'></script>
     <style>
         #map_container {
             margin-top: 10px;
@@ -126,7 +126,7 @@
         }
 
         .infoBox {
-            background: url('/tipbox90pad.gif') no-repeat scroll 0% 18px;
+            background: url('/tipbox90pad.gif') no-repeat scroll 0 18px;
             width: 250px;
         }
 
@@ -140,7 +140,7 @@
     </style>
     <script type='text/javascript'>
 
-        function loadScript(url){
+        function loadScript(url) {
             const script = document.createElement('script');
             script.src = url;
             script.type = 'text/javascript';
@@ -187,9 +187,9 @@
                 loaded.
              */
 
-            var map;
+            let map;
 
-            var infowindow = new InfoBox({
+            const infowindow = new InfoBox({
                                              content: 'nothing selected',
                                              disableAutoPan: false,
                                              maxWidth: 0,
@@ -203,15 +203,15 @@
                                              enableEventPropagation: false
                                          });
 
-            var showThumbs = true;
-            var oldZoomLevel = 0;
-            var zoomThreshold = 9; /* when to switch from dots to pins */
-            var pingdays = 30; /* number of days in ping histogram */
-            var staledays = 7; /* number of days before considered stale */
-            var backgroundColor = '#ffffff';
-            var highlightColor = '#9fcef9';
-            var maxTitleLen = 70;
-            var redDotURL = './dot-red.png';
+            let showThumbs = true;
+            let oldZoomLevel = 0;
+            const zoomThreshold = 9; /* when to switch from dots to pins */
+            const pingdays = 30; /* number of days in ping histogram */
+            const staledays = 7; /* number of days before considered stale */
+            const backgroundColor = '#ffffff';
+            const highlightColor = '#9fcef9';
+            const maxTitleLen = 70;
+            const redDotURL = './dot-red.png';
 
             function count_sorter(a, b) {
                 if (a === 'total') {
@@ -247,7 +247,7 @@
                     },
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
-                var canvas = document.getElementById("map_canvas");
+                const canvas = document.getElementById("map_canvas");
                 map = new google.maps.Map(canvas, settings);
 
                 google.maps.event.addListener(map, 'zoom_changed', function (event) {
@@ -276,11 +276,11 @@
                     const title = decode_html(get_title(sites[i]));
                     const pos = new google.maps.LatLng(sites[i].latitude, sites[i].longitude);
                     const mkr = new google.maps.Marker({
-                                                         position: pos,
-                                                         map: map,
-                                                         title: title + "\n" + sites[i].station_type,
-                                                         icon: redDotURL,
-                                                     });
+                                                           position: pos,
+                                                           map: map,
+                                                           title: title + "\n" + sites[i].station_type,
+                                                           icon: redDotURL,
+                                                       });
                     sites[i].marker = mkr;
                     attach_info(map, mkr, i);
 
@@ -322,7 +322,7 @@
             }
 
             // Build the station table from scratch.
-            function build_station_table(sort_metric, sort_order){
+            function build_station_table(sort_metric, sort_order) {
                 // Find where the station table will go
                 const station_table_div = document.getElementById('station_table_div');
 
@@ -341,7 +341,7 @@
                 // Now start working on the header. It's a single row.
                 const tr = document.createElement('tr');
                 const td = document.createElement('th');
-                td.appendChild(create_buttons(station_list_container, "Description", "description"))
+                td.appendChild(create_buttons(station_list_container, "Description", "description"));
                 td.appendChild(create_buttons(station_list_container, "URL", "station_url"));
                 td.appendChild(create_buttons(station_list_container, "Latitude", "latitude"));
                 td.appendChild(create_buttons(station_list_container, "Longitude", "longitude"));
@@ -349,15 +349,15 @@
                 td.appendChild(create_buttons(station_list_container, "Version", "weewx_info"));
                 td.appendChild(create_buttons(station_list_container, "Last Seen", "last_seen"));
 
-                const thumbButton = document.createElement('input')
-                thumbButton.setAttribute('type', 'checkbox')
-                thumbButton.setAttribute('checked', showThumbs)
-                thumbButton.addEventListener("click", () => toggle_thumbnails())
+                const thumbButton = document.createElement('input');
+                thumbButton.setAttribute('type', 'checkbox');
+                thumbButton.setAttribute('checked', showThumbs);
+                thumbButton.addEventListener("click", () => toggle_thumbnails());
 
-                const thumbDiv = document.createElement('div')
-                thumbDiv.innerHTML = 'Thumbnails<br/>'
-                thumbDiv.appendChild(thumbButton)
-                td.appendChild(thumbDiv)
+                const thumbDiv = document.createElement('div');
+                thumbDiv.innerHTML = 'Thumbnails<br/>';
+                thumbDiv.appendChild(thumbButton);
+                td.appendChild(thumbDiv);
 
                 td.colSpan = "2";
                 td.className = 'sort_buttons';
@@ -366,7 +366,7 @@
                 tbdy.appendChild(tr);
 
                 // Now attach the list of stations to the table body
-                tbdy.appendChild(station_list_container)
+                tbdy.appendChild(station_list_container);
 
                 // Attach the table body to the table
                 tbl.appendChild(tbdy);
@@ -387,7 +387,7 @@
                 }
 
                 // Sort the indices.
-                const indices = get_sort_indices(sites, sort_metric, sort_order)
+                const indices = get_sort_indices(sites, sort_metric, sort_order);
 
                 let rowclass = 'oddrow';
                 const disp = showThumbs ? 'inline' : 'none';
@@ -428,24 +428,24 @@
 
             function create_buttons(container, label, sort_metric) {
 
-                const up_button = document.createElement('input')
-                up_button.setAttribute('type', 'submit')
-                up_button.setAttribute('value', `${label} ↑`)
+                const up_button = document.createElement('input');
+                up_button.setAttribute('type', 'submit');
+                up_button.setAttribute('value', `${label} ↑`);
                 up_button.addEventListener("click",
                                            () => populate_station_list(container, sort_metric, "up"))
 
-                const dn_button = document.createElement('input')
-                dn_button.setAttribute('type', 'submit')
-                dn_button.setAttribute('value', `${label} ↓`)
+                const dn_button = document.createElement('input');
+                dn_button.setAttribute('type', 'submit');
+                dn_button.setAttribute('value', `${label} ↓`);
                 dn_button.addEventListener("click",
                                            () => populate_station_list(container, sort_metric, "dn"))
 
-                const button_group = document.createElement("div")
-                button_group.setAttribute('class', 'button_pair')
-                button_group.appendChild(up_button)
-                button_group.appendChild(document.createElement('br'))
-                button_group.appendChild(dn_button)
-                return button_group
+                const button_group = document.createElement("div");
+                button_group.setAttribute('class', 'button_pair');
+                button_group.appendChild(up_button);
+                button_group.appendChild(document.createElement('br'));
+                button_group.appendChild(dn_button);
+                return button_group;
             }
 
             function populate_hardware_table(counts) {
@@ -559,7 +559,7 @@
 
             function attach_station_type(elem, station_type, count_keys) {
                 elem.addEventListener('click', function () {
-                    for (var key in count_keys) {
+                    for (let key in count_keys) {
                         dehighlight(document.getElementById('station_type_' + count_keys[key]));
                     }
                     highlight(document.getElementById('station_type_' + station_type));
@@ -633,12 +633,6 @@
                 sites[idx].marker.setMap(null);
             }
 
-            function show_all_markers() {
-                for (let i = 0; i < sites.length; i++) {
-                    show_marker(i);
-                }
-            }
-
             function hide_all_markers() {
                 for (let i = 0; i < sites.length; i++) {
                     hide_marker(i);
@@ -684,13 +678,14 @@
             initialize();
             populate_header('stations');
         }
+
         function toggle(control, id) {
             const elem = document.getElementById(id);
-            if(elem) {
+            if (elem) {
                 let html = control.innerHTML;
                 let display = 'none';
                 let indicator = '';
-                if(elem.style.display !== 'none') {
+                if (elem.style.display !== 'none') {
                     display = 'none';
                     indicator = '&#x25b6;';     // Right-pointing triangle
                 } else {
@@ -698,7 +693,7 @@
                     indicator = '&#x25bc;';     // Down-pointing triangle
                 }
                 elem.style.display = display;
-                html = indicator + html.substring(1,html.length);
+                html = indicator + html.substring(1, html.length);
                 control.innerHTML = html;
             }
         }
