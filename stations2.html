@@ -10,7 +10,7 @@
     <meta name='viewport' content='initial-scale=1'/>
     <title>WeeWX: Stations Running WeeWX</title>
     <link href='weewx.css' rel='stylesheet' type='text/css'/>
-    <script src='weewx2.js' type='text/javascript'></script>
+    <script src='weewx.js' type='text/javascript'></script>
     <script src='md5.js' type='text/javascript'></script>
     <script src='echo.js' type='text/javascript'></script>
     <style>
@@ -698,6 +698,25 @@
                     title = x.station_url;
                 }
                 return trim_string(title, maxTitleLen);
+            }
+
+            function toggle(control, id) {
+                const elem = document.getElementById(id);
+                if(elem) {
+                    let html = control.innerHTML;
+                    let display = 'none';
+                    let indicator = '';
+                    if(elem.style.display !== 'none') {
+                        display = 'none';
+                        indicator = '&#x25b6;';     // Right-pointing triangle
+                    } else {
+                        display = 'inline';
+                        indicator = '&#x25bc;';     // Down-pointing triangle
+                    }
+                    elem.style.display = display;
+                    html = indicator + html.substring(1,html.length);
+                    control.innerHTML = html;
+                }
             }
 
             function toggle_thumbnails() {
