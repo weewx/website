@@ -317,10 +317,14 @@
                     indices[i] = i;
                 }
                 if (sort_metric === 'description') {
-                    if (sort_order === 'dn') {
-                        for (let i = 0; i < sites.length; i++) {
-                            indices[i] = sites.length - i - 1;
-                        }
+                    if (sort_order === 'up') {
+                        indices.sort(function(a, b) {
+                            return sites[a].description.localeCompare(sites[b].description)
+                        });
+                    } else {
+                        indices.sort(function(a, b) {
+                            return sites[b].description.localeCompare(sites[a].description)
+                        });
                     }
                 } else if (sort_metric === 'station_url') {
                     if (sort_order === 'up') {
