@@ -231,3 +231,89 @@ function populate_screenshots(maxnum, rnd) {
     }
     elem.innerHTML = html;
 }
+
+function get_sort_indices(sites, sort_metric, sort_order) {
+    let indices = [];
+    for (let i = 0; i < sites.length; i++) {
+        indices[i] = i;
+    }
+    if (sort_metric === 'description') {
+        if (sort_order === 'up') {
+            indices.sort(function (a, b) {
+                return sites[a].description.localeCompare(sites[b].description);
+            });
+        } else {
+            indices.sort(function (a, b) {
+                return sites[b].description.localeCompare(sites[a].description);
+            });
+        }
+    } else if (sort_metric === 'station_url') {
+        if (sort_order === 'up') {
+            indices.sort(function (a, b) {
+                return compare(sites[a].station_url.toLowerCase(),
+                               sites[b].station_url.toLowerCase());
+            });
+        } else {
+            indices.sort(function (a, b) {
+                return compare(sites[b].station_url.toLowerCase(),
+                               sites[a].station_url.toLowerCase());
+            });
+        }
+    } else if (sort_metric === 'latitude') {
+        if (sort_order === 'up') {
+            indices.sort(function (a, b) {
+                return compare(sites[a].latitude, sites[b].latitude);
+            });
+        } else {
+            indices.sort(function (a, b) {
+                return compare(sites[b].latitude, sites[a].latitude);
+            });
+        }
+    } else if (sort_metric === 'longitude') {
+        if (sort_order === 'up') {
+            indices.sort(function (a, b) {
+                return compare(sites[a].longitude, sites[b].longitude);
+            });
+        } else {
+            indices.sort(function (a, b) {
+                return compare(sites[b].longitude, sites[a].longitude);
+            });
+        }
+    } else if (sort_metric === 'station_type') {
+        if (sort_order === 'up') {
+            indices.sort(function (a, b) {
+                return compare(sites[a].station_type, sites[b].station_type);
+            });
+        } else {
+            indices.sort(function (a, b) {
+                return compare(sites[b].station_type, sites[a].station_type);
+            });
+        }
+    } else if (sort_metric === 'last_seen') {
+        if (sort_order === 'up') {
+            indices.sort(function (a, b) {
+                return compare(sites[a].last_seen, sites[b].last_seen);
+            });
+        } else {
+            indices.sort(function (a, b) {
+                return compare(sites[b].last_seen, sites[a].last_seen);
+            });
+        }
+    } else if (sort_metric === 'weewx_info') {
+        if (sort_order === 'up') {
+            indices.sort(function (a, b) {
+                return compare(sites[a].weewx_info, sites[b].weewx_info);
+            });
+        } else {
+            indices.sort(function (a, b) {
+                return compare(sites[b].weewx_info, sites[a].weewx_info);
+            });
+        }
+    }
+    return indices;
+}
+
+function compare(x, y) {
+    return x < y ? -1 : x > y ? 1 : 0;
+}
+
