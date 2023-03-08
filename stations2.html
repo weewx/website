@@ -138,20 +138,28 @@
         }
     </style>
     <script type='text/javascript'>
-        function setup() {
-            /*
-                This function is called after the Google Maps API has loaded. It then asynchronously
-                loads the InfoBox API (which depends on the Google API having been loaded) and
-                the station data. Once the results have resolved, they are used to call initMap().
-            */
-            Promise.all([
-                            import("./infobox-1.1.19.js")
-                                .then(imported => imported.InfoBox),
-                            fetch("/api/v2/stations/?limit=2000&max_age=30d")
-                                .then(response => response.json())
-                        ])
-                   .then(values => initMap(...values));
-        }
+        /*
+           At this point, 3 things need to be loaded:
+           - the Google Maps javascript;
+           - the InfoBox javascript (which depends on Google Maps); and
+           - the station data.
+
+           The following starts the download of Google Maps and the station data simultaneously.
+           When the Google Maps download is done, it starts the InfoBox download.  It then
+           synchronizes the InfoBox and station data downloads, passing the final results on
+           to the function initMap().
+         */
+        var gmapCallback = null;
+        let gmapPromise = new Promise(function (resolve, reject) {
+            gmapCallback = resolve;
+        }).then(() => import("./infobox-1.1.19.js")
+            .then(imported => imported.InfoBox));
+
+        fetchPromise = fetch("/api/v2/stations/?limit=2000")
+            .then(response => response.json());
+
+        Promise.all([gmapPromise, fetchPromise])
+               .then(values => initMap(...values));
 
         function initMap(InfoBox, sites) {
             /*
@@ -756,7 +764,7 @@
 </div>
 
 </body>
-</html>
 <script async defer
-        src='https://maps.googleapis.com/maps/api/js?key=AIzaSyCCFIuh9cZXlNxXJJ5w5BxHmmm1rDGbtqE&callback=setup'></script>
+        src='https://maps.googleapis.com/maps/api/js?key=AIzaSyCCFIuh9cZXlNxXJJ5w5BxHmmm1rDGbtqE&callback=gmapCallback'>
 </script>
+</html>
