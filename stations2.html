@@ -13,6 +13,7 @@
     <script src='weewx.js' type='text/javascript'></script>
     <script src='md5.js' type='text/javascript'></script>
     <script src='echo.js' type='text/javascript'></script>
+    <script src='google-api-key.js' type = 'text/javascript'></script>
     <style>
         #map_container {
             margin-top: 10px;
@@ -138,6 +139,14 @@
         }
     </style>
     <script type='text/javascript'>
+
+        function loadScript(url){
+            const script = document.createElement('script');
+            script.src = url;
+            script.type = 'text/javascript';
+            document.getElementsByTagName("HEAD")[0].appendChild(script);
+        }
+
         /*
            At this point, 3 things need to be loaded:
            - the Google Maps javascript;
@@ -149,6 +158,12 @@
            synchronizes the InfoBox and station data downloads, passing the final results on
            to the function initMap().
          */
+
+        // Load the Google API. It will call "gmapCallback" when done.
+        loadScript(`https://maps.googleapis.com/maps/api/js?key=${google_key}&callback=gmapCallback`)
+
+        // The callback function "gmapCallback" needs to be in global scope, so it needs to be
+        // outside the function initMap().
         var gmapCallback = null;
         let gmapPromise = new Promise(function (resolve, reject) {
             gmapCallback = resolve;
@@ -787,7 +802,4 @@
 </div>
 
 </body>
-<script async defer
-        src='https://maps.googleapis.com/maps/api/js?key=AIzaSyCCFIuh9cZXlNxXJJ5w5BxHmmm1rDGbtqE&callback=gmapCallback'>
-</script>
 </html>
