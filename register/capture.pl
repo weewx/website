@@ -101,7 +101,7 @@ my $placeholder = "$basedir/html/blank-600x200.png";
 my $placeholder_small = "$basedir/html/blank-100x100.png";
 my $placeholder_thumb = "$basedir/html/blank-50x50.png";
 
-# how long ago do we consider stale, in seconds
+# how we determine the freshness of a station or snapshot
 my $active = 2_592_000; # older than 30 days is no longer active
 my $stale = 604_800; # older than 7 days is stale
 
@@ -143,8 +143,8 @@ while($ARGV[0]) {
         $force = 1;
     } elsif ($arg eq '--help') {
         print "argument include:\n";
-        print "  --stale          how long in seconds to consider stale\n";
-        print "  --active         how long to consider stale, in seconds\n";
+        print "  --stale          snapshots older than this are refreshed, in seconds\n";
+        print "  --active         stations older than this are ignored, in seconds\n";
         print "  --url            process a single image from this url\n";
         print "  --verbosity      1=some, 2=lots\n";
         print "  --save-captures  do not delete the original captures\n";
@@ -167,29 +167,28 @@ if ($url ne q()) {
     %stations = get_stations($now);
 }
 my $FMT = "%b %d %H:%M:%S";
+my $tstr = strftime $FMT, gmtime $now;
 my $tot = keys %stations;
 my $cnt = 0;
 my $total_time = 0;
 foreach my $url (keys %stations) {
     $cnt += 1;
     my $t1 = time;
-    my $tstr = strftime $FMT, gmtime $now;
     logout("process '$url' at $tstr ($now) ($cnt of $tot)");
     capture_station($url, $now);
     my $t2 = time;
-    my $elapsed = $t2 - $t1;
-    logout("completed '$url' in $elapsed seconds");
-    $total_time += $elapsed;
+    my $dt = $t2 - $t1;
+    logout(sprintf("completed '$url' in %.2f seconds", $dt));
+    $total_time += $dt;
 }
 my $elapsed = time - $now;
-my $avg = $total_time;
-$avg /= $cnt if $cnt;
-logout("processed $cnt sites in $elapsed seconds (${avg}s/site)");
+logout("processed $cnt sites in $elapsed seconds");
 
 exit 0;
 
 
-# query the station database for stations.  keep any that are active.
+# query the station database for stations.  we will do screen captures only for
+# stations that are considered active.
 sub get_stations {
     my ($now) = @_;
     my $tot = 0;
@@ -359,14 +358,18 @@ sub capture_or_die {
 
     # did eval exit due to alarm?
     if (($@ =~ "^TIMEOUT") || !defined($rc)) {
+        logout("timeout waiting for child (pid=$pid hash=$fn)");
         # yes - kill the process
-        if (! kill(KILL => $pid)) {
-            logout("unable to kill $pid ($fn): $!");
-            die;
+        if (! kill 'TERM', $pid) {
+            logout("TERM failed (pid=$pid hash=$fn): $!");
+            if (! kill 'KILL', $pid) {
+                logout("KILL failed (pid=$pid hash=$fn): $!");
+                die;
+            }
         }
         my $ret = waitpid($pid, 0);
         if (! $ret) {
-            logout("unable to reap $pid (ret=$ret) ($fn): $!");
+            logout("unable to reap child (ret=$ret pid=$pid hash=$fn): $!");
             die;
         }
         # get output of child process
@@ -377,7 +380,7 @@ sub capture_or_die {
             my $signum = $rc & 127;
             # core-dump flag is top bit
             my $dump = $rc & 128;
-            logout("child died (pid=$pid hash=$fn url=$url): exit_code=$exit_code kill_signal=$signum dumped_core=$dump");
+            logout("child failed (pid=$pid hash=$fn url=$url): exit_code=$exit_code kill_signal=$signum dumped_core=$dump");
         }
         # process failed
     } else {
