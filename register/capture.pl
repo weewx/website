@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Copyright 2015 Matthew Wall
+# Copyright 2015-2023 Matthew Wall
 #
 # Scan the registered stations and get a screen capture for each one.
 # If we already have a recent capture, skip it.  If there is no reply, then
@@ -20,14 +20,26 @@
 #  xvfb
 #  weasyprint/wkhtmltoimage/phantomjs/cutycapt
 #
+# how to use this script:
+#
 # This script needs an X server in order to operation.  Recommend to keep one
 # running all the time like this (or even higher resolution):
 #    Xvfb :99 -screen 0 1024x768x24
 # then set the DISPLAY before running this script:
 #    export DISPLAY=:99
-
-#  https://stackoverflow.com/questions/429254/how-can-i-find-memory-leaks-in-long-running-perl-program
-# https://markandruth.co.uk/2015/12/17/debugging-perl-memory-leaks
+#
+# to capture website of each active station:
+#   capture.pl
+#
+# to capture website of a single station:
+#   capture.pl --url http://station.example.com
+#
+# to see all of the options:
+#   capture.pl --help
+#
+# references:
+#   https://stackoverflow.com/questions/429254/how-can-i-find-memory-leaks-in-long-running-perl-program
+#   https://markandruth.co.uk/2015/12/17/debugging-perl-memory-leaks
 #use Devel::Leak::Object qw( GLOBAL_bless );
 
 use Time::HiRes qw(time sleep);
