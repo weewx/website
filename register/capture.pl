@@ -177,7 +177,9 @@ foreach my $url (keys %stations) {
     logout("process '$url' at $tstr ($now) ($cnt of $tot)");
     capture_station($url, $now);
     my $t2 = time;
-    $total_time += $t2 - $t1;
+    my $elapsed = $t2 - $t1;
+    logout("completed '$url' in $elapsed seconds");
+    $total_time += $elapsed;
 }
 my $elapsed = time - $now;
 my $avg = $total_time;
