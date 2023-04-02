@@ -60,7 +60,8 @@ my $capture_app = 'phantomjs';
 
 my $weasyprint = '/opt/anaconda3/bin/weasyprint';
 my $wkhtmltox = '/opt/wkhtmltox/bin/wkhtmltoimage';
-my $phantomjs = 'LD_LIBRARY_PATH=/usr/lib/phantomjs /usr/lib/phantomjs/phantomjs';
+#my $phantomjs = 'LD_LIBRARY_PATH=/usr/lib/phantomjs /usr/lib/phantomjs/phantomjs';
+my $phantomjs = '/usr/bin/phantomjs';
 my $cutycapt = '/usr/bin/cutycapt';
 my $xvfb = '/usr/bin/xvfb-run --server-args="-screen 0, 1024x768x24"';
 
