@@ -60,7 +60,7 @@ my $capture_app = 'phantomjs';
 
 my $weasyprint = '/opt/anaconda3/bin/weasyprint';
 my $wkhtmltox = '/opt/wkhtmltox/bin/wkhtmltoimage';
-my $phantomjs = '/usr/bin/phantomjs';
+my $phantomjs = 'LD_LIBRARY_PATH=/usr/lib/phantomjs /usr/lib/phantomjs/phantomjs';
 my $cutycapt = '/usr/bin/cutycapt';
 my $xvfb = '/usr/bin/xvfb-run --server-args="-screen 0, 1024x768x24"';
 
@@ -360,16 +360,14 @@ sub capture_or_die {
     if (($@ =~ "^TIMEOUT") || !defined($rc)) {
         logout("timeout waiting for child (pid=$pid hash=$fn)");
         # yes - kill the process
+        # FIXME: need to kill any grandchildren too, not just the child
         if (! kill 'TERM', $pid) {
-            logout("TERM failed (pid=$pid hash=$fn): $!");
-            if (! kill 'KILL', $pid) {
-                logout("KILL failed (pid=$pid hash=$fn): $!");
-                die;
-            }
+            logout("cannot kill child (pid=$pid hash=$fn): $!");
+            die;
         }
         my $ret = waitpid($pid, 0);
         if (! $ret) {
-            logout("unable to reap child (ret=$ret pid=$pid hash=$fn): $!");
+            logout("cannot reap child (ret=$ret pid=$pid hash=$fn): $!");
             die;
         }
         # get output of child process
