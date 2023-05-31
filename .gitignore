@@ -1,3 +1,6 @@
+# We do not want to commit the Google API key:
+google-api-key.js
+
 *~
 .idea
 .project
