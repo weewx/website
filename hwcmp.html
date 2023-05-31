@@ -5,12 +5,12 @@
   <title>WeeWX: Hardware Comparison</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link href="favicon.ico" rel="icon" type="image/x-icon" />
-  <link href="weewx.css" rel="stylesheet" type="text/css" />
-  <script src="weewx.js" type="text/javascript"></script>
+  <link href="css/weewx.css" rel="stylesheet" type="text/css" />
+  <script src="js/weewx.js" type="text/javascript"></script>
   <script src="highslide/highslide.js" type="text/javascript"></script>
-  <link rel="stylesheet" type="text/css" href="highslide/highslide.css" />
+  <link href="highslide/highslide.css" rel="stylesheet" type="text/css" />
 <!--[if lt IE 7]>
-  <link rel="stylesheet" type="text/css" href="highslide/highslide-ie6.css" />
+  <link href="highslide/highslide-ie6.css" rel="stylesheet" type="text/css" />
 <![endif]-->
 
 <!-- TODO:
@@ -46,7 +46,7 @@ var unit_groups = {
   'range': ['ft', 'm']
 };
 
-var stations = {
+const stations = {
   'vpro': {
     'manufacturer': {'name': 'Davis', 'url': 'http://www.davisnet.com/'},
     'family': 'Vantage',

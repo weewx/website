@@ -9,11 +9,11 @@
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
     <meta name='viewport' content='initial-scale=1'/>
     <title>WeeWX: Stations Running WeeWX</title>
-    <link href='weewx.css' rel='stylesheet' type='text/css'/>
-    <script src='weewx.js' type='text/javascript'></script>
-    <script src='md5.js' type='text/javascript'></script>
-    <script src='echo.js' type='text/javascript'></script>
-    <script src='google-api-key.js' type='text/javascript'></script>
+    <link href='css/weewx.css' rel='stylesheet' type='text/css'/>
+    <script src='js/weewx.js' type='text/javascript'></script>
+    <script src='js/md5.js' type='text/javascript'></script>
+    <script src='js/echo.js' type='text/javascript'></script>
+    <script src='js/google-api-key.js' type='text/javascript'></script>
     <style>
         #map_container {
             margin-top: 10px;
@@ -167,7 +167,7 @@
         var gmapCallback = null;
         let gmapPromise = new Promise(function (resolve, reject) {
             gmapCallback = resolve;
-        }).then(() => import("./infobox-1.1.19.js")
+        }).then(() => import("./js/infobox-1.1.19.js")
             .then(imported => imported.InfoBox));
 
         fetchPromise = fetch("/api/v2/stations/?limit=2000")
