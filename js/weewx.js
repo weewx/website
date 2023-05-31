@@ -147,7 +147,7 @@ function populate_header(page) {
     if (navbar) {
         var navbar_html = "\
 <div class='navitem'>\
-<a href='/'><img src='/weewx-logo-128x128.png' class='logo' alt='weewx' /></a>\
+<a href='/'><img src='/images/weewx-logo-128x128.png' class='logo' alt='weewx' /></a>\
 </div>\
 <div class='navitem'>\
 <a href='/stations.html'>MAP</a>\

@@ -98,9 +98,9 @@ if ($dbtype eq 'mysql') {
 }
 
 # placeholder file when capture is too big to keep
-my $placeholder = "$basedir/html/blank-600x200.png";
-my $placeholder_small = "$basedir/html/blank-100x100.png";
-my $placeholder_thumb = "$basedir/html/blank-50x50.png";
+my $placeholder = "$basedir/html/images/blank-600x200.png";
+my $placeholder_small = "$basedir/html/images/blank-100x100.png";
+my $placeholder_thumb = "$basedir/html/images/blank-50x50.png";
 
 # how we determine the freshness of a station or snapshot
 my $active = 2_592_000; # older than 30 days is no longer active

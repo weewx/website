@@ -103,7 +103,7 @@
   height: 104px;
 }
 .infoBox {
-  background: url('/tipbox90pad.gif') no-repeat scroll 0% 18px;
+  background: url('/images/tipbox90pad.gif') no-repeat scroll 0% 18px;
   width: 250px;
 }
 .info-content {
@@ -131,7 +131,7 @@ var infowindow = new InfoBox({
   pixelOffset: new google.maps.Size(10, -50),
   zIndex: null,
   closeBoxMargin: "2px 2px 2px 2px",
-  closeBoxURL: "close.gif",
+  closeBoxURL: "images/close.gif",
   infoBoxClearance: new google.maps.Size(1, 1),
   isHidden: false,
   pane: "floatPane",
@@ -147,7 +147,7 @@ var backgroundColor = '#ffffff';
 var highlightColor = '#9fcef9';
 var maxTitleLen = 70;
 var maxURLLen = 80;
-var redDotURL = 'https://weewx.com/dot-red.png';
+var redDotURL = 'https://weewx.com/images/dot-red.png';
 
 function count_sorter(a,b) {
   if(a == 'total') {
@@ -373,7 +373,9 @@ function populate_station_list(sort_metric, sort_order) {
     tr.appendChild(td);
     td = document.createElement('td');
     var basename = '/shots/' + md5(sites[indices[i]].url);
-    td.innerHTML = '<div class="thumbnail" style="display:' + disp + '"><a href="' + basename + '.jpg"><img src="/blank.gif" alt="" data-echo="' + basename + '.tn.jpg" width="50"></a></div>';
+    td.innerHTML = '<div class="thumbnail" style="display:' + disp + '"><a href="' + basename + '
+    .jpg"><img src="/images/blank.gif" alt="" data-echo="' + basename + '.tn.jpg"
+    width="50"></a></div>';
     tr.appendChild(td);
     td = document.createElement('td');
     td.id = 'site_' + indices[i];

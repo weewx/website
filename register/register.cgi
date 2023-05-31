@@ -136,9 +136,9 @@ my $default_interval = 4;
 
 # placeholder images until capture can happen
 my $imgext = 'jpg';
-my $placeholder = "$basedir/html/blank-600x200.png";
-my $placeholder_small = "$basedir/html/blank-100x100.png";
-my $placeholder_thumb = "$basedir/html/blank-50x50.png";
+my $placeholder = "$basedir/html/images/blank-600x200.png";
+my $placeholder_small = "$basedir/html/images/blank-100x100.png";
+my $placeholder_thumb = "$basedir/html/images/blank-50x50.png";
 my %PLACEHOLDERS = (
     ".$imgext" => $placeholder,
     ".sm.$imgext" => $placeholder_small,
