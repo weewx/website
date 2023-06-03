@@ -1,9 +1,9 @@
 # -* makefile -*-
 # this makefile contains rules for the weewx.com website
 
-WEEWX_COM=weewx.com
+WEEWX_COM:=weewx.com
 WEEWX_HTMLDIR=/var/www/html
-RSYNC_OPTS=-arv --chmod=ugo=rwX --no-p --no-g --no-t
+RSYNC_OPTS=--archive --recursive --verbose --chmod=ugo=rwX --no-perms --no-group --no-times
 
 help:
 	@echo "options include:"
