@@ -18,7 +18,7 @@ upload:
 	rsync $(RSYNC_OPTS) code.html docs.html hardware.html\
  hwcmp.html index.html keys.html showcase.html stations.html support.html\
  favicon.ico\
- cfg consumers css hardware images js keys logo screenshots .nginxy\
+ cfg consumers css docs hardware images js keys logo screenshots .nginxy\
  $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
 
 upload-highslide:
