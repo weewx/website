@@ -7,7 +7,7 @@
     Theme author: @lfelipe1501
 \*------------------------------------*/
 // Configure .nginxy here:
-var websiteName = "weeWX";
+var websiteName = "WeeWX";
 var websiteURL = "http://www.weewx.com";
 // End of normal settings.
 //
