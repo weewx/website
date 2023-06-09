@@ -3,15 +3,15 @@
 
 /* list of weather stations displayed on the showcase page. */
 /* for each station specify a description, url, and screenshot. */
-var sites = [
+const sites = [
     {
         description: 'Hood River, Oregon',
-        url: 'http://www.threefools.org/weewx/',
+        url: 'https://www.threefools.org/weewx/',
         screenshot: 'hoodriver.png'
     },
     {
         description: 'Belchertown, MA',
-        url: 'http://belchertownweather.com/',
+        url: 'https://belchertownweather.com/',
         screenshot: 'belchertown.png'
     },
     {
@@ -36,7 +36,7 @@ var sites = [
     },
     {
         description: 'Solås, Ålgård, Norway',
-        url: 'http://www.kanonbra.com/veret/',
+        url: 'https://www.kanonbra.com/veret/',
         screenshot: 'solas.png'
     },
     {
@@ -46,13 +46,8 @@ var sites = [
     },
     {
         description: 'Meteo Saint-Sulpice',
-        url: 'http://meteosaintsulpice.free.fr/now.php',
+        url: 'https://www.meteosaintsulpice.fr/',
         screenshot: 'meteosaintsulpice.png'
-    },
-    {
-        description: 'Nishinomiya Hyogo Japan',
-        url: 'http://www.swetake.com/weather/site/index.html',
-        screenshot: 'nishinomiya.png'
     },
     {
         description: 'Tinos Wetterseite',
@@ -143,9 +138,9 @@ var sites = [
 
 /* inject navigation links into the navigation div */
 function populate_header(page) {
-    var navbar = document.getElementById('navigation');
+    const navbar = document.getElementById('navigation');
     if (navbar) {
-        var navbar_html = "\
+        const navbar_html = "\
 <div class='navitem'>\
 <a href='/'><img src='/images/weewx-logo-128x128.png' class='logo' alt='weewx' /></a>\
 </div>\
@@ -170,7 +165,7 @@ function populate_header(page) {
 <div class='navitem'>\
 <a href='/downloads'>DOWNLOAD</a>\
 </div>";
-        var tmp = document.createElement('div');
+        let tmp = document.createElement('div');
         tmp.setAttribute('class', 'nav');
         tmp.innerHTML = navbar_html;
         navbar.appendChild(tmp);
@@ -179,11 +174,11 @@ function populate_header(page) {
 
 /* inject the showcase web sites into the showcase div */
 function populate_showcase() {
-    var elem = document.getElementById('showcase');
+    const elem = document.getElementById('showcase');
     if (!elem) {
         return;
     }
-    var html = '';
+    let html = '';
     for (var i = 0; i < sites.length; i++) {
         html += "<div class='showcase_item'>";
         html += "<a href='" + sites[i].url + "'>" + sites[i].description;
@@ -196,22 +191,22 @@ function populate_showcase() {
     elem.innerHTML = html;
 }
 
-/* inject a subset of showcase web sites into the screenshots div. */
+/* inject a subset of showcase websites into the screenshots div. */
 /* maxnum is the maximum number of thumbnails to display. */
 
 /* if rnd is specified, then choose randomly. */
 function populate_screenshots(maxnum, rnd) {
-    var elem = document.getElementById('screenshots');
-    var i;
+    const elem = document.getElementById('screenshots');
     if (!elem) {
         return;
     }
     if (!maxnum) {
         maxnum = sites.length;
     }
-    var indices = Array();
+    const indices = Array();
+    let i;
     if (rnd) {
-        var n = 0;
+        let n = 0;
         for (i = 0; i < sites.length && n < maxnum; i++) {
             if (Math.random() > 0.5) {
                 indices[n] = i;
@@ -223,7 +218,7 @@ function populate_screenshots(maxnum, rnd) {
             indices[i] = i;
         }
     }
-    var html = '';
+    let html = '';
     for (i = 0; i < indices.length; i++) {
         html += "<a href='screenshots/" + sites[indices[i]].screenshot + "'>";
         html += "<img src='screenshots/" + sites[indices[i]].screenshot + "'";
