@@ -7,18 +7,18 @@
     Theme author: @lfelipe1501
 \*------------------------------------*/
 // Configure .nginxy here:
-var websiteName = "weeWX";
-var websiteURL = "http://www.weewx.com";
+const websiteName = "WeeWX";
+const websiteURL = "http://www.weewx.com";
 // End of normal settings.
 //
 //
 
 $(document).ready(function() {
   // Working on nginx HTML and applying settings.
-  var text = $("#dirname").text();
-  var array = text.split("/");
-  var last = array[array.length - 2];
-  var currentDir = last.charAt(0).toUpperCase() + last.slice(1);
+  const text = $("#dirname").text();
+  const array = text.split("/");
+  const last = array[array.length - 2];
+  let currentDir = last.charAt(0).toUpperCase() + last.slice(1);
 
   // Truncate long folder names.
   if (currentDir.length > 19) {
@@ -31,7 +31,7 @@ $(document).ready(function() {
   $("#dirname").html(currentDir);
 
   // Establish supported formats.
-  var formats = [
+  const formats = [
     "7z",
     "avi",
     "bat",
@@ -86,14 +86,14 @@ $(document).ready(function() {
 
   // Scan all files in the directory, check the extensions and show the right MIME-type image.
   $("td a").each(function() {
-    var found = 0;
-    var arraySplit = $(this)
+    let found = 0;
+    const arraySplit = $(this)
       .attr("href")
       .split(".");
-    var fileExt = arraySplit[arraySplit.length - 1];
-    var oldText;
+    const fileExt = arraySplit[arraySplit.length - 1];
+    let oldText;
 
-    for (var i = 0; i < formats.length; i++) {
+    for (let i = 0; i < formats.length; i++) {
       if (fileExt.toLowerCase() === formats[i].toLowerCase()) {
         found = 1;
         oldText = $(this).text();
@@ -138,7 +138,7 @@ $(document).ready(function() {
       );
 
       // Fix for annoying jQuery behaviour where inserted spaces are treated as new elements -- which breaks my search.
-      var string = " " + $($(this)[0].nextSibling).text();
+      let string = " " + $($(this)[0].nextSibling).text();
 
       // Copy the original meta-data string, append a space char and save it over the old string.
       $($(this)[0].nextSibling).remove();
