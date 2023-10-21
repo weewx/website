@@ -1,4 +1,14 @@
 weewx station registry
+
+Fall 2023 tk
+
+Much of this directory is no longer used. Instead, weereg-py is used
+(https://github.com/tkeffer/weereg-py) to both register stations, and to provide station
+information.
+
+In particular, the Perl scripts register.cgi, mkstations.pl, and the template, stations.html.in,
+are not used.
+
 03nov2022 mwall
 
 This is a quick hack to enable weewx stations to phone home so they can be

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.31, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.34, for Linux (x86_64)
 --
 -- Host: localhost    Database: weereg
 -- ------------------------------------------------------
--- Server version	8.0.31-0ubuntu0.20.04.2
+-- Server version	8.0.34-0ubuntu0.20.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,10 +24,10 @@ DROP TABLE IF EXISTS `history`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `history` (
   `datetime` int NOT NULL,
-  `station_type` varchar(64) NOT NULL,
+  `station_type` varchar(256) NOT NULL,
   `active` int NOT NULL,
   `stale` int NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `platform_history` (
   `platform_info` varchar(256) NOT NULL,
   `active` int NOT NULL,
   `stale` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -57,7 +57,7 @@ CREATE TABLE `python_history` (
   `python_info` varchar(256) NOT NULL,
   `active` int NOT NULL,
   `stale` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,11 +77,13 @@ CREATE TABLE `stations` (
   `weewx_info` varchar(64) DEFAULT NULL,
   `python_info` varchar(64) DEFAULT NULL,
   `platform_info` varchar(128) DEFAULT NULL,
-  `config_path` varchar(255) DEFAULT NULL,
-  `entry_path` varchar(255) DEFAULT NULL,
-  `last_addr` varchar(16) DEFAULT NULL,
-  `last_seen` int DEFAULT NULL,
-  KEY `index_stations` (`station_url`,`latitude`,`longitude`,`station_type`,`station_model`,`weewx_info`,`python_info`,`platform_info`,`last_addr`)
+  `config_path` varchar(64) DEFAULT NULL,
+  `entry_path` varchar(64) DEFAULT NULL,
+  `last_addr` varchar(44) DEFAULT NULL,
+  `last_seen` int NOT NULL,
+  KEY `index_station_url` (`station_url`),
+  KEY `index_last_seen` (`last_seen`),
+  KEY `index_ip` (`last_addr`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -97,7 +99,7 @@ CREATE TABLE `weewx_history` (
   `weewx_info` varchar(256) NOT NULL,
   `active` int NOT NULL,
   `stale` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -109,4 +111,4 @@ CREATE TABLE `weewx_history` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-09  4:07:17
+-- Dump completed on 2023-10-21  1:07:00
