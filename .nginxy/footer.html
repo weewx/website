@@ -1,12 +1,5 @@
 <!-- End of nginx output -->
 
-<p>&nbsp;</p>
-
-      <div id='includedREADME'></div>
-      <pre>
-        <div id='includedREADMETXT'></div>
-      </pre>
-
 <div id='footer'>
     <p>Copyright &copy; Tom Keffer, Matthew Wall, and Gary Roderick, all rights reserved</p>
 </div>
@@ -17,44 +10,39 @@
 
 <script>
     var readme_html = `
-<h2>Platform Packages</h2>
-<p>
-  For Debian, Ubuntu, Mint, including Raspberry Pi, see:<br/>
-  <a href='http://weewx.com/docs/debian.htm'>http://weewx.com/docs/debian.htm</a>
-</p>
-<p>
-  For Red Hat, CentOS, Fedora, see:<br/>
-  <a href='http://weewx.com/docs/redhat.htm'>http://weewx.com/docs/redhat.htm</a>
-</p>
-<p>
-  For SuSE, OpenSuSE,see:<br/>
-  <a href='http://weewx.com/docs/suse.htm'>http://weewx.com/docs/suse.htm</a>
-</p>
-<p> The package files for each operating system are in the <a
-href='released_versions'>released_versions</a> directory, but it is typically easier to install them
-directly from the platform repositories using the instructions listed above. </p>
-
-<h2>Source Package</h2>
-<p>Installation using <span class='code'>setup.py</span> from the source package will put everything in a single directory.  This is the recommended
-method for those who write custom services and reports.</p>
-<p>
-  For all operating systems including Linux, BSD, see:<br/>
-  <a href='http://weewx.com/docs/setup.htm'>http://weewx.com/docs/setup.htm</a>
-</p>
-<p>
-  For MacOS, see:<br/>
-  <a href='http://weewx.com/docs/macos.htm'>http://weewx.com/docs/macos.htm</a>
-</p>
-
-<h2>Previous Releases</h2>
-<p>  Older releases are in the <a href='released_versions'>released_versions</a> directory. </p>
-
-<h2>Change History</h2>
-<p>
-  The changes made in each release are included in the WeeWX documentation.<br/>
-  <a href='http://weewx.com/docs/changes.txt'>http://weewx.com/docs/changes.txt</a>
-</p>`;
-
+<h2>How to install</h2>
+  <p>
+    There are several ways to install WeeWX.  Follow the instructions for one
+    of the <em>Installer</em> methods below.
+  </p>
+  <table id='install_methods'>
+    <tr><th class='method'>Installer</th><th>Systems</th><th>Best for...</th></tr>
+    <tr>
+      <td class='method'><a href="/docs/5.0/quickstarts/debian">Debian</a></td>
+      <td>Ubuntu, Mint, Raspberry Pi OS, Devuan</td>
+      <td rowspan="3">This is the fastest and easiest way to get up and running. The Debian, Redhat, and SUSE package installers use <em>apt</em>, <em>yum</em>, and <em>zypper</em>, respectively. You will need root access to install and run.</td>
+    </tr>
+    <tr>
+      <td class='method'><a href="/docs/5.0/quickstarts/redhat">Redhat</a></td>
+      <td>Fedora, CentOS, Rocky</td>
+    </tr>
+    <tr>
+      <td class='method'><a href="/docs/5.0/quickstarts/suse">SUSE</a></td>
+      <td>openSUSE</td>
+    </tr>
+    <tr>
+      <td class='method'><a href="/docs/5.0/quickstarts/pip">pip</a></td>
+      <td>any operating system</td>
+      <td>The pip installer will work on any operating system. Use this approach for macOS or one of the BSDs, or if you are using an older operating system. When used in a Python "virtual environment" (recommended), this approach is least likely to disturb other applications on your computer. This is also a good approach if you plan to do a lot of customization, or if you are developing a driver, skin, or other extension. Root access is not needed to install, but may be needed to run.</td>
+    </tr>
+    <tr>
+      <td class='method'><a href="/docs/5.0/quickstarts/git">git</a></td>
+      <td>any operating system</td>
+      <td>If you want to install WeeWX on a system with very little storage, or if you want to experiment with code that is under development, then you may want to run directly from the WeeWX sources. Root access is not needed to install, but may be needed to run.</td>
+    </tr>
+  </table>
+`;
+      
     populate_header('downloads');
     var url = window.location.href.trim();
     if (url[url.length - 1] == '/')
