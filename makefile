@@ -15,8 +15,8 @@ help:
 	@echo "make upload"
 
 upload:
-	rsync $(RSYNC_OPTS) code.html docs.html hardware.html\
- hwcmp.html index.html keys.html showcase.html stations.html support.html\
+	rsync $(RSYNC_OPTS) code.html docs.html hardware.html hwcmp.html\
+ index.html keys.html keys-old.html showcase.html stations.html support.html\
  favicon.ico\
  cfg consumers css docs hardware images js keys logo screenshots .nginxy\
  $(USER)@$(WEEWX_COM):$(WEEWX_HTMLDIR)
