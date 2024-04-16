@@ -63,7 +63,7 @@
     async function getData(info_type) {
         // Fetch the data from the API server
         try {
-            const resp = await fetch('http://localhost/api/v2/stats/' + info_type);
+            const resp = await fetch('/api/v2/stats/' + info_type);
             return await resp.json();
         } catch (error) {
             console.log(error);
