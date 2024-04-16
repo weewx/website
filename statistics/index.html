@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Trends</title>
+    <meta name='viewport' content='initial-scale=1'/>
+    <link href='../favicon.ico' rel='icon' type='image/x-icon'/>
+    <link href='../css/weewx.css' rel='stylesheet' type='text/css'/>
+    <script src='../js/showcase.js' type='text/javascript'></script>
+    <script src='https://cdn.plot.ly/plotly-2.30.0.min.js' charset='utf-8'></script>
+</head>
+<style>
+    .blink_text {
+        animation: blinker 1s linear infinite;
+    }
+
+    @keyframes blinker {
+        50% {
+            opacity: 0;
+        }
+    }
+</style>
+<body onload='populate_header();'>
+
+
+<!-- Begin Container -->
+<div id='container'>
+
+    <div id='masthead'>
+        <h1><a href='.'>WeeWX</a></h1>
+        <p>Open source software for your weather station</p>
+    </div>
+    <div id='navigation'></div>
+
+    <div id='reports'>
+        <h2>Report to run:
+            <select id='select_report' onchange='runReport(value)'>
+                <option value='python_info'>Python versions</option>
+                <option value='weewx_info'>WeeWX versions</option>
+                <option value='entry_path'>Path to weewxd</option>
+                <option value='config_path'>Path to weewx.conf</option>
+                <option value='station_type'>Station type</option>
+                <option value='station_model'>Station model</option>
+                <option value='platform_info'>Platform information</option>
+                <option selected>- select report -</option>
+            </select>
+        </h2>
+    </div>
+
+    <div id='info_plot'></div>
+
+    <div style='clear: both'>&nbsp;</div>
+
+    <div id='footer'>
+        <p>
+            Copyright &copy; Tom Keffer, Matthew Wall, and Gary Roderick, all rights reserved
+        </p>
+    </div>
+
+</div>
+<!-- End Container -->
+<script>
+    async function getData(info_type) {
+        // Fetch the data from the API server
+        try {
+            const resp = await fetch('http://localhost/api/v2/stats/' + info_type);
+            return await resp.json();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function runReport(info_type) {
+        // Run a report for the specified information type
+
+        const dropdown = document.getElementById('select_report');
+        // get the index of the selected option
+        const selectedIndex = dropdown.selectedIndex;
+        // Get the corresponding value. It will be used for the plot title.
+        const selectedValue = dropdown.options[selectedIndex].text;
+
+        const INFO_PLOT = document.getElementById('info_plot');
+        INFO_PLOT.innerHTML = "<h1 class='blink_text'>Please wait...</h1>";
+
+        const results = await getData(info_type);
+        let data_set = [];
+        for (let key in results) {
+            data_set.push({
+                              type: "scatter",
+                              mode: "lines",
+                              name: key,
+                              x: results[key][0].map((t) => new Date(t * 1000)),
+                              y: results[key][1].map((y) => y === 0 ? null : y),
+                              connectgaps: false,
+                          });
+        }
+        // Shut off the blinking text and replace with the plot.
+        INFO_PLOT.innerHTML = "";
+        Plotly.newPlot(INFO_PLOT, data_set, {title: selectedValue});
+    }
+
+</script>
+</body>
+</html>
