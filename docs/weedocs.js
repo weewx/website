@@ -1,3 +1,3 @@
 export function doc_version() {
-    return "5.1";
+    return "5.2";
 }

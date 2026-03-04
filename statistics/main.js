@@ -2,24 +2,28 @@
 
 /* Author: Tom Keffer 2024 */
 
-async function onChangeReport(report_name) {
+function onChangeReport(report_name) {
     if (['python_info', 'weewx_info', 'entry_path',
         'config_path', 'platform_info'].includes(report_name)) {
         // These reports can be optionally consolidated. Activate the dropdown list
         document.getElementById('select_consolidate').disabled = false;
     } else {
         // Other reports do not offer consolidation. Deactivate the dropdown list...
-        document.getElementById('select_consolidate').disabled = true;
-        // ... then run the given report
-        await runReport(report_name, false);
+        const select_consolidate = document.getElementById('select_consolidate');
+        select_consolidate.disabled = true;
+        select_consolidate.value = 'no';
     }
 }
 
-async function onChangeConsolidate(consolidate) {
-    // Convert text "yes" and "no" into booleans
-    consolidate = consolidate === 'yes';
+async function onRunReport() {
     // Retrieve the report to be run...
     const report_name = document.getElementById('select_report').value;
+    if (report_name === "") {
+        // No report selected. Do nothing.
+        return;
+    }
+    // Retrieve consolidation choice
+    const consolidate = document.getElementById('select_consolidate').value === 'yes';
     // ... then run it
     await runReport(report_name, consolidate);
 }
