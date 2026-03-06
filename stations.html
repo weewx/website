@@ -140,72 +140,50 @@
     </style>
     <script type='text/javascript'>
 
-        function loadScript(url) {
-            const script = document.createElement('script');
-            script.src = url;
-            script.type = 'text/javascript';
-            document.getElementsByTagName("HEAD")[0].appendChild(script);
+        // Asynchronously load Google Maps API, InfoBox API, and station data.
+        async function load() {
+            // Start fetching station data immediately
+           const fetchPromise = fetch("/api/v2/stations/?limit=3000&slim=1").then(response => response.json());
+
+            // Load the Google Maps API.
+            const gmapPromise = new Promise(resolve => {
+                window.gmapCallback = resolve;
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${google_key}&callback=gmapCallback`;
+                script.async = true;
+                document.head.appendChild(script);
+            });
+
+            // Wait for Google Maps and station data to load.
+            const [_, sites] = await Promise.all([gmapPromise, fetchPromise]);
+
+            // Once Google Maps is loaded, we can import InfoBox.
+            const {InfoBox} = await import("./js/infobox-1.1.19.js");
+
+            // Initialize the map and UI.
+            initMap(InfoBox, sites);
         }
 
-        /*
-           At this point, 3 things need to be loaded:
-           - the Google Maps javascript;
-           - the InfoBox javascript (which depends on Google Maps); and
-           - the station data.
-
-           The following starts the download of Google Maps and the station data simultaneously.
-           When the Google Maps download is done, it starts the InfoBox download.  It then
-           synchronizes the InfoBox and station data downloads, passing the final results on
-           to the function initMap().
-         */
-
-        // Load the Google API. It will call "gmapCallback" when done.
-        loadScript(
-            `https://maps.googleapis.com/maps/api/js?key=${google_key}&callback=gmapCallback`);
-
-        // The callback function "gmapCallback" needs to be in global scope, so it needs to be
-        // outside the function initMap().
-        var gmapCallback = null;
-        let gmapPromise = new Promise(function (resolve, reject) {
-            gmapCallback = resolve;
-        }).then(() => import("./js/infobox-1.1.19.js")
-            .then(imported => imported.InfoBox));
-
-        fetchPromise = fetch("/api/v2/stations/?limit=3000&slim=1")
-            .then(response => response.json());
-
-        Promise.all([gmapPromise, fetchPromise])
-               .then(values => initMap(...values));
-
+        // Main initialization function
         function initMap(InfoBox, sites) {
-            /*
-                The original "station.html" depended heavily on global variables and functions.
-                Nothing existed within smaller scopes. Yet, much of it required that the Google Maps
-                API having been loaded in order for it to function.
-
-                The solution was to enclose all of those variables and functions inside of this
-                function, initMap(), which is not fired until after the Google Maps API has been
-                loaded.
-             */
-
             let map;
-
-            const infowindow = new InfoBox({
-                                               content: 'nothing selected',
-                                               disableAutoPan: false,
-                                               maxWidth: 0,
-                                               pixelOffset: new google.maps.Size(10, -50),
-                                               zIndex: null,
-                                               closeBoxMargin: "2px 2px 2px 2px",
-                                               closeBoxURL: "images/close.gif",
-                                               infoBoxClearance: new google.maps.Size(1, 1),
-                                               isHidden: false,
-                                               pane: "floatPane",
-                                               enableEventPropagation: false
-                                           });
-
             let showThumbs = true;
             let oldZoomLevel = 0;
+
+            const infowindow = new InfoBox({
+                content: 'nothing selected',
+                disableAutoPan: false,
+                maxWidth: 0,
+                pixelOffset: new google.maps.Size(10, -50),
+                zIndex: null,
+                closeBoxMargin: "2px 2px 2px 2px",
+                closeBoxURL: "images/close.gif",
+                infoBoxClearance: new google.maps.Size(1, 1),
+                isHidden: false,
+                pane: "floatPane",
+                enableEventPropagation: false
+            });
+
             const zoomThreshold = 9; /* when to switch from dots to pins */
             const pingdays = 30; /* number of days in ping histogram */
             const staledays = 7; /* number of days before considered stale */
@@ -214,25 +192,8 @@
             const maxTitleLen = 70;
             const redDotURL = './images/dot-red.png';
 
-            function count_sorter(a, b) {
-                if (a === 'total') {
-                    return -1;
-                } else if (b === 'total') {
-                    return 1;
-                }
-                const A = a.toLowerCase();
-                const B = b.toLowerCase();
-                if (A < B) {
-                    return -1;
-                } else if (A > B) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-
             function initialize() {
-                const now = Math.round((new Date).getTime() / 1000);
+                const now = Math.round((new Date()).getTime() / 1000);
 
                 /* create a map with the settings we want */
                 const settings = {
@@ -251,7 +212,7 @@
                 const canvas = document.getElementById("map_canvas");
                 map = new google.maps.Map(canvas, settings);
 
-                google.maps.event.addListener(map, 'zoom_changed', function (event) {
+                map.addListener('zoom_changed', () => {
                     const zoomLevel = map.getZoom();
                     if ((oldZoomLevel < zoomThreshold && zoomLevel >= zoomThreshold) ||
                         (oldZoomLevel >= zoomThreshold && zoomLevel < zoomThreshold)) {
@@ -261,194 +222,157 @@
                 });
 
                 /* track counts of each station type */
-                let counts = {};
-                counts['total'] = 0;
+                const counts = {total: 0};
 
                 /* histogram of when each station last phoned home */
-                let maxpings = 0; /* maximum number of pings in a single day */
-                let pings = new Array(pingdays); /* histogram of daily pings */
-                for (let i = 0; i < pings.length; i++) { pings[i] = 0; }
+                let maxpings = 0;
+                const pings = new Array(pingdays).fill(0);
                 let stale = 0;
                 let dead = 0;
 
                 /* loop through all sites to get the data we need */
-                for (let i = 0; i < sites.length; i++) {
-                    /* create the markers */
-                    const title = decode_html(get_title(sites[i]));
-                    const pos = new google.maps.LatLng(sites[i].latitude, sites[i].longitude);
+                sites.forEach((site, i) => {
+                    const title = decode_html(get_title(site));
+                    const pos = new google.maps.LatLng(site.latitude, site.longitude);
                     const mkr = new google.maps.Marker({
-                                                           position: pos,
-                                                           map: map,
-                                                           title: title + "\n" + sites[i].station_type,
-                                                           icon: redDotURL,
-                                                       });
-                    sites[i].marker = mkr;
+                        position: pos,
+                        map: map,
+                        title: `${title}\n${site.station_type}`,
+                        icon: redDotURL,
+                    });
+                    site.marker = mkr;
                     attach_info(map, mkr, i);
 
                     /* do the station count accounting */
-                    counts['total'] = counts['total'] + 1;
-                    let n = 0;
-                    if (sites[i].station_type in counts) {
-                        n = counts[sites[i].station_type];
-                    }
-                    counts[sites[i].station_type] = n + 1;
+                    counts.total++;
+                    counts[site.station_type] = (counts[site.station_type] || 0) + 1;
 
                     /* do the ping accounting */
-                    let tdiff = now - sites[i].last_seen;
-                    let idx = Math.round(tdiff / 86400);
+                    const tdiff = now - site.last_seen;
+                    const idx = Math.round(tdiff / 86400);
                     if (idx < pingdays) {
-                        pings[idx] += 1;
+                        pings[idx]++;
                         if (idx > staledays) {
-                            stale += 1;
+                            stale++;
                         }
                     } else {
-                        dead += 1;
+                        dead++;
                     }
                     if (pings[idx] > maxpings) {
                         maxpings = pings[idx];
                     }
-                }
+                });
 
                 build_station_table('description', 'up');
                 populate_hardware_table(counts);
-                draw_ping_histogram(pings, maxpings, counts['total'], stale, dead);
+                draw_ping_histogram(pings, maxpings, counts.total, stale, dead);
+
+                // Add event listeners for toggles
+                document.getElementById('hardware_summary_toggle').addEventListener('click', function () {
+                    toggle(this, 'hardware_types_div');
+                });
+                document.getElementById('sites_toggle').addEventListener('click', function () {
+                    toggle(this, 'station_table_div');
+                });
             }
 
             function set_marker_image(map) {
                 const z = map.getZoom();
                 const url = z < zoomThreshold ? redDotURL : '';
-                for (let i = 0; i < sites.length; i++) {
-                    sites[i].marker.setIcon(url);
-                }
+                sites.forEach(site => site.marker.setIcon(url));
             }
 
-            // Build the station table from scratch.
             function build_station_table(sort_metric, sort_order) {
-                // Find where the station table will go
                 const station_table_div = document.getElementById('station_table_div');
-
-                // Create the table
+                station_table_div.innerHTML = '';
                 const tbl = document.createElement('table');
-                const tbdy = document.createElement('tbody');
+                const thead = document.createElement('thead');
+                const station_list_body = document.createElement('tbody');
+                station_list_body.id = 'station_list_body';
 
-                // Internally, the table consists of two parts: the header which contains the
-                // buttons, and a list of stations.
-
-                // Create a container for the list of stations. We'll attach it later, but
-                // we need it now so the buttons know what to act on.
-                const station_list_container = document.createElement('div');
-                station_list_container.id = 'station_list_div';
-
-                // Now start working on the header. It's a single row.
                 const tr = document.createElement('tr');
-                const td = document.createElement('th');
-                td.appendChild(
-                    create_buttons(station_list_container, "Description", "description"));
-                td.appendChild(create_buttons(station_list_container, "URL", "station_url"));
-                td.appendChild(create_buttons(station_list_container, "Latitude", "latitude"));
-                td.appendChild(create_buttons(station_list_container, "Longitude", "longitude"));
-                td.appendChild(create_buttons(station_list_container, "Hardware", "station_type"));
-                td.appendChild(create_buttons(station_list_container, "Version", "weewx_info"));
-                td.appendChild(create_buttons(station_list_container, "Last Seen", "last_seen"));
+                const th = document.createElement('th');
+                th.colSpan = 4;
+                th.className = 'sort_buttons';
+
+                ['Description', 'URL', 'Latitude', 'Longitude', 'Hardware', 'Version', 'Last Seen'].forEach(label => {
+                    const metric = label.toLowerCase().replace(' ', '_');
+                    const sortParam = metric === 'description' ? 'description' :
+                                    metric === 'url' ? 'station_url' :
+                                    metric === 'hardware' ? 'station_type' :
+                                    metric === 'version' ? 'weewx_info' : metric;
+                    th.appendChild(create_buttons(station_list_body, label, sortParam));
+                });
 
                 const thumbButton = document.createElement('input');
-                thumbButton.setAttribute('type', 'checkbox');
-                thumbButton.setAttribute('checked', showThumbs);
+                thumbButton.type = 'checkbox';
+                thumbButton.checked = showThumbs;
                 thumbButton.addEventListener("click", () => toggle_thumbnails());
 
                 const thumbDiv = document.createElement('div');
                 thumbDiv.innerHTML = 'Thumbnails<br/>';
                 thumbDiv.appendChild(thumbButton);
-                td.appendChild(thumbDiv);
+                th.appendChild(thumbDiv);
 
-                td.colSpan = "2";
-                td.className = 'sort_buttons';
-                tr.appendChild(td);
-                tr.appendChild(document.createElement('td'));
-                tbdy.appendChild(tr);
-
-                // Now attach the list of stations to the table body
-                tbdy.appendChild(station_list_container);
-
-                // Attach the table body to the table
-                tbl.appendChild(tbdy);
-
-                // Append the table to the <div>
+                tr.appendChild(th);
+                thead.appendChild(tr);
+                tbl.appendChild(thead);
+                tbl.appendChild(station_list_body);
                 station_table_div.appendChild(tbl);
 
-                populate_station_list(station_list_container, sort_metric, sort_order);
+                populate_station_list(station_list_body, sort_metric, sort_order);
             }
 
-            // Given some sort of container, populate it with the rows describing the station.
-            // They will be sorted by "sort_metric", in the order specified by "sort_order".
             function populate_station_list(list_container, sort_metric, sort_order) {
-
-                // Clear the old station list:
-                while (list_container.firstChild) {
-                    list_container.removeChild(list_container.firstChild);
-                }
-
-                // Sort the indices.
+                list_container.innerHTML = '';
                 const indices = get_sort_indices(sites, sort_metric, sort_order);
-
-                let rowclass = 'oddrow';
                 const disp = showThumbs ? 'inline' : 'none';
 
-                // Now build the new list, one row at a time.
-                for (let i = 0; i < indices.length; i++) {
-                    const title = get_title(sites[indices[i]]);
+                indices.forEach((idx, i) => {
+                    const site = sites[idx];
+                    const title = get_title(site);
                     const tr = document.createElement('tr');
-                    let td = document.createElement('td');
-                    td.innerHTML = '<a href="' + sites[indices[i]].station_url + '">' + title + '</a><br/><small>' + sites[indices[i]].station_url + '</small>';
-                    tr.appendChild(td);
-                    td = document.createElement('td');
-                    let date = new Date(sites[indices[i]].last_seen * 1000);
-                    td.innerHTML = '<div style="float: left">' + sites[indices[i]].weewx_info + '</div><div style="float: right">' + sites[indices[i]].station_type + '</div><div style="clear:both; float:right"><small>' + date.toUTCString() + '</small></div>';
-                    tr.appendChild(td);
-                    td = document.createElement('td');
-                    let basename = '/shots/' + md5(sites[indices[i]].station_url);
-                    td.innerHTML = '<div class="thumbnail" style="display:' + disp +
-                                   '"><a href="' + basename +
-                                   '.jpg"><img src="/images/blank.gif" alt="" data-echo="' +
-                                   basename + '.tn.jpg" width="50"></a></div>';
-                    tr.appendChild(td);
-                    td = document.createElement('td');
-                    td.id = 'site_' + indices[i];
-                    td.className = 'indicator';
-                    attach_station(td, map, sites[indices[i]].marker, indices[i]);
-                    tr.appendChild(td);
-                    tr.className = rowclass;
-                    // Attach our freshly built row to the container.
-                    list_container.appendChild(tr);
-                    if (rowclass === 'oddrow') {
-                        rowclass = 'evenrow';
-                    } else {
-                        rowclass = 'oddrow';
-                    }
-                }
+                    tr.className = i % 2 === 0 ? 'oddrow' : 'evenrow';
 
-                /* let the lazy loader do its thing */
+                    const td1 = document.createElement('td');
+                    td1.innerHTML = `<a href="${site.station_url}">${title}</a><br/><small>${site.station_url}</small>`;
+                    tr.appendChild(td1);
+
+                    const td2 = document.createElement('td');
+                    const date = new Date(site.last_seen * 1000);
+                    td2.innerHTML = `<div style="float: left">${site.weewx_info}</div><div style="float: right">${site.station_type}</div><div style="clear:both; float:right"><small>${date.toUTCString()}</small></div>`;
+                    tr.appendChild(td2);
+
+                    const td3 = document.createElement('td');
+                    const basename = `/shots/${md5(site.station_url)}`;
+                    td3.innerHTML = `<div class="thumbnail" style="display:${disp}"><a href="${basename}.jpg"><img src="/images/blank.gif" alt="" data-echo="${basename}.tn.jpg" width="50"></a></div>`;
+                    tr.appendChild(td3);
+
+                    const td4 = document.createElement('td');
+                    td4.id = `site_${idx}`;
+                    td4.className = 'indicator';
+                    attach_station(td4, map, site.marker, idx);
+                    tr.appendChild(td4);
+
+                    list_container.appendChild(tr);
+                });
                 echo.init();
             }
 
             function create_buttons(container, label, sort_metric) {
+                const button_group = document.createElement("div");
+                button_group.className = 'button_pair';
 
                 const up_button = document.createElement('input');
-                up_button.setAttribute('type', 'submit');
-                up_button.setAttribute('value', `${label} ↑`);
-                up_button.addEventListener("click",
-                                           () => populate_station_list(container, sort_metric,
-                                                                       "up"));
+                up_button.type = 'submit';
+                up_button.value = `${label} ↑`;
+                up_button.addEventListener("click", () => populate_station_list(container, sort_metric, "up"));
 
                 const dn_button = document.createElement('input');
-                dn_button.setAttribute('type', 'submit');
-                dn_button.setAttribute('value', `${label} ↓`);
-                dn_button.addEventListener("click",
-                                           () => populate_station_list(container, sort_metric,
-                                                                       "dn"));
+                dn_button.type = 'submit';
+                dn_button.value = `${label} ↓`;
+                dn_button.addEventListener("click", () => populate_station_list(container, sort_metric, "dn"));
 
-                const button_group = document.createElement("div");
-                button_group.setAttribute('class', 'button_pair');
                 button_group.appendChild(up_button);
                 button_group.appendChild(document.createElement('br'));
                 button_group.appendChild(dn_button);
@@ -459,95 +383,84 @@
                 const s = document.getElementById('hardware_types_div');
                 const tbl = document.createElement('table');
                 const tbdy = document.createElement('tbody');
-                const count_keys = new Array(); /* array of station types */
-                for (let key in counts) {
-                    count_keys.push(key);
-                }
-                count_keys.sort(count_sorter);
-                for (let key in count_keys) {
+
+                Object.keys(counts).sort((a, b) => {
+                    if (a === 'total') return -1;
+                    if (b === 'total') return 1;
+                    return a.toLowerCase().localeCompare(b.toLowerCase());
+                }).forEach(key => {
                     const tr = document.createElement('tr');
-                    let td = document.createElement('td');
-                    td.innerHTML = count_keys[key];
-                    tr.appendChild(td);
-                    td = document.createElement('td');
-                    td.className = 'alignright';
-                    td.innerHTML = counts[count_keys[key]];
-                    tr.appendChild(td);
-                    td = document.createElement('td');
-                    td.id = 'station_type_' + count_keys[key];
-                    td.className = 'indicator';
-                    attach_station_type(td, count_keys[key], count_keys);
-                    tr.appendChild(td);
+                    const td1 = document.createElement('td');
+                    td1.innerHTML = key;
+                    tr.appendChild(td1);
+
+                    const td2 = document.createElement('td');
+                    td2.className = 'alignright';
+                    td2.innerHTML = counts[key];
+                    tr.appendChild(td2);
+
+                    const td3 = document.createElement('td');
+                    td3.id = `station_type_${key}`;
+                    td3.className = 'indicator';
+                    attach_station_type(td3, key, Object.keys(counts));
+                    tr.appendChild(td3);
                     tbdy.appendChild(tr);
-                }
+                });
                 tbl.appendChild(tbdy);
                 s.appendChild(tbl);
             }
 
             function draw_ping_histogram(pings, maxpings, total, stale, dead) {
                 const canvas = document.getElementById('ping_details');
-                if (canvas) {
-                    canvas.width = 180;
-                    canvas.height = 60;
-                    const c = canvas.getContext("2d");
-                    const w = canvas.clientWidth;
-                    const h = canvas.clientHeight;
-                    const barwidth = w / pings.length;
-                    const unitheight = h / maxpings;
-                    c.strokeStyle = "#dddddd";
-                    for (let i = h; i >= 0; i -= 20 * unitheight) {
-                        c.beginPath();
-                        c.moveTo(1, i);
-                        c.lineTo(w, i);
-                        c.stroke();
-                    }
-                    c.fillStyle = "#888888";
-                    c.strokeStyle = "#dddddd";
-                    for (let i = 0; i < pings.length; i++) {
-                        const bh = pings[pings.length - i - 1] * unitheight;
-                        c.fillRect(i * barwidth, h - bh, barwidth, bh);
-                        c.beginPath();
-                        c.moveTo(i * barwidth, h - 4);
-                        c.lineTo(i * barwidth, h);
-                        c.stroke();
-                    }
-                    c.fillText('total: ' + total, 10, 20);
-                    c.fillText('stale: ' + stale, 10, 32);
-                    c.fillText('dead: ' + dead, 10, 44);
+                if (!canvas) return;
+                canvas.width = 180;
+                canvas.height = 60;
+                const c = canvas.getContext("2d");
+                const w = canvas.width;
+                const h = canvas.height;
+                const barwidth = w / pings.length;
+                const unitheight = h / maxpings;
+
+                c.strokeStyle = "#dddddd";
+                for (let i = h; i >= 0; i -= 20 * unitheight) {
+                    c.beginPath();
+                    c.moveTo(1, i);
+                    c.lineTo(w, i);
+                    c.stroke();
                 }
+                c.fillStyle = "#888888";
+                for (let i = 0; i < pings.length; i++) {
+                    const bh = pings[pings.length - i - 1] * unitheight;
+                    c.fillRect(i * barwidth, h - bh, barwidth, bh);
+                    c.beginPath();
+                    c.moveTo(i * barwidth, h - 4);
+                    c.lineTo(i * barwidth, h);
+                    c.stroke();
+                }
+                c.fillText(`total: ${total}`, 10, 20);
+                c.fillText(`stale: ${stale}`, 10, 32);
+                c.fillText(`dead: ${dead}`, 10, 44);
             }
 
             function create_content(idx) {
-                const fn = md5(sites[idx].station_url) + '.sm.jpg';
+                const site = sites[idx];
+                const fn = `${md5(site.station_url)}.sm.jpg`;
                 const w = document.createElement("div");
                 w.className = 'info-content';
-                let str = '';
-                str += '<p class="location">';
-                str += '<a href="' + sites[idx].station_url + '">';
-                if (sites[idx].description.length > 0) {
-                    str += sites[idx].description;
-                } else {
-                    str += sites[idx].station_url;
-                }
-                str += '</a></p>';
-                str += '<p class="location_img">';
-                str += '<img src="/shots/' + fn + '" width="100", alt="Screenshot">';
-                str += '</p>';
-                str += '<p class="location_details">';
-                str += sites[idx].latitude.toFixed(3) + ', ';
-                str += sites[idx].longitude.toFixed(3) + '<br/>';
-                str += sites[idx].station_type + '<br/>';
-                str += sites[idx].station_model + '<br/>';
-                str += '</p>';
-                //  str += '</div>';
-                w.innerHTML = str;
+                w.innerHTML = `
+                    <p class="location"><a href="${site.station_url}">${site.description || site.station_url}</a></p>
+                    <p class="location_img"><img src="/shots/${fn}" width="100" alt="Screenshot"></p>
+                    <p class="location_details">
+                        ${site.latitude.toFixed(3)}, ${site.longitude.toFixed(3)}<br/>
+                        ${site.station_type}<br/>
+                        ${site.station_model}<br/>
+                    </p>`;
                 return w;
             }
 
             function attach_info(map, marker, idx) {
-                google.maps.event.addListener(marker, 'click', function () {
-                    const str = create_content(idx);
-                    infowindow.setContent(str);
+                marker.addListener('click', () => {
+                    infowindow.setContent(create_content(idx));
                     infowindow.open(map, marker);
                     hide_all_dots();
                     show_dot(idx);
@@ -555,9 +468,8 @@
             }
 
             function attach_station(elem, map, marker, idx) {
-                elem.addEventListener('click', function () {
-                    const str = create_content(idx);
-                    infowindow.setContent(str);
+                elem.addEventListener('click', () => {
+                    infowindow.setContent(create_content(idx));
                     if (marker) infowindow.open(map, marker);
                     hide_all_dots();
                     show_dot(idx);
@@ -565,115 +477,51 @@
             }
 
             function attach_station_type(elem, station_type, count_keys) {
-                elem.addEventListener('click', function () {
-                    for (let key in count_keys) {
-                        dehighlight(document.getElementById('station_type_' + count_keys[key]));
-                    }
-                    highlight(document.getElementById('station_type_' + station_type));
+                elem.addEventListener('click', () => {
+                    count_keys.forEach(key => dehighlight(document.getElementById(`station_type_${key}`)));
+                    highlight(document.getElementById(`station_type_${station_type}`));
                     infowindow.close();
                     dehighlight_all();
-                    infowindow.close();
                     hide_all_markers();
                     hide_all_dots();
-                    for (let i = 0; i < sites.length; i++) {
-                        if (station_type === 'total' || sites[i].station_type === station_type) {
+                    sites.forEach((site, i) => {
+                        if (station_type === 'total' || site.station_type === station_type) {
                             show_marker(i);
                         }
-                        if (sites[i].station_type === station_type) {
+                        if (site.station_type === station_type) {
                             highlight_row(i);
                         }
-                    }
+                    });
                 });
             }
 
-            function highlight(elem) {
-                if (elem) {
-                    elem.style.backgroundColor = highlightColor;
-                }
-            }
-
-            function dehighlight(elem) {
-                if (elem) {
-                    elem.style.backgroundColor = backgroundColor;
-                }
-            }
-
-            function highlight_row(idx) {
-                highlight(document.getElementById('site_' + idx));
-            }
-
-            function dehighlight_row(idx) {
-                dehighlight(document.getElementById('site_' + idx));
-            }
-
-            function dehighlight_all() {
-                for (let i = 0; i < sites.length; i++) {
-                    dehighlight_row(i);
-                }
-            }
-
-            function show_dot(idx) {
-                const elem = document.getElementById('site_' + idx);
-                if (elem) {
-                    elem.style.backgroundImage = 'url(dot.png)';
-                }
-            }
-
-            function hide_dot(idx) {
-                const elem = document.getElementById('site_' + idx);
-                if (elem) {
-                    elem.style.backgroundImage = '';
-                }
-            }
-
-            function hide_all_dots() {
-                for (let i = 0; i < sites.length; i++) {
-                    hide_dot(i);
-                }
-            }
-
-            function show_marker(idx) {
-                sites[idx].marker.setMap(map);
-            }
-
-            function hide_marker(idx) {
-                sites[idx].marker.setMap(null);
-            }
-
-            function hide_all_markers() {
-                for (let i = 0; i < sites.length; i++) {
-                    hide_marker(i);
-                }
-            }
-
-            function trim_string(x, max_len) {
-                if (x.length > max_len) {
-                    x = x.substring(0, max_len).concat('...');
-                }
-                return x;
-            }
+            const highlight = elem => { if (elem) elem.style.backgroundColor = highlightColor; };
+            const dehighlight = elem => { if (elem) elem.style.backgroundColor = backgroundColor; };
+            const highlight_row = idx => highlight(document.getElementById(`site_${idx}`));
+            const dehighlight_row = idx => dehighlight(document.getElementById(`site_${idx}`));
+            const dehighlight_all = () => sites.forEach((_, i) => dehighlight_row(i));
+            const show_dot = idx => { const e = document.getElementById(`site_${idx}`); if (e) e.style.backgroundImage = 'url(dot.png)'; };
+            const hide_dot = idx => { const e = document.getElementById(`site_${idx}`); if (e) e.style.backgroundImage = ''; };
+            const hide_all_dots = () => sites.forEach((_, i) => hide_dot(i));
+            const show_marker = idx => sites[idx].marker.setMap(map);
+            const hide_marker = idx => sites[idx].marker.setMap(null);
+            const hide_all_markers = () => sites.forEach((_, i) => hide_marker(i));
 
             function get_title(x) {
-                let title = 'untitled';
-                if (x.description.length > 0) {
-                    title = x.description;
-                } else {
-                    title = x.station_url;
+                let title = x.description || x.station_url || 'untitled';
+                if (title.length > maxTitleLen) {
+                    title = title.substring(0, maxTitleLen) + '...';
                 }
-                return trim_string(title, maxTitleLen);
+                return title;
             }
 
             function toggle_thumbnails() {
                 showThumbs = !showThumbs;
                 const tn = document.getElementsByClassName('thumbnail');
-                for (let i = 0; i < tn.length; i++) {
-                    if (showThumbs) {
-                        tn[i].style.display = 'inline';
-                        tn[i].height = 104;
-                    } else {
-                        tn[i].style.display = 'none';
-                    }
-                }
+                Array.from(tn).forEach(el => {
+                    el.style.display = showThumbs ? 'inline' : 'none';
+                    if (showThumbs) el.height = 104;
+                });
             }
 
             function decode_html(s) {
@@ -682,109 +530,36 @@
                 return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
             }
 
+            function toggle(control, id) {
+                const elem = document.getElementById(id);
+                if (!elem) return;
+                const isHidden = elem.style.display === 'none';
+                elem.style.display = isHidden ? 'inline' : 'none';
+                const indicator = control.querySelector('.indicator-icon');
+                if (indicator) {
+                    indicator.innerHTML = isHidden ? '&#x25bc;' : '&#x25b6;';
+                }
+            }
+
+            function get_sort_indices(sites, sort_metric, sort_order) {
+                const indices = Array.from(sites.keys());
+                const direction = sort_order === 'up' ? 1 : -1;
+                indices.sort((a, b) => {
+                    const aVal = sites[a][sort_metric];
+                    const bVal = sites[b][sort_metric];
+                    if (typeof aVal === 'string' && typeof bVal === 'string') {
+                        return direction * aVal.localeCompare(bVal);
+                    }
+                    return direction * (aVal < bVal ? -1 : aVal > bVal ? 1 : 0);
+                });
+                return indices;
+            }
+
             initialize();
             populate_header('stations');
         }
 
-        function toggle(control, id) {
-            const elem = document.getElementById(id);
-            if (elem) {
-                let html = control.innerHTML;
-                let display = 'none';
-                let indicator = '';
-                if (elem.style.display !== 'none') {
-                    display = 'none';
-                    indicator = '&#x25b6;';     // Right-pointing triangle
-                } else {
-                    display = 'inline';
-                    indicator = '&#x25bc;';     // Down-pointing triangle
-                }
-                elem.style.display = display;
-                html = indicator + html.substring(1, html.length);
-                control.innerHTML = html;
-            }
-        }
-
-        function get_sort_indices(sites, sort_metric, sort_order) {
-            let indices = [];
-            for (let i = 0; i < sites.length; i++) {
-                indices[i] = i;
-            }
-            if (sort_metric === 'description') {
-                if (sort_order === 'up') {
-                    indices.sort(function (a, b) {
-                        return sites[a].description.localeCompare(sites[b].description);
-                    });
-                } else {
-                    indices.sort(function (a, b) {
-                        return sites[b].description.localeCompare(sites[a].description);
-                    });
-                }
-            } else if (sort_metric === 'station_url') {
-                if (sort_order === 'up') {
-                    indices.sort(function (a, b) {
-                        return compare(sites[a].station_url.toLowerCase(),
-                                       sites[b].station_url.toLowerCase());
-                    });
-                } else {
-                    indices.sort(function (a, b) {
-                        return compare(sites[b].station_url.toLowerCase(),
-                                       sites[a].station_url.toLowerCase());
-                    });
-                }
-            } else if (sort_metric === 'latitude') {
-                if (sort_order === 'up') {
-                    indices.sort(function (a, b) {
-                        return compare(sites[a].latitude, sites[b].latitude);
-                    });
-                } else {
-                    indices.sort(function (a, b) {
-                        return compare(sites[b].latitude, sites[a].latitude);
-                    });
-                }
-            } else if (sort_metric === 'longitude') {
-                if (sort_order === 'up') {
-                    indices.sort(function (a, b) {
-                        return compare(sites[a].longitude, sites[b].longitude);
-                    });
-                } else {
-                    indices.sort(function (a, b) {
-                        return compare(sites[b].longitude, sites[a].longitude);
-                    });
-                }
-            } else if (sort_metric === 'station_type') {
-                if (sort_order === 'up') {
-                    indices.sort(function (a, b) {
-                        return compare(sites[a].station_type, sites[b].station_type);
-                    });
-                } else {
-                    indices.sort(function (a, b) {
-                        return compare(sites[b].station_type, sites[a].station_type);
-                    });
-                }
-            } else if (sort_metric === 'last_seen') {
-                if (sort_order === 'up') {
-                    indices.sort(function (a, b) {
-                        return compare(sites[a].last_seen, sites[b].last_seen);
-                    });
-                } else {
-                    indices.sort(function (a, b) {
-                        return compare(sites[b].last_seen, sites[a].last_seen);
-                    });
-                }
-            } else if (sort_metric === 'weewx_info') {
-                if (sort_order === 'up') {
-                    indices.sort(function (a, b) {
-                        return compare(sites[a].weewx_info, sites[b].weewx_info);
-                    });
-                } else {
-                    indices.sort(function (a, b) {
-                        return compare(sites[b].weewx_info, sites[a].weewx_info);
-                    });
-                }
-            }
-            return indices;
-        }
+        load();
 
     </script>
 </head>
@@ -818,8 +593,10 @@
             <div id='ping_details_container'>
                 <canvas id='ping_details'></canvas>
             </div>
-            <div onclick="toggle(this,'hardware_types_div')" style='cursor: pointer'>&#x25b6;
-                <strong>Hardware</strong></div>
+            <div id="hardware_summary_toggle" style='cursor: pointer'>
+                <span class="indicator-icon">&#x25b6;</span>
+                <strong>Hardware</strong>
+            </div>
             <div id='hardware_types_div' style='display:none'></div>
         </div>
 
@@ -830,8 +607,10 @@
         </div>
 
         <div id='sites'>
-            <div onclick="toggle(this,'station_table_div')" style='cursor: pointer'>&#x25b6;
-                <strong>Stations</strong></div>
+            <div id="sites_toggle" style='cursor: pointer'>
+                <span class="indicator-icon">&#x25b6;</span>
+                <strong>Stations</strong>
+            </div>
             <div id='station_table_div' style='display:none'></div>
         </div>
     </div>
