@@ -149,7 +149,7 @@
             const gmapPromise = new Promise(resolve => {
                 window.gmapCallback = resolve;
                 const script = document.createElement('script');
-                script.src = `https://maps.googleapis.com/maps/api/js?key=${google_key}&callback=gmapCallback`;
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${google_key}&callback=gmapCallback&loading=async`;
                 script.async = true;
                 document.head.appendChild(script);
             });
