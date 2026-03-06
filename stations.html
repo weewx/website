@@ -171,7 +171,7 @@
         }).then(() => import("./js/infobox-1.1.19.js")
             .then(imported => imported.InfoBox));
 
-        fetchPromise = fetch("/api/v2/stations/?limit=3000%slim=1")
+        fetchPromise = fetch("/api/v2/stations/?limit=3000&slim=1")
             .then(response => response.json());
 
         Promise.all([gmapPromise, fetchPromise])
