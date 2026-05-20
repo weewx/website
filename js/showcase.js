@@ -16,8 +16,13 @@ const sites = [
     },
     {
         description: 'Claydons, UK',
-        url: 'https://claydonsweather.org.uk/',
+        url: 'http://claydonsweather.org.uk/',
         screenshot: 'claydons.png'
+    },
+    {
+        description: 'Ingolstadt, DE (neowx-material skin)',
+        url: 'https://github.com/seehase/neowx-material',
+        screenshot: 'ingolstadt_de.png'
     },
     {
         description: 'Royston, UK',
@@ -25,49 +30,14 @@ const sites = [
         screenshot: 'royston.png'
     },
     {
-        description: 'ruskers.com',
-        url: 'http://wx.ruskers.com/',
-        screenshot: 'ruskers.png'
-    },
-    {
-        description: 'Wetter-Pattensen',
-        url: 'http://wetter-pattensen.de',
-        screenshot: 'pattensen.png'
-    },
-    {
         description: 'Solås, Ålgård, Norway',
         url: 'https://www.kanonbra.com/veret/',
         screenshot: 'solas.png'
     },
     {
-        description: 'AmatYr - Naustvika',
-        url: 'http://yr.hveem.no',
-        screenshot: 'amatyr.png'
-    },
-    {
-        description: 'Meteo Saint-Sulpice',
-        url: 'https://www.meteosaintsulpice.fr/',
-        screenshot: 'meteosaintsulpice.png'
-    },
-    {
         description: 'Tinos Wetterseite',
         url: 'https://tino.cc',
         screenshot: 'tino.png'
-    },
-    {
-        description: 'Yubileyny Moscow',
-        url: 'http://yubileyny.meteoweb.ru/',
-        screenshot: 'yubileyny.png'
-    },
-    {
-        description: 'Narangba, Queensland, Australia',
-        url: 'http://www.therodericks.id.au/saratoga/wxindex.php',
-        screenshot: 'narangba.png'
-    },
-    {
-        description: 'Ballymote, Sligo, Ireland',
-        url: 'http://goodsquishy.com/weather/',
-        screenshot: 'ballymote.png'
     },
     {
         description: 'Berkeley, California',
@@ -95,39 +65,9 @@ const sites = [
         screenshot: 'sonderstrand.png'
     },
     {
-        description: 'Kongsvinger, Norway',
-        url: 'http://www.bogeraasen.net/index-en.php',
-        screenshot: 'kongsvinger.png'
-    },
-    {
-        description: 'Trout River, Quebec',
-        url: 'http://www.scratchypants.com/wx/',
-        screenshot: 'troutriver.png'
-    },
-    {
-        description: 'eMBeZon, Ypenburg, Holland',
-        url: 'http://www.embezon.nl/embezon/WEATHER_data/',
-        screenshot: 'ypenburg.png'
-    },
-    {
         description: 'Harper, Texas',
         url: 'http://weather.janeandjohn.org/',
         screenshot: 'harper.png'
-    },
-    {
-        description: 'Grayson Highlands, Virginia',
-        url: 'http://weather.graysonfriends.org/',
-        screenshot: 'grayson-highlands.png'
-    },
-    {
-        description: 'Surry, Virginia',
-        url: 'http://weather.chippokes.com/',
-        screenshot: 'surry.png'
-    },
-    {
-        description: 'Bacchus Marsh, Victoria, AU',
-        url: 'http://wotid.dyndns.org/weather/',
-        screenshot: 'bacchusmarsh.png'
     },
     {
         description: 'Мичуринское',
