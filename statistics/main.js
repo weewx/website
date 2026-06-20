@@ -71,3 +71,8 @@ async function getData(info_type, consolidate) {
         console.log(error);
     }
 }
+
+// Call the header population function when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    populate_header();
+});
