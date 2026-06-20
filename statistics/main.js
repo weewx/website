@@ -43,14 +43,18 @@ async function runReport(info_type, consolidate) {
     const results = await getData(info_type, consolidate);
     let data_set = [];
     for (let key in results) {
-        data_set.push({
-                          type: "scatter",
-                          mode: "lines",
-                          name: key,
-                          x: results[key][0].map((t) => new Date(t * 1000)),
-                          y: results[key][1],
-                          connectgaps: false,
-                      });
+        let trace = {
+            type: "scatter",
+            mode: "lines",
+            name: key,
+            x: results[key][0].map((t) => new Date(t * 1000)),
+            y: results[key][1],
+            connectgaps: false,
+        };
+        if (info_type === 'installer_info') {
+            trace.stackgroup = 'one';
+        }
+        data_set.push(trace);
     }
     // Shut off the blinking text and replace with the plot.
     INFO_PLOT.innerHTML = "";
