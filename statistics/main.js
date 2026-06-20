@@ -3,8 +3,7 @@
 /* Author: Tom Keffer 2024 */
 
 function onChangeReport(report_name) {
-    if (['python_info', 'weewx_info', 'entry_path',
-        'config_path', 'platform_info'].includes(report_name)) {
+    if (['python_info', 'weewx_info', 'platform_info'].includes(report_name)) {
         // These reports can be optionally consolidated. Activate the dropdown list
         document.getElementById('select_consolidate').disabled = false;
     } else {
