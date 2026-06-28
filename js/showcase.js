@@ -16,7 +16,7 @@ const sites = [
     },
     {
         description: 'Claydons, UK',
-        url: 'http://claydonsweather.org.uk/',
+        url: 'https://reimagine.steepleclaydonweather.uk/',
         screenshot: 'claydons.png'
     },
     {
