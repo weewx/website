@@ -23,7 +23,7 @@
 </head>
 
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D146BWZK54"></script>
+<script async src='https://www.googletagmanager.com/gtag/js?id=G-D146BWZK54'></script>
 <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -71,15 +71,14 @@
             <a href='/docs/'>documentation</a>.
         </p>
         <p>
-            WeeWX runs under most versions of Linux,
-            as well as macOS, *BSD, and Solaris. Many users are running on the
+            WeeWX runs under most versions of Linux. Many users are running on the
             <a href='http://www.raspberrypi.org/'>Raspberry Pi</a>. The images on
-            this page and throughout this web site are from
+            this page and throughout this website are from
             <a href='showcase.html'>sample stations</a> running WeeWX.
         </p>
         <p>
             Thousands of stations throughout the world run WeeWX,
-            many of whom have opted-in to be shown on our
+            many of whom have opted in to be shown on our
             <a href='stations.html'>station map</a>.
         </p>
         <p>
@@ -102,16 +101,19 @@
             <li>Easy package install for Debian (Ubuntu), Red Hat (CentOS) and SUSE users;</li>
             <li>Uploads to your website using FTP or rsync;</li>
             <li>Extensive celestial <em>almanac</em>;</li>
+            <li><a href='https://github.com/weewx/weewx/wiki#extensions-to-weewx'>Extensive
+            collection</a> of third party skins, drivers, and other gadgets;</li>
             <li>Ability to create or modify <em>skins</em> (the look and feel of your weather site);
             </li>
             <li>Support for <em>localization</em>;</li>
             <li>Simple, but extensible templating system;</li>
             <li>Native support for US or Metric unit systems;</li>
-            <li>Support for sqlite or MySQL databases;</li>
-            <li>Runs under either Python 2 or Python 3;</li>
+            <li>Support for SQLite or MySQL databases;</li>
+            <li>Support for Postgres as an extension;</li>
+            <li>Runs under Python 3.7+;</li>
             <li>Calibration corrections;</li>
             <li>Filtering of anomalous values;</li>
-            <li>An easy to understand, simple, extensible micro-kernel architecture;</li>
+            <li>An easy-to-understand, simple, extensible micro-kernel architecture;</li>
             <li>Ability to extend WeeWX with new services and reports.</li>
         </ul>
         <p>Last, but definitely not least,</p>
@@ -125,10 +127,12 @@
             I wrote WeeWX over the winter of 2008-2009 for two reasons: it was a wet and miserable
             winter here in Oregon with not much else to do, so there was no good reason not to, and
             because I wanted a simple, easy-to-understand server to run my Davis VantagePro2 weather
-            station on a Linux box. I had been using wview, which is a high-performance and
-            feature rich system authored by Mark Teel with lots of users. Written in C, it is an
+            station on a Linux box. I had been using <a
+                href='https://sourceforge.net/projects/wview/'>wview</a>, which is a
+                                                               high-performance and
+            feature-rich system authored by Mark Teel with lots of users. Written in C, it is an
             efficient system that can run on underpowered boxes. In exchange, it is huge (45,000+
-            lines of code), tightly integrated in with its companion library, radlib (another
+            lines of code), tightly integrated with its companion library, radlib (another
             14,000+ lines), and very complex, making it difficult to understand and reliably
             customize. I wanted something more modern and much, much simpler.
         </p>
@@ -140,16 +144,16 @@
             libraries.
         </p>
         <p>
-            WeeWX has grown to about 15,000 lines of code, plus another 15,000 for the hardware
-            drivers. Because it is pure Python, it requires no makefiles, no builds, no special
+            WeeWX has grown to about 30,000 lines of code, plus another 13,000 for the hardware
+            drivers. Because it is pure Python, it requires no makefiles, no builds, and no special
             installs. It offers very powerful configuration and templating options, as well as an
             internally extensible engine, making it easy to customize. Its internal modular design
             and use of modern exception handling make it very robust and difficult to crash. It is
-            also architecturally very simple and easy to understand.
+            also architecturally simple and easy to understand.
         </p>
         <p>
-            Some intrepid users have run WeeWX on Microsoft Windows, but this is not yet widely
-            supported.
+            It will run on Linux, *BSD, macOS, and Solaris. There are no plans to support
+            Microsoft Windows.
         </p>
 
     </div>
@@ -158,10 +162,10 @@
     <div style='clear: both'>&nbsp;</div>
 
     <div id='footer'>
-      <p>
-        Copyright &copy; Tom Keffer, Matthew Wall, and Gary Roderick,
-        all rights reserved
-      </p>
+        <p>
+            Copyright &copy; Tom Keffer, Matthew Wall, and Gary Roderick,
+            all rights reserved
+        </p>
     </div>
 
 </div>
