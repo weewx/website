@@ -1,8 +1,12 @@
 /* javascript for weewx.com web site */
 /* author: matthew wall, 2013 */
 
-/* list of weather stations displayed on the showcase page. */
-/* for each station specify a description, url, and screenshot. */
+/*
+list of weather stations displayed on the showcase page.
+for each station specify a description, url, and screenshot.
+A useful website for capturing screenshots is https://www.site-shot.com/
+*/
+
 const sites = [
     {
         description: 'Hood River, Oregon',
@@ -35,11 +39,6 @@ const sites = [
         screenshot: 'solas.png'
     },
     {
-        description: 'Tinos Wetterseite',
-        url: 'https://tino.cc',
-        screenshot: 'tino.png'
-    },
-    {
         description: 'Berkeley, California',
         url: 'http://weather.mindfart.com/',
         screenshot: 'berkeley.png'
@@ -60,20 +59,15 @@ const sites = [
         screenshot: 'penfield.png'
     },
     {
-        description: 'Sønderstrand, Sæby, Danmark',
-        url: 'http://jensjk.dk/saeby/',
-        screenshot: 'sonderstrand.png'
-    },
-    {
-        description: 'Harper, Texas',
-        url: 'http://weather.janeandjohn.org/',
-        screenshot: 'harper.png'
-    },
-    {
         description: 'Мичуринское',
         url: 'http://meteo.slaval.ru/',
         screenshot: 'slavalru.png'
     },
+    {
+        description: 'Hagerstown, Maryland',
+        url: 'https://theinfinitedesign.com/weewx-1/',
+        screenshot: 'infinite-design.png'
+    }
 ];
 
 /* inject navigation links into the navigation div */
